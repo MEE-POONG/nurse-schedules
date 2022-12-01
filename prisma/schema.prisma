@@ -1,0 +1,53 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Duty {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  description String?
+  locationId  Int?
+  shifId      Int?
+  userId      Int?
+  datetime    DateTime  @default(now())
+  Location    Location? @relation(fields: [locationId], references: [id])
+  Shif        Shif?     @relation(fields: [shifId], references: [id])
+  User        User?     @relation(fields: [userId], references: [id])
+}
+
+model Location {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+  Duty Duty[]
+  User User[]
+}
+
+model Position {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+  User User[]
+}
+
+model Shif {
+  id     Int      @id @default(autoincrement())
+  name   String   @unique
+  isShif Boolean?
+  Duty   Duty[]
+}
+
+model User {
+  id         Int       @id @default(autoincrement())
+  email      String    @unique
+  firstname  String?
+  lastname   String?
+  locationId Int?
+  positionId Int?
+  Location   Location? @relation(fields: [locationId], references: [id])
+  Position   Position? @relation(fields: [positionId], references: [id])
+  Duty       Duty[]
+}
