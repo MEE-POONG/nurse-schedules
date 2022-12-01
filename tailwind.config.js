@@ -12,6 +12,7 @@ module.exports = {
       green: '#C6F5BB',
       greenLight: '#EBF8E8',
       white: '#ffffff',
+      black: '#000000',
     },
     extend: {},
   },

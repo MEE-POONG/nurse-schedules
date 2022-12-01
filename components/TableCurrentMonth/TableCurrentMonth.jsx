@@ -1,3 +1,4 @@
+import useAxios from "axios-hooks";
 import React, { useState } from "react";
 
 const getDaysInMonth = (year, month) => {
@@ -90,6 +91,25 @@ users.map((person) => {
 // console.log(uniquePerson);
 
 export const TableCurrentMonth = () => {
+  // Axios
+  const [{ data: Duty }, getDutyData] = useAxios({
+    url: "/api/duty",
+  });
+  const [{ data: Location }, getLocationData] = useAxios({
+    url: "/api/location",
+  });
+  const [{ data: Shif }, getShifData] = useAxios({
+    url: "/api/shif",
+  });
+  const [{ data: User }, getUserData] = useAxios({
+    url: "/api/user",
+  });
+  const [{ data: Position }, getPositionData] = useAxios({
+    url: "/api/position",
+  });
+
+  console.log(Duty);
+
   return (
     <div>
       <table className="border-collapse border w-full text-center shadow-md border-spacing-2">
@@ -131,23 +151,23 @@ export const TableCurrentMonth = () => {
             <td className="border">ดึก</td>
           </tr>
           {/* จำนวนของชื่อ */}
-          {uniquePerson?.map((person, key) => (
+          {Duty?.map((person, key) => (
             <tr className="border" key={key}>
-              <td className="border">{person.name}</td>
-              <td className="border">{person.position}</td>
-              <td className="border">{person.location}</td>
+              <td className="border">{person.User.firstname} {person.User.lastname}</td>
+              <td className="border">{person.User.positionId}</td>
+              <td className="border">{person.Location.name}</td>
               {/* แสดงรายละเอียดของตาราง กะ */}
               {[...Array(daysInCurrentMonth).keys()].map((i, key) => (
                 <td className="border" key={key}>
-                  {uniquePerson
+                  {Duty
                     ?.filter(
                       (person) =>
                         person.name === person.name &&
-                        new Date(person.day).getDate() == i + 1
+                        new Date(person.datetime).getDate() == i + 1
                     )
                     .map((req) => (
                       <>
-                        <span>{req.shift}</span>
+                        <span>{req.shifId}</span>
                       </>
                     ))}
                 </td>
