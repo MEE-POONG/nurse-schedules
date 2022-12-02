@@ -17,7 +17,6 @@ const monthTH = currentMonthTH.toLocaleDateString("th-TH", {
   month: "long",
 });
 
-const uniquePerson = [];
 
 export const TableCurrentMonth = () => {
   // Axios
@@ -53,7 +52,13 @@ export const TableCurrentMonth = () => {
   //     uniquePerson.push(person);
   //   }
   // });
-  // console.log(uniquePerson);
+  const uniquePerson = [];
+  Duty?.map((person) => {
+    if (uniquePerson.indexOf(person.firstname) === -1) {
+      uniquePerson.push(person);
+    }
+  });
+  console.log(uniquePerson);
 
   if (
     DutyLoading ||
@@ -64,7 +69,7 @@ export const TableCurrentMonth = () => {
   )
     return (
       <div class="absolute right-1/2 bottom-1/2  transform translate-x-1/2 translate-y-1/2 ">
-        <div class="border-t-transparent border-solid animate-spin  rounded-full border-primary border-8 h-64 w-64"></div>
+        <div class="border-t-transparent border-solid animate-spin  rounded-full border-green-700 border-8 h-64 w-64"></div>
       </div>
     );
   if (DutyError || LocationError || ShifError || UserError || PositionError)
@@ -112,27 +117,28 @@ export const TableCurrentMonth = () => {
             <td className="border">ดึก</td>
           </tr>
           {/* จำนวนของชื่อ */}
-          {Duty?.map((person, key) => (
+          {uniquePerson?.map((listname, key) => (
+            // {}
             <tr className="border" key={key}>
               <td className="border">
-                {person.User.firstname} {person.User.lastname}
+                {listname.User.firstname} {listname.User.lastname}
               </td>
-              <td className="border">{person.User.positionId}</td>
-              <td className="border">{person.Location.name}</td>
+              <td className="border">{listname.User.positionId}</td>
+              <td className="border">{listname.Location.name}</td>
+              
+              {console.log(listname)}
               {/* แสดงรายละเอียดของตาราง กะ */}
               {[...Array(daysInCurrentMonth).keys()].map((i, key) => (
                 <td className="border" key={key}>
-                  {uniquePerson
-                    ?.filter(
-                      (uniquePerson) =>
-                        uniquePerson.User === person.User &&
-                        new Date(person.datetime).getDate() == i + 1
-                    )
-                    .map((req) => (
-                      <>
-                        <span>{req.shifId}</span>
-                      </>
-                    ))}
+                  {Duty?.filter(
+                    (uniquePerson) =>
+                      uniquePerson.User === listname.User &&
+                      new Date(listname.datetime).getDate() == i + 1
+                  ).map((req) => (
+                    <>
+                      <span>{req.Shif.name}</span>
+                    </>
+                  ))}
                 </td>
               ))}
               <td className="border">&nbsp;</td>

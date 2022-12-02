@@ -2,14 +2,14 @@ import React from "react";
 
 export default function Navbar() {
   return (
-    <div class="bg-gray-100 font-sans w-full m-0 border-solid border-t-2 border-primary">
+    <div class="bg-gray-100 font-sans w-full m-0 border-solid border-t-2 border-green-700">
       <div class="bg-white shadow-xl">
         <div class="container mx-auto px-4">
           <div class="flex items-center justify-between py-4">
             <div>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="w-10 h-10 text-primary"
+                class="w-10 h-10 text-green-700"
                 viewBox="0 0 24 24"
               >
                 <path
@@ -22,13 +22,13 @@ export default function Navbar() {
             <div class="hidden sm:flex sm:items-center">
               <a
                 href="#"
-                class="text-gray-800 text-sm font-semibold hover:text-primary mr-4"
+                class="text-gray-800 text-sm font-semibold hover:text-green-700 mr-4"
               >
                 หน้าแรก
               </a>
               <a
                 href="#"
-                class="text-gray-800 text-sm font-semibold hover:text-primary mr-4"
+                class="text-gray-800 text-sm font-semibold hover:text-green-700 mr-4"
               >
                 สรุปยอด
               </a>
@@ -37,13 +37,13 @@ export default function Navbar() {
             <div class="hidden sm:flex sm:items-center">
               <a
                 href="#"
-                class="text-gray-800 text-sm font-semibold hover:text-primary mr-4"
+                class="text-gray-800 text-sm font-semibold hover:text-green-700 mr-4"
               >
                 เข้าสู่ระบบ
               </a>
               <a
                 href="#"
-                class="text-gray-800 text-sm font-semibold border px-4 py-2 rounded-lg hover:text-primary hover:border-primary"
+                class="text-gray-800 text-sm font-semibold border px-4 py-2 rounded-lg hover:text-green-700 hover:border-green-700"
               >
                 ลงทะเบียน
               </a>
@@ -52,7 +52,7 @@ export default function Navbar() {
             <div class="sm:hidden cursor-pointer">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                class="w-6 h-6 text-primary"
+                class="w-6 h-6 text-green-700"
                 viewBox="0 0 24 24"
               >
                 <path
@@ -67,26 +67,26 @@ export default function Navbar() {
             <div class="flex flex-col">
               <a
                 href="#"
-                class="text-gray-800 text-sm font-semibold hover:text-primary mb-1"
+                class="text-gray-800 text-sm font-semibold hover:text-green-700 mb-1"
               >
                 หน้าแรก
               </a>
               <a
                 href="#"
-                class="text-gray-800 text-sm font-semibold hover:text-primary mb-1"
+                class="text-gray-800 text-sm font-semibold hover:text-green-700 mb-1"
               >
                 สรุปยอด
               </a>
               <div class="flex justify-between items-center border-t-2 pt-2">
                 <a
                   href="#"
-                  class="text-gray-800 text-sm font-semibold hover:text-primary mr-4"
+                  class="text-gray-800 text-sm font-semibold hover:text-green-700 mr-4"
                 >
                   เข้าสู่ระบบ
                 </a>
                 <a
                   href="#"
-                  class="text-gray-800 text-sm font-semibold border px-4 py-1 rounded-lg hover:text-primary hover:border-primary"
+                  class="text-gray-800 text-sm font-semibold border px-4 py-1 rounded-lg hover:text-green-700 hover:border-green-700"
                 >
                   ลงทะเบียน
                 </a>

@@ -2,7 +2,8 @@ import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useState } from "react";
 import ReactDatePicker from "react-datepicker";
 import { FaPlus } from "react-icons/fa";
-import th from 'date-fns/locale/th';
+import th from "date-fns/locale/th";
+import useAxios from "axios-hooks";
 
 export default function ModalCreate() {
   const [startDate, setStartDate] = useState(new Date());
@@ -13,10 +14,31 @@ export default function ModalCreate() {
     setIsOpen(false);
   }
 
+  const [
+    { data: Location, loading: LocationLoading, error: LocationError },
+    getLocationData,
+  ] = useAxios({
+    url: "/api/location",
+  });
+  const [{ data: Shif, loading: ShifLoading, error: ShifError }, getShifData] =
+    useAxios({
+      url: "/api/shif",
+    });
+  const [{ data: User, loading: UserLoading, error: UserError }, getUserData] =
+    useAxios({
+      url: "/api/user",
+    });
+  const [
+    { data: Position, loading: PositionLoading, error: PositionError },
+    getPositionData,
+  ] = useAxios({
+    url: "/api/position",
+  });
+
   return (
     <>
       <button
-        class="bg-primary hover:bg-secondary text-white font-bold py-2 px-4 rounded-lg"
+        class="bg-green-700 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg"
         type="button"
         onClick={() => setIsOpen(true)}
       >
@@ -50,7 +72,7 @@ export default function ModalCreate() {
                 <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
                   <Dialog.Title
                     as="h3"
-                    className="text-2xl leading-6 text-primary font-extrabold"
+                    className="text-2xl leading-6 text-green-700 font-extrabold"
                   >
                     เพิ่มข้อมูลตารางเวร
                   </Dialog.Title>
@@ -59,7 +81,7 @@ export default function ModalCreate() {
                       <div class="w-full px-3">
                         <label
                           for="name"
-                          class="block text-lg font-medium text-primary"
+                          class="block text-lg font-medium text-black"
                         >
                           ชื่อ-สกุล
                         </label>
@@ -67,11 +89,14 @@ export default function ModalCreate() {
                           id="name"
                           name="name"
                           autocomplete="name"
-                          class="mt-1 block w-full rounded-md text-primary border border-primary bg-white py-2 px-3 shadow-sm focus:border-secondary focus:outline-none focus:ring-secondary sm:text-sm"
+                          class="shadow appearance-none border border-green-700 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         >
                           <option>กรุณาเลือกชื่อของท่าน</option>
-                          <option>นาย ภัทราวุฒิ เบี้ยกระโทก</option>
-                          <option>นาย สมถุย ตุ๋ยป้อม</option>
+                          {User?.map((user, index) => (
+                            <option value={user.id} key={index}>
+                              {user.firstname} {user.lastname}
+                            </option>
+                          ))}
                         </select>
                       </div>
                     </div>
@@ -79,20 +104,22 @@ export default function ModalCreate() {
                       <div class="w-full px-3">
                         <label
                           for="shift"
-                          class="block text-lg font-medium text-primary"
+                          class="block text-lg font-medium text-black"
                         >
-                          เลือก กะ ทำงาน
+                          เลือก สถานที่
                         </label>
                         <select
                           id="shift"
                           name="shift"
                           autocomplete="shift"
-                          class="mt-1 block w-full rounded-md text-primary border border-primary bg-white py-2 px-3 shadow-sm focus:border-secondary focus:outline-none focus:ring-secondary sm:text-sm"
+                          class="shadow appearance-none border border-green-700 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         >
-                          <option>กรุณาเลือกกะการทำงาน</option>
-                          <option>เช้า</option>
-                          <option>บ่าย</option>
-                          <option>ดึก</option>
+                          <option>กรุณาเลือกสถานที่</option>
+                          {Location?.map((location, index) => (
+                            <option value={location.id} key={index}>
+                              {location.name}
+                            </option>
+                          ))}
                         </select>
                       </div>
                     </div>
@@ -100,18 +127,76 @@ export default function ModalCreate() {
                       <div class="w-full px-3">
                         <label
                           for="shift"
-                          class="block text-lg font-medium text-primary"
+                          class="block text-lg font-medium text-black"
                         >
-                          เลือก วัน ทำงาน
+                          เลือก กะ
                         </label>
-                        <ReactDatePicker
-                          selected={startDate}
-                          onChange={(date) => setStartDate(date)}
-                          dateFormat="dd/MM/yyyy"
-                          minDate={new Date()}
-                          locale={th}
-                          isClearable={true}
-                          placeholderText="คลิก เพื่อเลือกวันที่ปฏิบัติงาน"
+                        <select
+                          id="shift"
+                          name="shift"
+                          autocomplete="shift"
+                          class="shadow appearance-none border border-green-700 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        >
+                          <option>กรุณาเลือกกะการทำงาน</option>
+                          {Shif?.map((shif, index) => (
+                            <option value={shif.id} key={index}>
+                              {shif.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
+                    <div class="flex flex-wrap -mx-3 mb-6 mt-6">
+                      <div class="w-full px-3">
+                        <label
+                          for="shift"
+                          class="block text-lg font-medium text-black"
+                        >
+                          เลือก วัน
+                        </label>
+                        <div className="shadow appearance-none border border-green-700 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
+                          <ReactDatePicker
+                            selected={startDate}
+                            onChange={(date) => setStartDate(date)}
+                            dateFormat="dd/MM/yyyy"
+                            minDate={new Date()}
+                            locale={th}
+                            isClearable={true}
+                            placeholderText="คลิก เพื่อเลือกวัน"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                    <div class="flex flex-wrap -mx-3 mb-6 mt-6">
+                      <div class="w-full px-3">
+                        <label
+                          for="name"
+                          class="block text-lg font-medium text-black"
+                        >
+                          ชื่อ
+                        </label>
+                        <input
+                          class="shadow appearance-none border border-green-700 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                          id="username"
+                          type="text"
+                          placeholder="ชื่อ"
+                        />
+                      </div>
+                    </div>
+                    <div class="flex flex-wrap -mx-3 mb-6 mt-6">
+                      <div class="w-full px-3">
+                        <label
+                          for="name"
+                          class="block text-lg font-medium text-black"
+                        >
+                          รายละเอียด
+                        </label>
+                        <textarea
+                          class="shadow appearance-none border border-green-700 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                          id="description"
+                          type="text"
+                          placeholder="รายละเอียด"
+                          rows="4"
                         />
                       </div>
                     </div>
@@ -120,7 +205,7 @@ export default function ModalCreate() {
                   <div className="mt-4">
                     <button
                       type="button"
-                      className="inline-flex justify-center rounded-md border border-transparent bg-greenLight px-4 py-2 text-sm font-medium text-primary hover:bg-green focus:outline-none focus-visible:ring-2 focus-visible:ring-green focus-visible:ring-offset-2"
+                      className="inline-flex justify-center rounded-md border border-transparent bg-green-100 px-4 py-2 text-sm font-medium text-green-800 hover:bg-green-700 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-green focus-visible:ring-offset-2"
                       onClick={closeModal}
                     >
                       เพิ่มข้อมูล
