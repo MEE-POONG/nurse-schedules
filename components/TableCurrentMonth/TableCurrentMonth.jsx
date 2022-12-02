@@ -12,106 +12,67 @@ const currentMonth = date.getMonth();
 // console.log(currentYear, currentMonth);
 const daysInCurrentMonth = getDaysInMonth(currentYear, currentMonth + 1);
 
-const uniquePerson = [];
-let users = [
-  {
-    name: "est",
-    position: "พยาบาลวิชาชีพ",
-    location: "พาสุข 2",
-    day: "2022-12-15T12:00:00Z",
-    shift: "ด",
-  },
-  {
-    name: "chun",
-    position: "พยาบาลวิชาชีพ",
-    location: "พาสุข 1",
-    day: "2022-12-18T12:00:00Z",
-    shift: "ช",
-  },
-  {
-    name: "chun",
-    position: "พยาบาลวิชาชีพ",
-    location: "พาสุข 1",
-    day: "2022-12-27T12:00:00Z",
-    shift: "บ",
-  },
-  {
-    name: "chun",
-    position: "พยาบาลวิชาชีพ",
-    location: "พาสุข 1",
-    day: "2022-12-05T12:00:00Z",
-    shift: "ด",
-  },
-  {
-    name: "benz",
-    position: "พยาบาลวิชาชีพ",
-    location: "พาสุข 2",
-    day: "2022-12-31T12:00:00Z",
-    shift: "ด",
-  },
-  {
-    name: "benz",
-    position: "พยาบาลวิชาชีพ",
-    location: "พาสุข 2",
-    day: "2022-12-29T12:00:00Z",
-    shift: "ช",
-  },
-  {
-    name: "benz",
-    position: "พยาบาลวิชาชีพ",
-    location: "พาสุข 2",
-    day: "2022-12-12T12:00:00Z",
-    shift: "บ",
-  },
-  {
-    name: "pattawut biakrathok",
-    position: "พยาบาลวิชาชีพ",
-    location: "พาสุข 1",
-    day: "2022-12-18T12:00:00Z",
-    shift: "ด",
-  },
-];
-// console.log(work.length);
-
-let duty = [
-  {
-    name: "",
-    position: "",
-    location: "",
-    day: "",
-    shift: "",
-  },
-];
-
-users.map((person) => {
-  if (uniquePerson.indexOf(person) === -1) {
-    uniquePerson.push(person);
-  }
+const currentMonthTH = new Date(0, currentMonth);
+const monthTH = currentMonthTH.toLocaleDateString("th-TH", {
+  month: "long",
 });
-// console.log(uniquePerson);
+
+const uniquePerson = [];
 
 export const TableCurrentMonth = () => {
   // Axios
-  const [{ data: Duty }, getDutyData] = useAxios({
-    url: "/api/duty",
-  });
-  const [{ data: Location }, getLocationData] = useAxios({
+  const [{ data: Duty, loading: DutyLoading, error: DutyError }, getDutyData] =
+    useAxios({
+      url: "/api/duty",
+    });
+  const [
+    { data: Location, loading: LocationLoading, error: LocationError },
+    getLocationData,
+  ] = useAxios({
     url: "/api/location",
   });
-  const [{ data: Shif }, getShifData] = useAxios({
-    url: "/api/shif",
-  });
-  const [{ data: User }, getUserData] = useAxios({
-    url: "/api/user",
-  });
-  const [{ data: Position }, getPositionData] = useAxios({
+  const [{ data: Shif, loading: ShifLoading, error: ShifError }, getShifData] =
+    useAxios({
+      url: "/api/shif",
+    });
+  const [{ data: User, loading: UserLoading, error: UserError }, getUserData] =
+    useAxios({
+      url: "/api/user",
+    });
+  const [
+    { data: Position, loading: PositionLoading, error: PositionError },
+    getPositionData,
+  ] = useAxios({
     url: "/api/position",
   });
 
-  console.log(Duty);
+  // console.log(Duty);
+
+  // Duty?.map((person) => {
+  //   if (uniquePerson.indexOf(person) === -1) {
+  //     uniquePerson.push(person);
+  //   }
+  // });
+  // console.log(uniquePerson);
+
+  if (
+    DutyLoading ||
+    LocationLoading ||
+    ShifLoading ||
+    UserLoading ||
+    PositionLoading
+  )
+    return (
+      <div class="absolute right-1/2 bottom-1/2  transform translate-x-1/2 translate-y-1/2 ">
+        <div class="border-t-transparent border-solid animate-spin  rounded-full border-primary border-8 h-64 w-64"></div>
+      </div>
+    );
+  if (DutyError || LocationError || ShifError || UserError || PositionError)
+    return <p>Error!</p>;
 
   return (
-    <div>
+    <div className="w-100 bg-white shadow-xl p-5 m-10 rounded-md overflow-x-auto">
+      <div className="text-center text-xl">ตารางเวรประจำเดือน {monthTH}</div>
       <table className="border-collapse border w-full text-center shadow-md border-spacing-2">
         <tbody>
           <tr className="border">
@@ -153,16 +114,18 @@ export const TableCurrentMonth = () => {
           {/* จำนวนของชื่อ */}
           {Duty?.map((person, key) => (
             <tr className="border" key={key}>
-              <td className="border">{person.User.firstname} {person.User.lastname}</td>
+              <td className="border">
+                {person.User.firstname} {person.User.lastname}
+              </td>
               <td className="border">{person.User.positionId}</td>
               <td className="border">{person.Location.name}</td>
               {/* แสดงรายละเอียดของตาราง กะ */}
               {[...Array(daysInCurrentMonth).keys()].map((i, key) => (
                 <td className="border" key={key}>
-                  {Duty
+                  {uniquePerson
                     ?.filter(
-                      (person) =>
-                        person.name === person.name &&
+                      (uniquePerson) =>
+                        uniquePerson.User === person.User &&
                         new Date(person.datetime).getDate() == i + 1
                     )
                     .map((req) => (
