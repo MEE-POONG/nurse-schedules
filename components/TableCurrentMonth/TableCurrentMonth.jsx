@@ -17,7 +17,6 @@ const monthTH = currentMonthTH.toLocaleDateString("th-TH", {
   month: "long",
 });
 
-
 export const TableCurrentMonth = () => {
   // Axios
   const [{ data: Duty, loading: DutyLoading, error: DutyError }, getDutyData] =
@@ -52,13 +51,13 @@ export const TableCurrentMonth = () => {
   //     uniquePerson.push(person);
   //   }
   // });
-  const uniquePerson = [];
-  Duty?.map((person) => {
-    if (uniquePerson.indexOf(person.firstname) === -1) {
-      uniquePerson.push(person);
-    }
-  });
-  console.log(uniquePerson);
+  // const uniquePerson = [];
+  // Duty?.map((person) => {
+  //   if (uniquePerson.indexOf(person.firstname) === -1) {
+  //     uniquePerson.push(person);
+  //   }
+  // });
+  // console.log(uniquePerson);
 
   if (
     DutyLoading ||
@@ -80,63 +79,62 @@ export const TableCurrentMonth = () => {
       <div className="text-center text-xl">ตารางเวรประจำเดือน {monthTH}</div>
       <table className="border-collapse border w-full text-center shadow-md border-spacing-2">
         <tbody>
-          <tr className="border">
-            <td className="border" colSpan={1} rowSpan={2}>
+          <tr className="border text-white">
+            <td className="border bg-green-600" colSpan={1} rowSpan={2}>
               ชื่อสกุล
             </td>
-            <td className="border" colSpan={1} rowSpan={2}>
+            <td className="border bg-green-600" colSpan={1} rowSpan={2}>
               ตำแหน่ง
             </td>
-            <td className="border" colSpan={1} rowSpan={2}>
+            <td className="border bg-green-600" colSpan={1} rowSpan={2}>
               งานที่ปฏิบัติ
             </td>
-            <td className="border" colSpan={daysInCurrentMonth} rowSpan={1}>
+            <td className="border bg-orange-600" colSpan={daysInCurrentMonth} rowSpan={1}>
               วันที่ปฏิบัติงาน
             </td>
-            <td className="border" colSpan={2} rowSpan={1}>
+            <td className="border bg-green-600" colSpan={2} rowSpan={1}>
               สรุป
             </td>
-            <td className="border" colSpan={1} rowSpan={2}>
+            <td className="border bg-green-600" colSpan={1} rowSpan={2}>
               โอที
             </td>
-            <td className="border" colSpan={1} rowSpan={2}>
+            <td className="border bg-green-600" colSpan={1} rowSpan={2}>
               วันทำการ
             </td>
-            <td className="border" colSpan={1} rowSpan={2}>
+            <td className="border bg-green-600" colSpan={1} rowSpan={2}>
               รวมวันทำงาน
             </td>
           </tr>
           <tr className="border">
             {/* จำนวนวันของเดือน */}
             {[...Array(daysInCurrentMonth).keys()].map((index, key) => (
-              <td className="border" key={key}>
+              <td className="border bg-orange-600 text-white" key={key}>
                 {index + 1}
               </td>
             ))}
-            <td className="border">บ่าย</td>
-            <td className="border">ดึก</td>
+            <td className="border bg-cyan-600 text-white">บ่าย</td>
+            <td className="border bg-cyan-600 text-white">ดึก</td>
           </tr>
+
           {/* จำนวนของชื่อ */}
-          {uniquePerson?.map((listname, key) => (
-            // {}
-            <tr className="border" key={key}>
+          {User?.map((person, key) => (
+            <tr className="border odd:bg-green-100" key={key}>
               <td className="border">
-                {listname.User.firstname} {listname.User.lastname}
+                {person.firstname} {person.lastname}
               </td>
-              <td className="border">{listname.User.positionId}</td>
-              <td className="border">{listname.Location.name}</td>
-              
-              {console.log(listname)}
+              <td className="border">{person.Position.name}</td>
+              <td className="border">{person.Location.name}</td>
+
               {/* แสดงรายละเอียดของตาราง กะ */}
               {[...Array(daysInCurrentMonth).keys()].map((i, key) => (
-                <td className="border" key={key}>
-                  {Duty?.filter(
-                    (uniquePerson) =>
-                      uniquePerson.User === listname.User &&
-                      new Date(listname.datetime).getDate() == i + 1
-                  ).map((req) => (
+                <td className="border hover:bg-green-300" key={key}>
+                  
+                  {person.Duty?.filter(
+                    (userDate) => new Date(userDate.datetime).getDate() == i + 1
+                  ).map((userDuty) => (
                     <>
-                      <span>{req.Shif.name}</span>
+                    {console.log(userDuty)}
+                      <span>{userDuty.Shif.name}</span>
                     </>
                   ))}
                 </td>
