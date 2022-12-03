@@ -5,11 +5,11 @@ import { FaPlus } from "react-icons/fa";
 import th from "date-fns/locale/th";
 import useAxios from "axios-hooks";
 
-export default function ModalCreate({showModal,setShowModal,userId}) {
-    
+export default function ModalCreate({ userId, Duty, i, name}) {
   const [startDate, setStartDate] = useState(new Date());
+  //ModalCreate
+  const [showModal, setShowModal] = useState(false);
 
-  
   const [{ data: Shif, loading: ShifLoading, error: ShifError }, getShifData] =
     useAxios({
       url: "/api/shif",
@@ -19,11 +19,25 @@ export default function ModalCreate({showModal,setShowModal,userId}) {
       url: "/api/user",
     });
 
-
   return (
     <>
-      <Transition appear show={showModal}  as={Fragment}>
-        <Dialog as="div" className="relative z-10" onClose={()=> setShowModal(false)}>
+      <td
+        className="border hover:bg-green-300 cursor-pointer"
+      >
+        {Duty?.filter(
+          (userDate) => new Date(userDate.datetime).getDate() == i + 1
+        ).map((userDuty) => (
+          <>
+            <span onClick={() => setShowModal(true)}>{userDuty.Shif.name}</span>
+          </>
+        ))}
+      </td>
+      <Transition appear show={showModal} as={Fragment}>
+        <Dialog
+          as="div"
+          className="relative z-10"
+          onClose={() => setShowModal(false)}
+        >
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -67,7 +81,7 @@ export default function ModalCreate({showModal,setShowModal,userId}) {
                           class="shadow appearance-none border border-green-700 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                           id="userName"
                           type="text"
-                          value={userId}
+                          value={name}
                           disabled
                         />
                       </div>

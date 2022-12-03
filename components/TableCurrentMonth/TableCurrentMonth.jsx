@@ -20,8 +20,7 @@ const monthTH = currentMonthTH.toLocaleDateString("th-TH", {
 
 export const TableCurrentMonth = () => {
 
-  //ModalCreate
-  const [showModal, setShowModal] = useState(false);
+
 
 
   // Axios
@@ -122,22 +121,9 @@ export const TableCurrentMonth = () => {
 
               {/* แสดงรายละเอียดของตาราง กะ */}
               {[...Array(daysInCurrentMonth).keys()].map((i, key) => (
-                <td
-                  className="border hover:bg-green-300 cursor-pointer"
-                  key={key}
-                  id={person.Duty.id}
-                >
-                  {person.Duty?.filter(
-                    (userDate) => new Date(userDate.datetime).getDate() == i + 1
-                  ).map((userDuty) => (
-                    <>
-                      <span onClick={() => setShowModal(true)}>
-                        {userDuty.Shif.name}
-                      </span>
-                    </>
-                  ))}
-                </td>
-                
+               
+               <ModalCreate  userId={person.id} Duty={person.Duty} key={key} i={i} name={person.firstname+' '+person.lastname}/>
+
               ))}
               <td className="border">&nbsp;</td>
               <td className="border">&nbsp;</td>
@@ -158,7 +144,6 @@ export const TableCurrentMonth = () => {
           </tr>
         </tbody>
       </table>
-      <ModalCreate showModal={showModal} setShowModal={setShowModal} userId={""}/>
     </div>
   );
 };
