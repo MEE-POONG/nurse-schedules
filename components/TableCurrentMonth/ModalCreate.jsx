@@ -5,21 +5,11 @@ import { FaPlus } from "react-icons/fa";
 import th from "date-fns/locale/th";
 import useAxios from "axios-hooks";
 
-export default function ModalCreate() {
+export default function ModalCreate({showModal,setShowModal,userId}) {
+    
   const [startDate, setStartDate] = useState(new Date());
 
-  const [isOpen, setIsOpen] = useState(false);
-
-  function closeModal() {
-    setIsOpen(false);
-  }
-
-  const [
-    { data: Location, loading: LocationLoading, error: LocationError },
-    getLocationData,
-  ] = useAxios({
-    url: "/api/location",
-  });
+  
   const [{ data: Shif, loading: ShifLoading, error: ShifError }, getShifData] =
     useAxios({
       url: "/api/shif",
@@ -28,24 +18,12 @@ export default function ModalCreate() {
     useAxios({
       url: "/api/user",
     });
-  const [
-    { data: Position, loading: PositionLoading, error: PositionError },
-    getPositionData,
-  ] = useAxios({
-    url: "/api/position",
-  });
+
 
   return (
     <>
-      <button
-        class="bg-green-700 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg"
-        type="button"
-        onClick={() => setIsOpen(true)}
-      >
-        <FaPlus />
-      </button>
-      <Transition appear show={isOpen} as={Fragment}>
-        <Dialog as="div" className="relative z-10" onClose={closeModal}>
+      <Transition appear show={showModal}  as={Fragment}>
+        <Dialog as="div" className="relative z-10" onClose={()=> setShowModal(false)}>
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -85,42 +63,13 @@ export default function ModalCreate() {
                         >
                           ชื่อ-สกุล
                         </label>
-                        <select
-                          id="name"
-                          name="name"
-                          autocomplete="name"
+                        <input
                           class="shadow appearance-none border border-green-700 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        >
-                          <option>กรุณาเลือกชื่อของท่าน</option>
-                          {User?.map((user, index) => (
-                            <option value={user.id} key={index}>
-                              {user.firstname} {user.lastname}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-                    <div class="flex flex-wrap -mx-3 mb-6 mt-6">
-                      <div class="w-full px-3">
-                        <label
-                          for="shift"
-                          class="block text-lg font-medium text-black"
-                        >
-                          เลือก สถานที่
-                        </label>
-                        <select
-                          id="shift"
-                          name="shift"
-                          autocomplete="shift"
-                          class="shadow appearance-none border border-green-700 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        >
-                          <option>กรุณาเลือกสถานที่</option>
-                          {Location?.map((location, index) => (
-                            <option value={location.id} key={index}>
-                              {location.name}
-                            </option>
-                          ))}
-                        </select>
+                          id="userName"
+                          type="text"
+                          value={userId}
+                          disabled
+                        />
                       </div>
                     </div>
                     <div class="flex flex-wrap -mx-3 mb-6 mt-6">
@@ -154,8 +103,7 @@ export default function ModalCreate() {
                         >
                           เลือก วัน
                         </label>
-                        <div className="shadow appearance-none border border-green-700 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                          <ReactDatePicker
+                        {/* <ReactDatePicker
                             selected={startDate}
                             onChange={(date) => setStartDate(date)}
                             dateFormat="dd/MM/yyyy"
@@ -163,40 +111,13 @@ export default function ModalCreate() {
                             locale={th}
                             isClearable={true}
                             placeholderText="คลิก เพื่อเลือกวัน"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <div class="flex flex-wrap -mx-3 mb-6 mt-6">
-                      <div class="w-full px-3">
-                        <label
-                          for="name"
-                          class="block text-lg font-medium text-black"
-                        >
-                          ชื่อ
-                        </label>
+                          /> */}
                         <input
                           class="shadow appearance-none border border-green-700 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                          id="username"
+                          id="datetime"
                           type="text"
-                          placeholder="ชื่อ"
-                        />
-                      </div>
-                    </div>
-                    <div class="flex flex-wrap -mx-3 mb-6 mt-6">
-                      <div class="w-full px-3">
-                        <label
-                          for="name"
-                          class="block text-lg font-medium text-black"
-                        >
-                          รายละเอียด
-                        </label>
-                        <textarea
-                          class="shadow appearance-none border border-green-700 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                          id="description"
-                          type="text"
-                          placeholder="รายละเอียด"
-                          rows="4"
+                          value={555}
+                          disabled
                         />
                       </div>
                     </div>
@@ -206,7 +127,7 @@ export default function ModalCreate() {
                     <button
                       type="button"
                       className="inline-flex justify-center rounded-md border border-transparent bg-green-100 px-4 py-2 text-sm font-medium text-green-800 hover:bg-green-700 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-green focus-visible:ring-offset-2"
-                      onClick={closeModal}
+                      onClick={() => setShowModal(false)}
                     >
                       เพิ่มข้อมูล
                     </button>

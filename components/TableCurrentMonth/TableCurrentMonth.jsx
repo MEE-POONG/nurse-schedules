@@ -1,5 +1,6 @@
 import useAxios from "axios-hooks";
 import React, { useState } from "react";
+import ModalCreate from "./ModalCreate";
 
 const getDaysInMonth = (year, month) => {
   return new Date(year, month, 0).getDate();
@@ -18,6 +19,11 @@ const monthTH = currentMonthTH.toLocaleDateString("th-TH", {
 });
 
 export const TableCurrentMonth = () => {
+
+  //ModalCreate
+  const [showModal, setShowModal] = useState(false);
+
+
   // Axios
   const [{ data: Duty, loading: DutyLoading, error: DutyError }, getDutyData] =
     useAxios({
@@ -43,21 +49,6 @@ export const TableCurrentMonth = () => {
   ] = useAxios({
     url: "/api/position",
   });
-
-  // console.log(Duty);
-
-  // Duty?.map((person) => {
-  //   if (uniquePerson.indexOf(person) === -1) {
-  //     uniquePerson.push(person);
-  //   }
-  // });
-  // const uniquePerson = [];
-  // Duty?.map((person) => {
-  //   if (uniquePerson.indexOf(person.firstname) === -1) {
-  //     uniquePerson.push(person);
-  //   }
-  // });
-  // console.log(uniquePerson);
 
   if (
     DutyLoading ||
@@ -89,7 +80,11 @@ export const TableCurrentMonth = () => {
             <td className="border bg-green-600" colSpan={1} rowSpan={2}>
               งานที่ปฏิบัติ
             </td>
-            <td className="border bg-orange-600" colSpan={daysInCurrentMonth} rowSpan={1}>
+            <td
+              className="border bg-orange-600"
+              colSpan={daysInCurrentMonth}
+              rowSpan={1}
+            >
               วันที่ปฏิบัติงาน
             </td>
             <td className="border bg-green-600" colSpan={2} rowSpan={1}>
@@ -127,17 +122,22 @@ export const TableCurrentMonth = () => {
 
               {/* แสดงรายละเอียดของตาราง กะ */}
               {[...Array(daysInCurrentMonth).keys()].map((i, key) => (
-                <td className="border hover:bg-green-300" key={key}>
-                  
+                <td
+                  className="border hover:bg-green-300 cursor-pointer"
+                  key={key}
+                  id={person.Duty.id}
+                >
                   {person.Duty?.filter(
                     (userDate) => new Date(userDate.datetime).getDate() == i + 1
                   ).map((userDuty) => (
                     <>
-                    {console.log(userDuty)}
-                      <span>{userDuty.Shif.name}</span>
+                      <span onClick={() => setShowModal(true)}>
+                        {userDuty.Shif.name}
+                      </span>
                     </>
                   ))}
                 </td>
+                
               ))}
               <td className="border">&nbsp;</td>
               <td className="border">&nbsp;</td>
@@ -158,6 +158,7 @@ export const TableCurrentMonth = () => {
           </tr>
         </tbody>
       </table>
+      <ModalCreate showModal={showModal} setShowModal={setShowModal} userId={""}/>
     </div>
   );
 };

@@ -7,7 +7,7 @@ export default async function handler(req, res) {
     case "GET":
       try {
         const data = await prisma.duty.findMany({
-          include: { Location: true, Shif: true, User: true}
+          include: { Shif: true, User: true}
         });
         prisma.$disconnect();
         res.status(200).json(data);
