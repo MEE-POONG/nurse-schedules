@@ -1,5 +1,4 @@
-import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
+import { prisma } from "@/utils/prisma";
 
 export default async function handler(req, res) {
   const { method } = req;
@@ -20,9 +19,10 @@ export default async function handler(req, res) {
             Title: true,
           },
         });
-        prisma.$disconnect();
+        await prisma.$disconnect();
         res.status(200).json(data);
       } catch (error) {
+        await prisma.$disconnect();
         res.status(400).json({ success: false });
       }
       break;
@@ -39,8 +39,10 @@ export default async function handler(req, res) {
             unitId: req.body.unitId,
           },
         });
+        await prisma.$disconnect();
         res.status(201).json({ success: true });
       } catch (error) {
+        await prisma.$disconnect();
         res.status(400).json({ success: false });
       }
       break;

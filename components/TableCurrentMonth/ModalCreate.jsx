@@ -1,37 +1,23 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useState } from "react";
-import ReactDatePicker from "react-datepicker";
-import { FaPlus } from "react-icons/fa";
-import th from "date-fns/locale/th";
-import useAxios from "axios-hooks";
+import dayjs from "dayjs";
+import { monthTH, yearTH } from "@/utils/day";
 
-export default function ModalCreate({ userId, Duty, i, name}) {
-  const [startDate, setStartDate] = useState(new Date());
-  //ModalCreate
+export default function ModalCreate({ userId, Duty, day, name, Shif }) {
   const [showModal, setShowModal] = useState(false);
-
-  const [{ data: Shif, loading: ShifLoading, error: ShifError }, getShifData] =
-    useAxios({
-      url: "/api/shif",
-    });
-  const [{ data: User, loading: UserLoading, error: UserError }, getUserData] =
-    useAxios({
-      url: "/api/user",
-    });
 
   return (
     <>
+
       <td
-        className="border hover:bg-green-300 cursor-pointer"
+        className="border hover:bg-green-300 cursor-pointer text-xs"
+        onClick={() => setShowModal(true)}
       >
-        {Duty?.filter(
-          (userDate) => new Date(userDate.datetime).getDate() == i + 1
-        ).map((userDuty) => (
-          <>
-            <span onClick={() => setShowModal(true)}>{userDuty.Shif.name}</span>
-          </>
+        {Duty?.filter(({ datetime }) => dayjs(datetime).format('DD') == day).map((userDuty) => (
+          <span>{userDuty.Shif.name}</span>
         ))}
       </td>
+
       <Transition appear show={showModal} as={Fragment}>
         <Dialog
           as="div"
@@ -68,37 +54,23 @@ export default function ModalCreate({ userId, Duty, i, name}) {
                   >
                     เพิ่มข้อมูลตารางเวร
                   </Dialog.Title>
-                  <form class="w-full max-w-lg">
-                    <div class="flex flex-wrap -mx-3 mb-6 mt-6">
-                      <div class="w-full px-3">
-                        <label
-                          for="name"
-                          class="block text-lg font-medium text-black"
-                        >
-                          ชื่อ-สกุล
-                        </label>
-                        <input
-                          class="shadow appearance-none border border-green-700 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                          id="userName"
-                          type="text"
-                          value={name}
-                          disabled
-                        />
-                      </div>
-                    </div>
-                    <div class="flex flex-wrap -mx-3 mb-6 mt-6">
-                      <div class="w-full px-3">
+                  <form className="w-full max-w-lg">
+                    <InputDefault label="ชื่อ - นามสกุล" value={name} />
+                    <InputDefault label="วันที่ปฏิบัติงาน" value={day + " " + monthTH + " " + yearTH} />
+
+                    <div className="flex flex-wrap -mx-3 mb-6 mt-6">
+                      <div className="w-full px-3">
                         <label
                           for="shift"
-                          class="block text-lg font-medium text-black"
+                          className="block text-lg font-medium text-black"
                         >
-                          เลือก กะ
+                          เลือกกะ
                         </label>
                         <select
                           id="shift"
                           name="shift"
                           autocomplete="shift"
-                          class="shadow appearance-none border border-green-700 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                          className="shadow appearance-none border border-green-700 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         >
                           <option>กรุณาเลือกกะการทำงาน</option>
                           {Shif?.map((shif, index) => (
@@ -107,32 +79,6 @@ export default function ModalCreate({ userId, Duty, i, name}) {
                             </option>
                           ))}
                         </select>
-                      </div>
-                    </div>
-                    <div class="flex flex-wrap -mx-3 mb-6 mt-6">
-                      <div class="w-full px-3">
-                        <label
-                          for="shift"
-                          class="block text-lg font-medium text-black"
-                        >
-                          เลือก วัน
-                        </label>
-                        {/* <ReactDatePicker
-                            selected={startDate}
-                            onChange={(date) => setStartDate(date)}
-                            dateFormat="dd/MM/yyyy"
-                            minDate={new Date()}
-                            locale={th}
-                            isClearable={true}
-                            placeholderText="คลิก เพื่อเลือกวัน"
-                          /> */}
-                        <input
-                          class="shadow appearance-none border border-green-700 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                          id="datetime"
-                          type="text"
-                          value={555}
-                          disabled
-                        />
                       </div>
                     </div>
                   </form>
@@ -154,4 +100,22 @@ export default function ModalCreate({ userId, Duty, i, name}) {
       </Transition>
     </>
   );
+
+  function InputDefault({ label, value }) {
+    return <div className="flex flex-wrap -mx-3 mb-6 mt-6">
+      <div className="w-full px-3">
+        <label
+          className="block text-lg font-medium text-black"
+        >
+          {label}
+        </label>
+        <input
+          className="shadow appearance-none border border-green-700 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          type="text"
+          value={value}
+          disabled
+        />
+      </div>
+    </div>;
+  }
 }
