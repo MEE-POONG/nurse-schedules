@@ -66,28 +66,33 @@ export const TableCurrentMonth = () => {
           </tr>
 
           {/* ข้อมูลการขึ้นเวร */}
-          {User?.map((person, key) => (
-            <tr key={key} className="border odd:bg-green-100">
-              <td className="border">
-                {key + 1}
-              </td>
-              <td className="border text-left pl-3">
-                {person.Title.name}{person.firstname} {person.lastname}
-              </td>
-              <td className="border">{person.Position.name}</td>
-              <td className="border">{person.Location.name}</td>
+          {User?.map((person, key) => {
+            const AfternoonShift= person?.Duty?.filter(({ Shif }) => Shif?.name == 'บ')?.length
+            const NightShift= person?.Duty?.filter(({ Shif }) => Shif?.name == 'ด')?.length
+            const workingDay= person?.Duty?.filter(({ Shif }) => ["ช", "บ", "ด"].includes(Shif?.name))?.length
+            return (
+              <tr key={key} className="border odd:bg-green-100">
+                <td className="border">
+                  {key + 1}
+                </td>
+                <td className="border text-left pl-3">
+                  {person.Title.name}{person.firstname} {person.lastname}
+                </td>
+                <td className="border">{person.Position.name}</td>
+                <td className="border">{person.Location.name}</td>
 
-              {/* แสดงรายละเอียดของตาราง กะ */}
-              {arrayDayInMonth.map((day, index) => (
-                <ModalCreate key={index} userId={person.id} Duty={person.Duty} day={day + 1} name={person.firstname + ' ' + person.lastname} Shif={Shif} />
-              ))}
-              <td className="border">&nbsp;</td>
-              <td className="border">&nbsp;</td>
-              <td className="border">&nbsp;</td>
-              <td className="border">&nbsp;</td>
-              <td className="border">&nbsp;</td>
-            </tr>
-          ))}
+                {/* แสดงรายละเอียดของตาราง กะ */}
+                {arrayDayInMonth.map((day, index) => (
+                  <ModalCreate key={index} userId={person.id} Duty={person.Duty} day={day + 1} name={person.firstname + ' ' + person.lastname} Shif={Shif} />
+                ))}
+                <td className="border">{AfternoonShift}</td>
+                <td className="border">{NightShift}</td>
+                <td className="border">&nbsp;</td>
+                <td className="border">{workingDay}</td>
+                <td className="border">&nbsp;</td>
+              </tr>
+            )
+          })}
 
           <tr className="border">
             <td className="border">&nbsp;</td>
