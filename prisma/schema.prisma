@@ -29,10 +29,12 @@ model Position {
 }
 
 model Shif {
-  id     Int      @id @default(autoincrement())
-  name   String   @unique
-  isShif Boolean?
-  Duty   Duty[]
+  id       Int      @id @default(autoincrement())
+  name     String   @unique
+  isShif   Boolean?
+  isDayOff Boolean?
+  isOT     Boolean?
+  Duty     Duty[]
 }
 
 model User {
@@ -42,10 +44,10 @@ model User {
   locationId Int?
   positionId Int?
   titleId    Int?
+  Duty       Duty[]
   Location   Location? @relation(fields: [locationId], references: [id])
   Position   Position? @relation(fields: [positionId], references: [id])
   Title      Title?    @relation(fields: [titleId], references: [id])
-  Duty       Duty[]
 }
 
 model Title {

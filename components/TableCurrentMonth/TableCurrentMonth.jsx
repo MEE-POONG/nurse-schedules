@@ -7,14 +7,17 @@ import ErrorComponent from "../ErrorComponent";
 
 export const TableCurrentMonth = () => {
 
-  const [{ data: User, loading: UserLoading, error: UserError }] = useAxios({ url: "/api/user" });
-  const [{ data: Shif, loading: ShifLoading, error: ShifError }] = useAxios({ url: "/api/shif" });
+  const [{ data: user, loading: userLoading, error: userError }, getUserList] = useAxios({ url: "/api/user" });
+  const [{ data: shif, loading: shifLoading, error: shifError }] = useAxios({ url: "/api/shif" });
+  const [{ loading: dutyLoading, error: dutyError }, executeDuty] = useAxios({ url: "/api/duty", method: "POST" }, { manual: true });
 
-  if (UserError || ShifError) return <ErrorComponent />;
-  if (UserLoading || ShifLoading) return <LoadingComponent />
+  if (userError || shifError || dutyError) return <ErrorComponent />;
 
   return (
     <div className="w-100 bg-white shadow-xl p-5 m-10 rounded-md overflow-x-auto">
+      {
+        userLoading || shifLoading || dutyLoading ? <LoadingComponent /> : <></>
+      }
       <div className="text-center text-xl">ตารางเวรประจำเดือน.........................{monthTH}.........................พ.ศ...............{yearTH}................</div>
       <table className="border-collapse border w-full text-center shadow-md border-spacing-2">
         <tbody>
@@ -66,10 +69,11 @@ export const TableCurrentMonth = () => {
           </tr>
 
           {/* ข้อมูลการขึ้นเวร */}
-          {User?.map((person, key) => {
-            const AfternoonShift= person?.Duty?.filter(({ Shif }) => Shif?.name == 'บ')?.length
-            const NightShift= person?.Duty?.filter(({ Shif }) => Shif?.name == 'ด')?.length
-            const workingDay= person?.Duty?.filter(({ Shif }) => ["ช", "บ", "ด"].includes(Shif?.name))?.length
+          {user?.map((person, key) => {
+            const afternoonShift = person?.Duty?.filter(({ Shif }) => Shif?.name == 'บ')?.length
+            const nightShift = person?.Duty?.filter(({ Shif }) => Shif?.name == 'ด')?.length
+            const workingDay = person?.Duty?.filter(({ Shif }) => ["ช", "บ", "ด"].includes(Shif?.name))?.length
+            const ot = person?.Duty?.filter(({ Shif }) => Shif.isOT)?.length
             return (
               <tr key={key} className="border odd:bg-green-100">
                 <td className="border">
@@ -83,13 +87,13 @@ export const TableCurrentMonth = () => {
 
                 {/* แสดงรายละเอียดของตาราง กะ */}
                 {arrayDayInMonth.map((day, index) => (
-                  <ModalCreate key={index} userId={person.id} Duty={person.Duty} day={day + 1} name={person.firstname + ' ' + person.lastname} Shif={Shif} />
+                  <ModalCreate key={index} userId={person.id} Duty={person.Duty} day={day + 1} name={person.firstname + ' ' + person.lastname} Shif={shif} getUserList={getUserList} executeDuty={executeDuty} />
                 ))}
-                <td className="border">{AfternoonShift}</td>
-                <td className="border">{NightShift}</td>
-                <td className="border">&nbsp;</td>
+                <td className="border">{afternoonShift}</td>
+                <td className="border">{nightShift}</td>
+                <td className="border">{ot}</td>
                 <td className="border">{workingDay}</td>
-                <td className="border">&nbsp;</td>
+                <td className="border">{workingDay + ot}</td>
               </tr>
             )
           })}
@@ -103,11 +107,12 @@ export const TableCurrentMonth = () => {
             <td className="border" colSpan={3} rowSpan={1}>
               รวม
             </td>
-            <td className="border">&nbsp;</td>
-            <td className="border">&nbsp;</td>
-            <td className="border">&nbsp;</td>
-            <td className="border">&nbsp;</td>
-            <td className="border">&nbsp;</td>
+            <td className="border">{SumDuty(["บ"])}</td>
+            <td className="border">{SumDuty(["ด"])}</td>
+            <td className="border">{SumDuty(["โอที"])}</td>
+            <td className="border">{SumDuty(["ช", "บ", "ด"])}</td>
+            <td className="border">{SumDuty(["ช", "บ", "ด"]) + SumDuty(["โอที"])}</td>
+
           </tr>
           <tr className="border">
             <td className="border" colSpan={daysInMonth + 9}>
@@ -118,4 +123,8 @@ export const TableCurrentMonth = () => {
       </table>
     </div>
   );
+
+  function SumDuty(array) {
+    return _.sumBy(user, function (o) { return o.Duty?.filter(({ Shif }) => array.includes(Shif?.name))?.length; });
+  }
 };

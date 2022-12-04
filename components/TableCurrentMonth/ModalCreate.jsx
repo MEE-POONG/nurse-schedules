@@ -1,21 +1,25 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useState } from "react";
 import dayjs from "dayjs";
-import { monthTH, yearTH } from "@/utils/day";
+import { monthTH, yearTH, yearEN, monthEN } from "@/utils/day";
 
-export default function ModalCreate({ userId, Duty, day, name, Shif }) {
+export default function ModalCreate({ userId, Duty, day, name, Shif, getUserList, executeDuty }) {
   const [showModal, setShowModal] = useState(false);
-
+  const dutyOfDay = Duty?.filter(({ datetime }) => dayjs(datetime).format('DD') == day)
   return (
     <>
 
       <td
-        className="border hover:bg-green-300 cursor-pointer text-xs"
+        className={`border hover:bg-green-300 cursor-pointer text-xs ${dutyOfDay.filter(({ Shif }) => Shif.isOT)?.length ? 'bg-amber-300' : ''}`}
         onClick={() => setShowModal(true)}
       >
-        {Duty?.filter(({ datetime }) => dayjs(datetime).format('DD') == day).map((userDuty, index) => (
-          <span key={index}>{userDuty.Shif.name}</span>
-        ))}
+        {dutyOfDay.map(({ Shif }, index) => {
+          if (!Shif.isOT) {
+            return (
+              <span key={index}>{Shif.name}</span>
+            )
+          }
+        })}
       </td>
 
       <Transition appear show={showModal} as={Fragment}>
@@ -72,7 +76,7 @@ export default function ModalCreate({ userId, Duty, day, name, Shif }) {
                           autoComplete="shift"
                           className="shadow appearance-none border border-green-700 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         >
-                          <option>กรุณาเลือกกะการทำงาน</option>
+                          <option value="">กรุณาเลือกกะการทำงาน</option>
                           {Shif?.map((shif, index) => (
                             <option key={index} value={shif.id} >
                               {shif.name}
@@ -87,7 +91,20 @@ export default function ModalCreate({ userId, Duty, day, name, Shif }) {
                     <button
                       type="button"
                       className="inline-flex justify-center rounded-md border border-transparent bg-green-100 px-4 py-2 text-sm font-medium text-green-800 hover:bg-green-700 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-green focus-visible:ring-offset-2"
-                      onClick={() => setShowModal(false)}
+                      onClick={async () => {
+                        const shifId = document.getElementById("shift").value;
+                        const datetime = dayjs(`${yearEN}-${monthEN}-${day}`).add(7, 'hour').format();
+                        const data = { userId, shifId, datetime };
+
+                        if (!shifId) {
+                          alert("กรุณาเลือกกะการทำงาน");
+                          return;
+                        }
+
+                        await executeDuty({ data });
+                        await getUserList();
+                        setShowModal(false);
+                      }}
                     >
                       เพิ่มข้อมูล
                     </button>
