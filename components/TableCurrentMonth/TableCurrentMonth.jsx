@@ -19,9 +19,13 @@ export const TableCurrentMonth = () => {
       {
         userLoading || shifLoading || dutyLoading ? <LoadingComponent /> : <></>
       }
-      <div className="text-center text-xl">ตารางเวรประจำเดือน.........................{monthTH}.........................พ.ศ...............{yearTH}................</div>
       <table className="border-collapse border w-full text-center shadow-md border-spacing-2">
         <tbody>
+          <tr className="bg-white">
+            <td className="border border-white" colSpan={daysInMonth + 9}>
+              <div className="text-center text-xl">ตารางเวรประจำเดือน.........................{monthTH}.........................พ.ศ...............{yearTH}................</div>
+            </td>
+          </tr>
           <tr className="border text-white">
             <td className="border bg-green-600 min-w-[50px]" colSpan={1} rowSpan={2}>
               ลำดับ
@@ -116,8 +120,18 @@ export const TableCurrentMonth = () => {
 
           </tr>
           <tr className="border">
-            <td className="border" colSpan={daysInMonth + 9}>
+            <td className="border border-white" colSpan={daysInMonth + 9}>
               ................................................................................................................................หัวหน้าตึก
+            </td>
+          </tr>
+          <tr className="border">
+            <td className="border border-white" colSpan={daysInMonth + 9}>
+              (นางมะลิ มอบกระโทก)
+            </td>
+          </tr>
+          <tr className="border">
+            <td className="border border-white" colSpan={daysInMonth + 9}>
+              พยาบาลวิชาชีพชำนาญการ
             </td>
           </tr>
         </tbody>
