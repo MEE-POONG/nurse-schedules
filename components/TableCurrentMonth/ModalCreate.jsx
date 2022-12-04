@@ -61,7 +61,7 @@ export default function ModalCreate({ userId, Duty, day, name, Shif }) {
                     <div className="flex flex-wrap -mx-3 mb-6 mt-6">
                       <div className="w-full px-3">
                         <label
-                          for="shift"
+                          htmlFor="shift"
                           className="block text-lg font-medium text-black"
                         >
                           เลือกกะ
@@ -69,7 +69,7 @@ export default function ModalCreate({ userId, Duty, day, name, Shif }) {
                         <select
                           id="shift"
                           name="shift"
-                          autocomplete="shift"
+                          autoComplete="shift"
                           className="shadow appearance-none border border-green-700 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         >
                           <option>กรุณาเลือกกะการทำงาน</option>
