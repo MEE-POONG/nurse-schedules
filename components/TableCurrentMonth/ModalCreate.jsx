@@ -10,7 +10,7 @@ export default function ModalCreate({ userId, Duty, day, name, Shif, getUserList
     <>
 
       <td
-        className={`border hover:bg-green-300 cursor-pointer text-xs ${dutyOfDay.filter(({ Shif }) => Shif.isOT)?.length ? 'bg-amber-300' : ''}`}
+        className={`border hover:bg-green-300 cursor-pointer text-xs ${dutyOfDay.filter(({ Shif }) => Shif.isOT)?.length ? 'bg-amber-300' : ''} ${["เสาร์", "อาทิตย์"].includes(dayjs(`${yearEN}-${monthEN}-${day}`).format("dddd")) ? 'bg-lime-100' :''}`}
         onClick={() => setShowModal(true)}
       >
         {dutyOfDay.map(({ Shif }, index) => {

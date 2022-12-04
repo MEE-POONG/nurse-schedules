@@ -1,11 +1,14 @@
 import useAxios from "axios-hooks";
 import React from "react";
 import ModalCreate from "./ModalCreate";
-import { arrayDayInMonth, daysInMonth, monthTH, yearTH } from "@/utils/day";
+import { arrayDayInMonth, daysInMonth, monthEN, monthTH, yearEN, yearTH } from "@/utils/day";
 import LoadingComponent from "../LoadingComponent";
 import ErrorComponent from "../ErrorComponent";
 import _ from "lodash";
+import dayjs from "dayjs";
+var isoWeek = require('dayjs/plugin/isoWeek')
 
+dayjs.extend(isoWeek)
 export const TableCurrentMonth = () => {
 
   const [{ data: user, loading: userLoading, error: userError }, getUserList] = useAxios({ url: "/api/user" });
@@ -50,7 +53,7 @@ export const TableCurrentMonth = () => {
               สรุป
             </td>
             <td className="border bg-green-600 min-w-[50px]" colSpan={1} rowSpan={1}>
-              โอ
+              โอ { }
             </td>
             <td className="border bg-green-600 min-w-[50px]" colSpan={1} rowSpan={1}>
               วันทำ
@@ -62,7 +65,7 @@ export const TableCurrentMonth = () => {
           <tr className="border">
             {/* จำนวนวันของเดือน */}
             {arrayDayInMonth.map((day, index) => (
-              <td key={index} className="border bg-orange-600 text-white min-w-[35px]">
+              <td key={index} className={`border text-white min-w-[35px] ${["เสาร์", "อาทิตย์"].includes(dayjs(`${yearEN}-${monthEN}-${day + 1}`).format("dddd")) ? 'bg-green-600' :'bg-orange-600'} `}>
                 {day + 1}
               </td>
             ))}
