@@ -4,6 +4,7 @@ import ModalCreate from "./ModalCreate";
 import { arrayDayInMonth, daysInMonth, monthTH, yearTH } from "@/utils/day";
 import LoadingComponent from "../LoadingComponent";
 import ErrorComponent from "../ErrorComponent";
+import _ from "lodash";
 
 export const TableCurrentMonth = () => {
 
@@ -107,11 +108,11 @@ export const TableCurrentMonth = () => {
             <td className="border" colSpan={3} rowSpan={1}>
               รวม
             </td>
-            <td className="border">{SumDuty(["บ"])}</td>
-            <td className="border">{SumDuty(["ด"])}</td>
-            <td className="border">{SumDuty(["โอที"])}</td>
-            <td className="border">{SumDuty(["ช", "บ", "ด"])}</td>
-            <td className="border">{SumDuty(["ช", "บ", "ด"]) + SumDuty(["โอที"])}</td>
+            <td className="border">{sumDuty(["บ"])}</td>
+            <td className="border">{sumDuty(["ด"])}</td>
+            <td className="border">{sumDuty(["โอที"])}</td>
+            <td className="border">{sumDuty(["ช", "บ", "ด"])}</td>
+            <td className="border">{sumDuty(["ช", "บ", "ด"]) + sumDuty(["โอที"])}</td>
 
           </tr>
           <tr className="border">
@@ -124,7 +125,7 @@ export const TableCurrentMonth = () => {
     </div>
   );
 
-  function SumDuty(array) {
+  function sumDuty(array) {
     return _.sumBy(user, function (o) { return o.Duty?.filter(({ Shif }) => array.includes(Shif?.name))?.length; });
   }
 };
