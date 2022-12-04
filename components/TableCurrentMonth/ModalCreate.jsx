@@ -13,8 +13,8 @@ export default function ModalCreate({ userId, Duty, day, name, Shif }) {
         className="border hover:bg-green-300 cursor-pointer text-xs"
         onClick={() => setShowModal(true)}
       >
-        {Duty?.filter(({ datetime }) => dayjs(datetime).format('DD') == day).map((userDuty) => (
-          <span>{userDuty.Shif.name}</span>
+        {Duty?.filter(({ datetime }) => dayjs(datetime).format('DD') == day).map((userDuty, index) => (
+          <span key={index}>{userDuty.Shif.name}</span>
         ))}
       </td>
 
@@ -74,7 +74,7 @@ export default function ModalCreate({ userId, Duty, day, name, Shif }) {
                         >
                           <option>กรุณาเลือกกะการทำงาน</option>
                           {Shif?.map((shif, index) => (
-                            <option value={shif.id} key={index}>
+                            <option key={index} value={shif.id} >
                               {shif.name}
                             </option>
                           ))}

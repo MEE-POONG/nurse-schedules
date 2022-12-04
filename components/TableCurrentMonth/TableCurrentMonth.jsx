@@ -54,7 +54,7 @@ export const TableCurrentMonth = () => {
           <tr className="border">
             {/* จำนวนวันของเดือน */}
             {arrayDayInMonth.map((day, index) => (
-              <td className="border bg-orange-600 text-white min-w-[35px]" key={index}>
+              <td key={index} className="border bg-orange-600 text-white min-w-[35px]">
                 {day + 1}
               </td>
             ))}
@@ -67,7 +67,7 @@ export const TableCurrentMonth = () => {
 
           {/* ข้อมูลการขึ้นเวร */}
           {User?.map((person, key) => (
-            <tr className="border odd:bg-green-100" key={key}>
+            <tr key={key} className="border odd:bg-green-100">
               <td className="border">
                 {key + 1}
               </td>
