@@ -1,4 +1,5 @@
 import { prisma } from "@/utils/prisma";
+import dayjs from "dayjs";
 
 export default async function handler(req, res) {
   const { method } = req;
@@ -21,7 +22,7 @@ export default async function handler(req, res) {
           data: {
             shifId: +req.body.shifId,
             userId: +req.body.userId,
-            datetime: req.body.datetime
+            datetime: dayjs(`${dayjs().year()}-${dayjs().month() + 1}-${req.body.day}`).add(7, 'hour').format()
           },
         });
         await prisma.$disconnect();

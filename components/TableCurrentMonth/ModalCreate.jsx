@@ -93,8 +93,7 @@ export default function ModalCreate({ userId, Duty, day, name, Shif, getUserList
                       className="inline-flex justify-center rounded-md border border-transparent bg-green-100 px-4 py-2 text-sm font-medium text-green-800 hover:bg-green-700 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-green focus-visible:ring-offset-2"
                       onClick={async () => {
                         const shifId = document.getElementById("shift").value;
-                        const datetime = dayjs(`${yearEN}-${monthEN}-${day}`).add(7, 'hour').format();
-                        const data = { userId, shifId, datetime };
+                        const data = { userId, shifId, day };
 
                         if (!shifId) {
                           alert("กรุณาเลือกกะการทำงาน");
