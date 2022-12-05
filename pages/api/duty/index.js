@@ -1,5 +1,4 @@
-import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
+import { prisma } from "@/utils/prisma";
 
 export default async function handler(req, res) {
   const { method } = req;
@@ -7,29 +6,28 @@ export default async function handler(req, res) {
     case "GET":
       try {
         const data = await prisma.duty.findMany({
-          include: { Location: true, Shif: true, User: true}
+          include: { Shif: true, User: true}
         });
-        prisma.$disconnect();
+        await prisma.$disconnect();
         res.status(200).json(data);
       } catch (error) {
+        await prisma.$disconnect();
         res.status(400).json({ success: false });
       }
       break;
     case "POST":
       try {
-        await prisma.product.create({
+        await prisma.duty.create({
           data: {
-            name: req.body.name,
-            price: parseInt(req.body.price),
-            description: req.body.description,
-            image: req.body.image,
-            categoryId: req.body.categoryId,
-            amount: parseInt(req.body.amount),
-            unitId: req.body.unitId,
+            shifId: +req.body.shifId,
+            userId: +req.body.userId,
+            datetime: req.body.datetime
           },
         });
+        await prisma.$disconnect();
         res.status(201).json({ success: true });
       } catch (error) {
+        await prisma.$disconnect();
         res.status(400).json({ success: false });
       }
       break;

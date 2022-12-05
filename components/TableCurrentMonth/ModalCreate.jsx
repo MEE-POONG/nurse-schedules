@@ -1,51 +1,33 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useState } from "react";
-import ReactDatePicker from "react-datepicker";
-import { FaPlus } from "react-icons/fa";
-import th from "date-fns/locale/th";
-import useAxios from "axios-hooks";
+import dayjs from "dayjs";
+import { monthTH, yearTH, yearEN, monthEN } from "@/utils/day";
 
-export default function ModalCreate() {
-  const [startDate, setStartDate] = useState(new Date());
-
-  const [isOpen, setIsOpen] = useState(false);
-
-  function closeModal() {
-    setIsOpen(false);
-  }
-
-  const [
-    { data: Location, loading: LocationLoading, error: LocationError },
-    getLocationData,
-  ] = useAxios({
-    url: "/api/location",
-  });
-  const [{ data: Shif, loading: ShifLoading, error: ShifError }, getShifData] =
-    useAxios({
-      url: "/api/shif",
-    });
-  const [{ data: User, loading: UserLoading, error: UserError }, getUserData] =
-    useAxios({
-      url: "/api/user",
-    });
-  const [
-    { data: Position, loading: PositionLoading, error: PositionError },
-    getPositionData,
-  ] = useAxios({
-    url: "/api/position",
-  });
-
+export default function ModalCreate({ userId, Duty, day, name, Shif, getUserList, executeDuty }) {
+  const [showModal, setShowModal] = useState(false);
+  const dutyOfDay = Duty?.filter(({ datetime }) => dayjs(datetime).format('DD') == day)
   return (
     <>
-      <button
-        class="bg-green-700 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg"
-        type="button"
-        onClick={() => setIsOpen(true)}
+
+      <td
+        className={`border hover:bg-green-300 cursor-pointer text-xs ${dutyOfDay.filter(({ Shif }) => Shif.isOT)?.length ? 'bg-amber-300' : ''} ${["เสาร์", "อาทิตย์"].includes(dayjs(`${yearEN}-${monthEN}-${day}`).format("dddd")) ? 'bg-lime-100' :''}`}
+        onClick={() => setShowModal(true)}
       >
-        <FaPlus />
-      </button>
-      <Transition appear show={isOpen} as={Fragment}>
-        <Dialog as="div" className="relative z-10" onClose={closeModal}>
+        {dutyOfDay.map(({ Shif }, index) => {
+          if (!Shif.isOT) {
+            return (
+              <span key={index}>{Shif.name}</span>
+            )
+          }
+        })}
+      </td>
+
+      <Transition appear show={showModal} as={Fragment}>
+        <Dialog
+          as="div"
+          className="relative z-10"
+          onClose={() => setShowModal(false)}
+        >
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -76,128 +58,31 @@ export default function ModalCreate() {
                   >
                     เพิ่มข้อมูลตารางเวร
                   </Dialog.Title>
-                  <form class="w-full max-w-lg">
-                    <div class="flex flex-wrap -mx-3 mb-6 mt-6">
-                      <div class="w-full px-3">
+                  <form className="w-full max-w-lg">
+                    <InputDefault label="ชื่อ - นามสกุล" value={name} />
+                    <InputDefault label="วันที่ปฏิบัติงาน" value={day + " " + monthTH + " " + yearTH} />
+
+                    <div className="flex flex-wrap -mx-3 mb-6 mt-6">
+                      <div className="w-full px-3">
                         <label
-                          for="name"
-                          class="block text-lg font-medium text-black"
+                          htmlFor="shift"
+                          className="block text-lg font-medium text-black"
                         >
-                          ชื่อ-สกุล
-                        </label>
-                        <select
-                          id="name"
-                          name="name"
-                          autocomplete="name"
-                          class="shadow appearance-none border border-green-700 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        >
-                          <option>กรุณาเลือกชื่อของท่าน</option>
-                          {User?.map((user, index) => (
-                            <option value={user.id} key={index}>
-                              {user.firstname} {user.lastname}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-                    <div class="flex flex-wrap -mx-3 mb-6 mt-6">
-                      <div class="w-full px-3">
-                        <label
-                          for="shift"
-                          class="block text-lg font-medium text-black"
-                        >
-                          เลือก สถานที่
+                          เลือกกะ
                         </label>
                         <select
                           id="shift"
                           name="shift"
-                          autocomplete="shift"
-                          class="shadow appearance-none border border-green-700 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                          autoComplete="shift"
+                          className="shadow appearance-none border border-green-700 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         >
-                          <option>กรุณาเลือกสถานที่</option>
-                          {Location?.map((location, index) => (
-                            <option value={location.id} key={index}>
-                              {location.name}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-                    <div class="flex flex-wrap -mx-3 mb-6 mt-6">
-                      <div class="w-full px-3">
-                        <label
-                          for="shift"
-                          class="block text-lg font-medium text-black"
-                        >
-                          เลือก กะ
-                        </label>
-                        <select
-                          id="shift"
-                          name="shift"
-                          autocomplete="shift"
-                          class="shadow appearance-none border border-green-700 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        >
-                          <option>กรุณาเลือกกะการทำงาน</option>
+                          <option value="">กรุณาเลือกกะการทำงาน</option>
                           {Shif?.map((shif, index) => (
-                            <option value={shif.id} key={index}>
+                            <option key={index} value={shif.id} >
                               {shif.name}
                             </option>
                           ))}
                         </select>
-                      </div>
-                    </div>
-                    <div class="flex flex-wrap -mx-3 mb-6 mt-6">
-                      <div class="w-full px-3">
-                        <label
-                          for="shift"
-                          class="block text-lg font-medium text-black"
-                        >
-                          เลือก วัน
-                        </label>
-                        <div className="shadow appearance-none border border-green-700 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
-                          <ReactDatePicker
-                            selected={startDate}
-                            onChange={(date) => setStartDate(date)}
-                            dateFormat="dd/MM/yyyy"
-                            minDate={new Date()}
-                            locale={th}
-                            isClearable={true}
-                            placeholderText="คลิก เพื่อเลือกวัน"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <div class="flex flex-wrap -mx-3 mb-6 mt-6">
-                      <div class="w-full px-3">
-                        <label
-                          for="name"
-                          class="block text-lg font-medium text-black"
-                        >
-                          ชื่อ
-                        </label>
-                        <input
-                          class="shadow appearance-none border border-green-700 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                          id="username"
-                          type="text"
-                          placeholder="ชื่อ"
-                        />
-                      </div>
-                    </div>
-                    <div class="flex flex-wrap -mx-3 mb-6 mt-6">
-                      <div class="w-full px-3">
-                        <label
-                          for="name"
-                          class="block text-lg font-medium text-black"
-                        >
-                          รายละเอียด
-                        </label>
-                        <textarea
-                          class="shadow appearance-none border border-green-700 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                          id="description"
-                          type="text"
-                          placeholder="รายละเอียด"
-                          rows="4"
-                        />
                       </div>
                     </div>
                   </form>
@@ -206,7 +91,20 @@ export default function ModalCreate() {
                     <button
                       type="button"
                       className="inline-flex justify-center rounded-md border border-transparent bg-green-100 px-4 py-2 text-sm font-medium text-green-800 hover:bg-green-700 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-green focus-visible:ring-offset-2"
-                      onClick={closeModal}
+                      onClick={async () => {
+                        const shifId = document.getElementById("shift").value;
+                        const datetime = dayjs(`${yearEN}-${monthEN}-${day}`).add(7, 'hour').format();
+                        const data = { userId, shifId, datetime };
+
+                        if (!shifId) {
+                          alert("กรุณาเลือกกะการทำงาน");
+                          return;
+                        }
+
+                        await executeDuty({ data });
+                        await getUserList();
+                        setShowModal(false);
+                      }}
                     >
                       เพิ่มข้อมูล
                     </button>
@@ -219,4 +117,22 @@ export default function ModalCreate() {
       </Transition>
     </>
   );
+
+  function InputDefault({ label, value }) {
+    return <div className="flex flex-wrap -mx-3 mb-6 mt-6">
+      <div className="w-full px-3">
+        <label
+          className="block text-lg font-medium text-black"
+        >
+          {label}
+        </label>
+        <input
+          className="shadow appearance-none border border-green-700 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+          type="text"
+          value={value}
+          disabled
+        />
+      </div>
+    </div>;
+  }
 }
