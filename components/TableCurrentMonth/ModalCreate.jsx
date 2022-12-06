@@ -10,13 +10,13 @@ export default function ModalCreate({ userId, Duty, day, name, Shif, getUserList
     <>
 
       <td
-        className={`border hover:bg-green-300 cursor-pointer text-xs ${dutyOfDay.filter(({ Shif }) => Shif.isOT)?.length ? 'bg-amber-300' : ["เสาร์", "อาทิตย์"].includes(dayjs(`${yearEN}-${monthEN}-${day}`).format("dddd")) ? 'bg-lime-100' :''}`}
+        className={`border hover:bg-green-300 cursor-pointer text-xs ${dutyOfDay.filter(({ isOT }) => isOT)?.length ? 'bg-amber-300' : ["เสาร์", "อาทิตย์"].includes(dayjs(`${yearEN}-${monthEN}-${day}`).format("dddd")) ? 'bg-lime-100' :''}`}
         onClick={() => setShowModal(true)}
       >
-        {dutyOfDay.map(({ Shif }, index) => {
-          if (!Shif.isOT) {
+        {dutyOfDay.map(({ Shif, isOT }, index) => {
+          if (!isOT) {
             return (
-              <span key={index}>{Shif.name}</span>
+              <span key={index}>{Shif?.name}</span>
             )
           }
         })}
@@ -52,12 +52,6 @@ export default function ModalCreate({ userId, Duty, day, name, Shif, getUserList
                 leaveTo="opacity-0 scale-95"
               >
                 <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                  <Dialog.Title
-                    as="h3"
-                    className="text-2xl leading-6 text-green-700 font-extrabold"
-                  >
-                    เพิ่มข้อมูลตารางเวร
-                  </Dialog.Title>
                   <form className="w-full max-w-lg">
                     <InputDefault label="ชื่อ - นามสกุล" value={name} />
                     <InputDefault label="วันที่ปฏิบัติงาน" value={day + " " + monthTH + " " + yearTH} />

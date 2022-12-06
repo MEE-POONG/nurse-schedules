@@ -81,7 +81,7 @@ export const TableCurrentMonth = () => {
             const afternoonShift = person?.Duty?.filter(({ Shif }) => Shif?.name == 'บ')?.length
             const nightShift = person?.Duty?.filter(({ Shif }) => Shif?.name == 'ด')?.length
             const workingDay = person?.Duty?.filter(({ Shif }) => ["ช", "บ", "ด"].includes(Shif?.name))?.length
-            const ot = person?.Duty?.filter(({ Shif }) => Shif.isOT)?.length
+            const ot = person?.Duty?.filter(({ isOT }) => isOT)?.length
             return (
               <tr key={key} className="border odd:bg-green-100">
                 <td className="border">
