@@ -34,7 +34,6 @@ model Shif {
   name     String   @unique
   isShif   Boolean?
   isDayOff Boolean?
-  isOT     Boolean?
   Duty     Duty[]
 }
 
