@@ -22,6 +22,7 @@ export default async function handler(req, res) {
           data: {
             shifId: +req.body.shifId,
             userId: +req.body.userId,
+            isOT: req.body.isOT,
             datetime: dayjs(`${dayjs().year()}-${dayjs().month() + 1}-${req.body.day}`).add(7, 'hour').format()
           },
         });

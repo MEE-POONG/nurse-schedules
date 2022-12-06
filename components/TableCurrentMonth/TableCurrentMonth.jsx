@@ -14,13 +14,14 @@ export const TableCurrentMonth = () => {
   const [{ data: user, loading: userLoading, error: userError }, getUserList] = useAxios({ url: "/api/user" });
   const [{ data: shif, loading: shifLoading, error: shifError }] = useAxios({ url: "/api/shif" });
   const [{ loading: dutyLoading, error: dutyError }, executeDuty] = useAxios({ url: "/api/duty", method: "POST" }, { manual: true });
+  const [{ loading: dutyDeleteLoading, error: dutyDeleteError }, deleteDuty] = useAxios({}, { manual: true });
 
-  if (userError || shifError || dutyError) return <ErrorComponent />;
+  if (userError || shifError || dutyError || dutyDeleteError) return <ErrorComponent />;
 
   return (
     <div className="w-100 bg-white shadow-xl p-5 m-10 rounded-md overflow-x-auto">
       {
-        userLoading || shifLoading || dutyLoading ? <LoadingComponent /> : <></>
+        userLoading || shifLoading || dutyLoading || dutyDeleteLoading ? <LoadingComponent /> : <></>
       }
       <table className="border-collapse border w-full text-center shadow-md border-spacing-2">
         <tbody>
@@ -65,7 +66,7 @@ export const TableCurrentMonth = () => {
           <tr className="border">
             {/* จำนวนวันของเดือน */}
             {arrayDayInMonth.map((day, index) => (
-              <td key={index} className={`border text-white min-w-[35px] ${["เสาร์", "อาทิตย์"].includes(dayjs(`${yearEN}-${monthEN}-${day + 1}`).format("dddd")) ? 'bg-green-600' :'bg-orange-600'} `}>
+              <td key={index} className={`border text-white min-w-[35px] ${["เสาร์", "อาทิตย์"].includes(dayjs(`${yearEN}-${monthEN}-${day + 1}`).format("dddd")) ? 'bg-green-600' : 'bg-orange-600'} `}>
                 {day + 1}
               </td>
             ))}
@@ -95,7 +96,7 @@ export const TableCurrentMonth = () => {
 
                 {/* แสดงรายละเอียดของตาราง กะ */}
                 {arrayDayInMonth.map((day, index) => (
-                  <ModalCreate key={index} userId={person.id} Duty={person.Duty} day={day + 1} name={person.firstname + ' ' + person.lastname} Shif={shif} getUserList={getUserList} executeDuty={executeDuty} />
+                  <ModalCreate key={index} userId={person.id} Duty={person.Duty} day={day + 1} name={person.firstname + ' ' + person.lastname} Shif={shif} getUserList={getUserList} executeDuty={executeDuty} deleteDuty={deleteDuty} />
                 ))}
                 <td className="border">{afternoonShift}</td>
                 <td className="border">{nightShift}</td>

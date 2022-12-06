@@ -3,14 +3,14 @@ import { Fragment, useState } from "react";
 import dayjs from "dayjs";
 import { monthTH, yearTH, yearEN, monthEN } from "@/utils/day";
 
-export default function ModalCreate({ userId, Duty, day, name, Shif, getUserList, executeDuty }) {
+export default function ModalCreate({ userId, Duty, day, name, Shif, getUserList, executeDuty, deleteDuty }) {
   const [showModal, setShowModal] = useState(false);
   const dutyOfDay = Duty?.filter(({ datetime }) => dayjs(datetime).format('DD') == day)
   return (
     <>
 
       <td
-        className={`border hover:bg-green-300 cursor-pointer text-xs ${dutyOfDay.filter(({ isOT }) => isOT)?.length ? 'bg-amber-300' : ["เสาร์", "อาทิตย์"].includes(dayjs(`${yearEN}-${monthEN}-${day}`).format("dddd")) ? 'bg-lime-100' :''}`}
+        className={`border hover:bg-green-300 cursor-pointer text-xs ${dutyOfDay.filter(({ isOT }) => isOT)?.length ? 'bg-amber-300' : ["เสาร์", "อาทิตย์"].includes(dayjs(`${yearEN}-${monthEN}-${day}`).format("dddd")) ? 'bg-lime-100' : ''}`}
         onClick={() => setShowModal(true)}
       >
         {dutyOfDay.map(({ Shif, isOT }, index) => {
@@ -64,44 +64,103 @@ export default function ModalCreate({ userId, Duty, day, name, Shif, getUserList
                         >
                           เลือกกะ
                         </label>
-                        <select
-                          id="shift"
-                          name="shift"
-                          autoComplete="shift"
-                          className="shadow appearance-none border border-green-700 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        >
-                          <option value="">กรุณาเลือกกะการทำงาน</option>
-                          {Shif?.map((shif, index) => (
-                            <option key={index} value={shif.id} >
-                              {shif.name}
-                            </option>
+                        <div className="flex flex-wrap">
+                          {Shif?.sort((a, b) => a.id - b.id)?.filter((x) => ["ช", "บ", "ด"].includes(x.name))?.map((shif, index) => (
+                            <div key={index} className="ml-2 mb-2" value={shif.id} >
+                              <button
+                                type="button"
+                                className="inline-flex justify-center rounded-md border border-transparent bg-green-100 px-4 py-2 text-sm font-medium text-green-800 hover:bg-green-700 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-green focus-visible:ring-offset-2"
+                                onClick={async () => {
+
+                                  await deleteDutyById();
+
+                                  const shifId = shif.id;
+                                  const data = { userId, shifId, day };
+
+                                  await executeDuty({ data });
+                                  await getUserList();
+                                  setShowModal(false);
+                                }}
+                              >
+                                {shif.name}
+                              </button>
+                            </div>
                           ))}
-                        </select>
+
+                          <div className="ml-2 mb-2">
+                            <button
+                              type="button"
+                              className="inline-flex justify-center rounded-md border border-transparent bg-green-100 px-4 py-2 text-sm font-medium text-green-800 hover:bg-green-700 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-green focus-visible:ring-offset-2"
+                              onClick={async () => {
+
+                                await deleteDutyById();
+
+                                const shift = await Shif?.filter((x) => ["ช", "บ"].includes(x.name))
+                                for (const shif of shift) {
+                                  const shifId = shif.id;
+                                  const data = { userId, shifId, day };
+                                  await executeDuty({ data });
+                                }
+                                await getUserList();
+                                setShowModal(false);
+                              }}
+                            >
+                              {Shif?.filter((x) => ["ช", "บ"].includes(x.name))?.map((shif) => (
+                                shif.name
+                              ))}
+                            </button>
+                          </div>
+
+                          <div className="ml-2 mb-2">
+                            <button
+                              type="button"
+                              className="inline-flex justify-center rounded-md border border-transparent bg-green-100 px-4 py-2 text-sm font-medium text-green-800 hover:bg-green-700 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-green focus-visible:ring-offset-2"
+                              onClick={async () => {
+
+                                await deleteDutyById();
+
+                                const shift = await Shif?.filter((x) => ["ด", "บ"].includes(x.name))?.sort((a, b) => b.id - a.id)
+                                for (const shif of shift) {
+                                  const shifId = shif.id;
+                                  const data = { userId, shifId, day };
+                                  await executeDuty({ data });
+                                }
+                                await getUserList();
+                                setShowModal(false);
+                              }}
+                            >
+                              {Shif?.filter((x) => ["ด", "บ"].includes(x.name))?.sort((a, b) => b.id - a.id)?.map((shif) => (
+                                shif.name
+                              ))}
+                            </button>
+                          </div>
+
+                          {Shif?.sort((a, b) => a.id - b.id)?.filter((x) => ["x", "ลาพัก"].includes(x.name))?.map((shif, index) => (
+                            <div key={index} className="ml-2 mb-2" value={shif.id} >
+                              <button
+                                type="button"
+                                className="inline-flex justify-center rounded-md border border-transparent bg-green-100 px-4 py-2 text-sm font-medium text-green-800 hover:bg-green-700 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-green focus-visible:ring-offset-2"
+                                onClick={async () => {
+
+                                  await deleteDutyById();
+
+                                  const shifId = shif.id;
+                                  const data = { userId, shifId, day };
+
+                                  await executeDuty({ data });
+                                  await getUserList();
+                                  setShowModal(false);
+                                }}
+                              >
+                                {shif.name}
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+
                       </div>
                     </div>
                   </form>
-
-                  <div className="mt-4">
-                    <button
-                      type="button"
-                      className="inline-flex justify-center rounded-md border border-transparent bg-green-100 px-4 py-2 text-sm font-medium text-green-800 hover:bg-green-700 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-green focus-visible:ring-offset-2"
-                      onClick={async () => {
-                        const shifId = document.getElementById("shift").value;
-                        const data = { userId, shifId, day };
-
-                        if (!shifId) {
-                          alert("กรุณาเลือกกะการทำงาน");
-                          return;
-                        }
-
-                        await executeDuty({ data });
-                        await getUserList();
-                        setShowModal(false);
-                      }}
-                    >
-                      เพิ่มข้อมูล
-                    </button>
-                  </div>
                 </Dialog.Panel>
               </Transition.Child>
             </div>
@@ -110,6 +169,12 @@ export default function ModalCreate({ userId, Duty, day, name, Shif, getUserList
       </Transition>
     </>
   );
+
+  async function deleteDutyById() {
+    for (const duty of dutyOfDay) {
+      await deleteDuty({ url: `/api/duty/${duty.id}`, method: 'delete' });
+    }
+  }
 
   function InputDefault({ label, value }) {
     return <div className="flex flex-wrap -mx-3 mb-6 mt-6">
