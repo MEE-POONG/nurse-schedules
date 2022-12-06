@@ -95,7 +95,7 @@ export const TableCurrentMonth = () => {
 
                 {/* แสดงรายละเอียดของตาราง กะ */}
                 {arrayDayInMonth.map((day, index) => (
-                  <ModalCreate key={index} userId={person.id} Duty={person.Duty} day={day + 1} name={person.firstname + ' ' + person.lastname} Shif={shif} getUserList={getUserList} executeDuty={executeDuty} />
+                  <ModalCreate key={index} userId={person.id} Duty={person.Duty} day={day + 1} name={person.firstname + ' ' + person.lastname} Shif={shif} getUserList={getUserList} executeDuty={executeDuty} />               
                 ))}
                 <td className="border">{afternoonShift}</td>
                 <td className="border">{nightShift}</td>

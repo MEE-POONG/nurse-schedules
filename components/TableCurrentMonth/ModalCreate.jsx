@@ -108,38 +108,43 @@ export default function ModalCreate({
                           เลือกกะ
                         </label>
                         {Shif?.map((shif, index) => (
-                        <div  key={index} class="grid space-y-2 mt-2 rounded-lg shadow">
-                          <label class="p-3 justify-between flex w-full pr-8 bg-white border border-gray-400 rounded-md text-sm focus:border-green-700 focus:ring-green-700">
-                            <div>
-                              <div class="flex items-center mr-4">
-                                <input
-                                  id={"shift"+index}
-                                  name={"shift"+index}
-                                  type="checkbox"
-                                  value={shif.id}
-                                  class="w-4 h-4 bg-gray-100 border-gray-300 accent-green-700 cursor-pointer"
-                                />
-                                <label
-                                  for={"shift"+index}
-                                  class="ml-2 text-lg font-medium text-gray-700"
-                                >
-                                  {shif.name}
-                                </label>
+                          <div
+                            key={index}
+                            class="grid space-y-2 mt-2 rounded-lg shadow"
+                          >
+                            <label class="p-3 justify-between flex w-full pr-8 bg-white border border-gray-400 rounded-md text-sm focus:border-green-700 focus:ring-green-700">
+                              <div>
+                                <div class="flex items-center mr-4">
+                                  <input
+                                    id={"shift" + index}
+                                    name={"shift" + index}
+                                    type="checkbox"
+                                    value={shif.id}
+                                    class="w-4 h-4 bg-gray-100 border-gray-300 accent-green-700 cursor-pointer"
+                                  />
+                                  <label
+                                    for={"shift" + index}
+                                    class="ml-2 text-lg font-medium text-gray-700"
+                                  >
+                                    {shif.name}
+                                  </label>
+                                </div>
                               </div>
-                            </div>
-                            <label class="inline-flex relative items-center cursor-pointer">
-                              <input
-                                type="checkbox"
-                                value=""
-                                class="sr-only peer"
-                              />
-                              <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-700"></div>
-                              <span class="ml-3 text-lg font-medium text-gray-900">
-                                โอที
-                              </span>
+                              <label class="inline-flex relative items-center cursor-pointer">
+                                <input
+                                  id={"ot" + index}
+                                  name={"ot" + index}
+                                  type="checkbox"
+                                  value=""
+                                  class="sr-only peer"
+                                />
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-700"></div>
+                                <span class="ml-3 text-lg font-medium text-gray-900">
+                                  โอที
+                                </span>
+                              </label>
                             </label>
-                          </label>
-                        </div>
+                          </div>
                         ))}
                       </div>
                     </div>
@@ -150,9 +155,11 @@ export default function ModalCreate({
                       type="button"
                       className="inline-flex justify-center rounded-md border border-transparent bg-green-100 px-4 py-2 text-sm font-medium text-green-800 hover:bg-green-700 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-green focus-visible:ring-offset-2"
                       onClick={async () => {
-                        const shifId = document.getElementById("shift").checked == true;
+                        const shifId =
+                          document.getElementById("shift").checked == true;
                         const data = { userId, shifId, day };
 
+                        
                         if (!shifId) {
                           alert("กรุณาเลือกกะการทำงาน");
                           return;
