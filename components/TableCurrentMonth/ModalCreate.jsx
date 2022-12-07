@@ -17,6 +17,20 @@ export default function ModalCreate({
     ({ datetime }) => dayjs(datetime).format("DD") == day
   );
 
+  const [ checkBoxShift, setCheckBoxShift] = useState(true);
+  const [ checkShiftName , setShiftName ] = useState({
+    shiftName: ''
+  });
+
+  const handleInputChange = (event, prop) => {
+    setShiftName({
+      ...checkShiftName,
+      [prop]: event.target.name
+    })
+  }
+
+  console.log(checkShiftName);
+
   return (
     <>
       <td
@@ -75,30 +89,6 @@ export default function ModalCreate({
                       value={day + " " + monthTH + " " + yearTH}
                     />
 
-                    {/* <div className="flex flex-wrap -mx-3 mb-6 mt-6">
-                      <div className="w-full px-3">
-                        <label
-                          htmlFor="shift"
-                          className="block text-lg font-medium text-black"
-                        >
-                          เลือกกะ
-                        </label>
-                        <select
-                          id="shift"
-                          name="shift"
-                          autoComplete="shift"
-                          className="shadow appearance-none border border-green-700 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        >
-                          <option value="">กรุณาเลือกกะการทำงาน</option>
-                          {Shif?.map((shif, index) => (
-                            <option key={index} value={shif.id}>
-                              {shif.name}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </div> */}
-
                     <div className="flex flex-wrap -mx-3 mb-6 mt-6">
                       <div className="w-full px-3">
                         <label
@@ -116,11 +106,13 @@ export default function ModalCreate({
                               <div>
                                 <div class="flex items-center mr-4">
                                   <input
-                                    id={"shift" + index}
                                     name={"shift" + index}
                                     type="checkbox"
                                     value={shif.id}
                                     class="w-4 h-4 bg-gray-100 border-gray-300 accent-green-700 cursor-pointer"
+                                    onClick={(event) => 
+                                      handleInputChange(event, 'shiftName')
+                                    }
                                   />
                                   <label
                                     for={"shift" + index}
@@ -130,19 +122,23 @@ export default function ModalCreate({
                                   </label>
                                 </div>
                               </div>
-                              <label class="inline-flex relative items-center cursor-pointer">
-                                <input
-                                  id={"ot" + index}
-                                  name={"ot" + index}
-                                  type="checkbox"
-                                  value=""
-                                  class="sr-only peer"
-                                />
-                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-700"></div>
-                                <span class="ml-3 text-lg font-medium text-gray-900">
-                                  โอที
-                                </span>
-                              </label>
+                              {shif.name === "ช" || shif.name === "บ" || shif.name === "ด"  ? (
+                                <label class="inline-flex relative items-center cursor-pointer">
+                                  <input
+                                    name={"otShift" + index}
+                                    type="checkbox"
+                                    value=""
+                                    class="sr-only peer"
+                                    disabled={checkBoxShift ? false : true}
+                                  />
+                                  <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-700"></div>
+                                  <span class="ml-3 text-lg font-medium text-gray-900">
+                                    โอที
+                                  </span>
+                                </label>
+                              ) : (
+                                ""
+                              )}
                             </label>
                           </div>
                         ))}
@@ -159,7 +155,6 @@ export default function ModalCreate({
                           document.getElementById("shift").checked == true;
                         const data = { userId, shifId, day };
 
-                        
                         if (!shifId) {
                           alert("กรุณาเลือกกะการทำงาน");
                           return;
