@@ -17,19 +17,7 @@ export default function ModalCreate({
     ({ datetime }) => dayjs(datetime).format("DD") == day
   );
 
-  const [ checkBoxShift, setCheckBoxShift] = useState(true);
-  const [ checkShiftName , setShiftName ] = useState({
-    shiftName: ''
-  });
-
-  const handleInputChange = (event, prop) => {
-    setShiftName({
-      ...checkShiftName,
-      [prop]: event.target.name
-    })
-  }
-
-  console.log(checkShiftName);
+  const [ checkBoxShift, setCheckBoxShift] = useState(false);
 
   return (
     <>
@@ -110,8 +98,8 @@ export default function ModalCreate({
                                     type="checkbox"
                                     value={shif.id}
                                     class="w-4 h-4 bg-gray-100 border-gray-300 accent-green-700 cursor-pointer"
-                                    onClick={(event) => 
-                                      handleInputChange(event, 'shiftName')
+                                    onClick={() => 
+                                      setCheckBoxShift(true)
                                     }
                                   />
                                   <label
