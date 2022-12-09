@@ -2,6 +2,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useState } from "react";
 import dayjs from "dayjs";
 import { monthTH, yearTH, yearEN, monthEN } from "@/utils/day";
+import { values } from "lodash";
 
 export default function ModalCreate({
   userId,
@@ -17,7 +18,40 @@ export default function ModalCreate({
     ({ datetime }) => dayjs(datetime).format("DD") == day
   );
 
-  const [ checkBoxShift, setCheckBoxShift] = useState(false);
+  const [checkListShift, setCheckListShift] = useState([]);
+
+  // function เพิ่มข้อมูล
+  const onCheck = (onSelect) => {
+    const exist = checkListShift.find(
+      (listShift) => listShift.id === onSelect.id
+    );
+
+    if (exist) {
+      setCheckListShift(
+        checkListShift.filter((listShift) => listShift.id !== onSelect.id)
+      );
+    } else {
+      setCheckListShift([...checkListShift, { ...onSelect, isOT: false }]);
+    }
+  };
+
+  const onSelectOT = (onSelect) => {
+    const exist = checkListShift.find(
+      (listShift) => listShift.id === onSelect.id
+    );
+
+    if (exist) {
+      setCheckListShift(
+        checkListShift.map((listShift) =>
+          listShift.id === onSelect.id
+            ? { ...exist, isOT: !exist.isOT }
+            : listShift
+        )
+      );
+    }
+  };
+
+  // console.log(checkListShift);
 
   return (
     <>
@@ -88,39 +122,47 @@ export default function ModalCreate({
                         {Shif?.map((shif, index) => (
                           <div
                             key={index}
-                            class="grid space-y-2 mt-2 rounded-lg shadow"
+                            className="grid space-y-2 mt-2 rounded-lg shadow"
                           >
-                            <label class="p-3 justify-between flex w-full pr-8 bg-white border border-gray-400 rounded-md text-sm focus:border-green-700 focus:ring-green-700">
+                            <label className="p-3 justify-between flex w-full pr-8 bg-white border border-gray-400 rounded-md text-sm focus:border-green-700 focus:ring-green-700">
                               <div>
-                                <div class="flex items-center mr-4">
+                                <div className="flex items-center mr-4">
                                   <input
                                     name={"shift" + index}
                                     type="checkbox"
                                     value={shif.id}
-                                    class="w-4 h-4 bg-gray-100 border-gray-300 accent-green-700 cursor-pointer"
-                                    onClick={() => 
-                                      setCheckBoxShift(true)
-                                    }
+                                    className="w-4 h-4 bg-gray-100 border-gray-300 accent-green-700 cursor-pointer"
+                                    onClick={() => {
+                                      onCheck(shif);
+                                    }}
                                   />
                                   <label
-                                    for={"shift" + index}
-                                    class="ml-2 text-lg font-medium text-gray-700"
+                                    htmlFor={"shift" + index}
+                                    className="ml-2 text-lg font-medium text-gray-700"
                                   >
                                     {shif.name}
                                   </label>
                                 </div>
                               </div>
-                              {shif.name === "ช" || shif.name === "บ" || shif.name === "ด"  ? (
-                                <label class="inline-flex relative items-center cursor-pointer">
+                              {shif.name === "ช" ||
+                              shif.name === "บ" ||
+                              shif.name === "ด" ? (
+                                <label className="inline-flex relative items-center cursor-pointer">
                                   <input
                                     name={"otShift" + index}
                                     type="checkbox"
-                                    value=""
-                                    class="sr-only peer"
-                                    disabled={checkBoxShift ? false : true}
+                                    className="sr-only peer"
+                                    disabled={
+                                      checkListShift.find(
+                                        (listShift) => listShift.id === shif.id
+                                      ) ? false : true
+                                    }
+                                    onClick={() => {
+                                      onSelectOT(shif);
+                                    }}
                                   />
-                                  <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-700"></div>
-                                  <span class="ml-3 text-lg font-medium text-gray-900">
+                                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-700"></div>
+                                  <span className="ml-3 text-lg font-medium text-gray-900">
                                     โอที
                                   </span>
                                 </label>
