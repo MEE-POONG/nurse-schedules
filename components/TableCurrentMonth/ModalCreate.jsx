@@ -18,6 +18,7 @@ export default function ModalCreate({
     ({ datetime }) => dayjs(datetime).format("DD") == day
   );
 
+  //state ข้อมูลการขึ้นเวร
   const [checkListShift, setCheckListShift] = useState([]);
 
   // function เพิ่มข้อมูล
@@ -181,8 +182,8 @@ export default function ModalCreate({
                       type="button"
                       className="inline-flex justify-center rounded-md border border-transparent bg-green-100 px-4 py-2 text-sm font-medium text-green-800 hover:bg-green-700 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-green focus-visible:ring-offset-2"
                       onClick={async () => {
-                        const shifId =
-                          document.getElementById("shift").checked == true;
+                        const shifId = checkListShift
+                          // document.getElementById("shift").checked == true;
                         const data = { userId, shifId, day };
 
                         if (!shifId) {
