@@ -2,7 +2,6 @@ import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useState } from "react";
 import dayjs from "dayjs";
 import { monthTH, yearTH, yearEN, monthEN } from "@/utils/day";
-import { values } from "lodash";
 
 export default function ModalCreate({
   userId,
@@ -32,7 +31,10 @@ export default function ModalCreate({
         checkListShift.filter((listShift) => listShift.id !== onSelect.id)
       );
     } else {
-      setCheckListShift([...checkListShift, { ...onSelect, isOT: false }]);
+      setCheckListShift([
+        ...checkListShift,
+        { userId, day, ...onSelect, isOT: false },
+      ]);
     }
   };
 
@@ -52,17 +54,13 @@ export default function ModalCreate({
     }
   };
 
-  // console.log(checkListShift);
-
   return (
     <>
       <td
         className={`border hover:bg-green-300 cursor-pointer text-xs ${
-          dutyOfDay.filter(({ isOT }) => isOT)?.length
-            ? "bg-amber-300"
-            : ["เสาร์", "อาทิตย์"].includes(
-                dayjs(`${yearEN}-${monthEN}-${day}`).format("dddd")
-              )
+          ["เสาร์", "อาทิตย์"].includes(
+            dayjs(`${yearEN}-${monthEN}-${day}`).format("dddd")
+          )
             ? "bg-lime-100"
             : ""
         }`}
@@ -71,6 +69,12 @@ export default function ModalCreate({
         {dutyOfDay.map(({ Shif, isOT }, index) => {
           if (!isOT) {
             return <span key={index}>{Shif?.name}</span>;
+          } else {
+            return (
+              <span className="text-red-500 underline decoration-red-500 decoration-1" key={index}>
+                {Shif?.name}
+              </span>
+            );
           }
         })}
       </td>
@@ -79,7 +83,9 @@ export default function ModalCreate({
         <Dialog
           as="div"
           className="relative z-10"
-          onClose={() => setShowModal(false)}
+          onClose={() => {
+            setShowModal(false), setCheckListShift([]);
+          }}
         >
           <Transition.Child
             as={Fragment}
@@ -156,7 +162,9 @@ export default function ModalCreate({
                                     disabled={
                                       checkListShift.find(
                                         (listShift) => listShift.id === shif.id
-                                      ) ? false : true
+                                      )
+                                        ? false
+                                        : true
                                     }
                                     onClick={() => {
                                       onSelectOT(shif);
@@ -176,22 +184,20 @@ export default function ModalCreate({
                       </div>
                     </div>
                   </form>
-
                   <div className="mt-4">
                     <button
                       type="button"
                       className="inline-flex justify-center rounded-md border border-transparent bg-green-100 px-4 py-2 text-sm font-medium text-green-800 hover:bg-green-700 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-green focus-visible:ring-offset-2"
                       onClick={async () => {
-                        const shifId = checkListShift
-                          // document.getElementById("shift").checked == true;
-                        const data = { userId, shifId, day };
+                        const shiftData = checkListShift;
 
-                        if (!shifId) {
+                        if (!shiftData) {
                           alert("กรุณาเลือกกะการทำงาน");
                           return;
                         }
-
-                        await executeDuty({ data });
+                        console.log(shiftData);
+                        await executeDuty({ data: shiftData });
+                        await setCheckListShift([]);
                         await getUserList();
                         setShowModal(false);
                       }}
