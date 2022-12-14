@@ -11,6 +11,7 @@ export default function ModalCreate({
   Shif,
   getUserList,
   executeDuty,
+  deleteDuty,
 }) {
   const [showModal, setShowModal] = useState(false);
   const dutyOfDay = Duty?.filter(
@@ -19,6 +20,7 @@ export default function ModalCreate({
 
   //state ข้อมูลการขึ้นเวร
   const [checkListShift, setCheckListShift] = useState([]);
+  const [listShiftOrigin, setListShiftOrigin] = useState([]);
 
   // function เพิ่มข้อมูล
   const onCheck = (onSelect) => {
@@ -56,7 +58,6 @@ export default function ModalCreate({
 
   return (
     <>
-    {console.log(dutyOfDay)}
       <td
         className={`border hover:bg-green-300 cursor-pointer text-xs ${
           ["เสาร์", "อาทิตย์"].includes(
@@ -72,20 +73,22 @@ export default function ModalCreate({
             return <span key={index}>{Shif?.name}</span>;
           } else {
             return (
-              <span className="text-red-500 underline decoration-red-500 decoration-1" key={index}>
+              <span
+                className="text-red-500 underline decoration-red-500 decoration-1"
+                key={index}
+              >
                 {Shif?.name}
               </span>
             );
           }
         })}
       </td>
-
       <Transition appear show={showModal} as={Fragment}>
         <Dialog
           as="div"
           className="relative z-10"
           onClose={() => {
-            setShowModal(false), setCheckListShift([]);
+            setShowModal(false), setCheckListShift([]), setListShiftOrigin([]);
           }}
         >
           <Transition.Child
@@ -113,17 +116,28 @@ export default function ModalCreate({
               >
                 <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
                   <form className="w-full max-w-lg">
-                    <InputDefault label="ชื่อ - นามสกุล" value={name} />
-                    <InputDefault
-                      label="วันที่ปฏิบัติงาน"
-                      value={day + " " + monthTH + " " + yearTH}
-                    />
+                    <div className="flex">
+                      <p className="text-lg font-medium text-black">
+                        ชื่อ - นามสกุล :
+                      </p>
+                      <p className="text-lg font-medium text-green-700 ml-2">
+                        {name}
+                      </p>
+                    </div>
+                    <div className="flex">
+                      <p className="text-lg font-medium text-black">
+                        วันที่ปฏิบัติงาน :
+                      </p>
+                      <p className="text-lg font-medium text-green-700 ml-2">
+                        {day + " " + monthTH + " " + yearTH}
+                      </p>
+                    </div>
 
                     <div className="flex flex-wrap -mx-3 mb-6 mt-6">
                       <div className="w-full px-3">
                         <label
                           htmlFor="shift"
-                          className="block text-lg font-medium text-black"
+                          className="block text-xl font-medium text-black"
                         >
                           เลือกกะ
                         </label>
@@ -143,11 +157,14 @@ export default function ModalCreate({
                                     onClick={() => {
                                       onCheck(shif);
                                     }}
-                                    defaultChecked={ dutyOfDay?.find(( checkDuty ) => checkDuty.shifId === shif.id)}
+                                    defaultChecked={dutyOfDay?.find(
+                                      (checkDuty) =>
+                                        checkDuty.shifId === shif.id
+                                    )}
                                   />
                                   <label
                                     htmlFor={"shift" + index}
-                                    className="ml-2 text-lg font-medium text-gray-700"
+                                    className="ml-2 text-xl font-medium text-gray-700"
                                   >
                                     {shif.name}
                                   </label>
@@ -165,16 +182,20 @@ export default function ModalCreate({
                                       checkListShift.find(
                                         (listShift) => listShift.id === shif.id
                                       )
-                                        ? false  ///รอแก้ ปุ่มเปิดปิด
+                                        ? false ///รอแก้ ปุ่มเปิดปิด
                                         : true
                                     }
                                     onClick={() => {
                                       onSelectOT(shif);
                                     }}
-                                    defaultChecked={ dutyOfDay?.find(( checkDuty ) => checkDuty.shifId === shif.id && checkDuty.isOT === true)}
+                                    defaultChecked={dutyOfDay?.find(
+                                      (checkDuty) =>
+                                        checkDuty.shifId === shif.id &&
+                                        checkDuty.isOT === true
+                                    )}
                                   />
                                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-700"></div>
-                                  <span className="ml-3 text-lg font-medium text-gray-900">
+                                  <span className="ml-3 text-xl font-medium text-gray-900">
                                     โอที
                                   </span>
                                 </label>
@@ -194,11 +215,13 @@ export default function ModalCreate({
                       onClick={async () => {
                         const shiftData = checkListShift;
 
+                        await deleteDutyById();
+
                         if (!shiftData) {
                           alert("กรุณาเลือกกะการทำงาน");
                           return;
                         }
-                        console.log(shiftData);
+
                         await executeDuty({ data: shiftData });
                         await setCheckListShift([]);
                         await getUserList();
@@ -217,21 +240,9 @@ export default function ModalCreate({
     </>
   );
 
-  function InputDefault({ label, value }) {
-    return (
-      <div className="flex flex-wrap -mx-3 mb-6 mt-6">
-        <div className="w-full px-3">
-          <label className="block text-lg font-medium text-black">
-            {label}
-          </label>
-          <input
-            className="shadow appearance-none border border-green-700 rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-            type="text"
-            value={value}
-            disabled
-          />
-        </div>
-      </div>
-    );
+  async function deleteDutyById() {
+    for (const duty of dutyOfDay) {
+      await deleteDuty({ url: `/api/duty/${duty.id}`, method: "delete" });
+    }
   }
 }
