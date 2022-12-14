@@ -87,8 +87,10 @@ export default function ModalCreate({
         <Dialog
           as="div"
           className="relative z-10"
-          onClose={() => {
-            setShowModal(false), setCheckListShift([]), setListShiftOrigin([]);
+          onClose={async() => {
+            await setCheckListShift([]) 
+            await setListShiftOrigin([])
+            await setShowModal(false)
           }}
         >
           <Transition.Child
@@ -182,7 +184,10 @@ export default function ModalCreate({
                                       checkListShift.find(
                                         (listShift) => listShift.id === shif.id
                                       )
-                                        ? false ///รอแก้ ปุ่มเปิดปิด
+                                        ? false //รอแก้
+                                        : 
+                                        document.getElementsByName("shift" + index).checked === true
+                                        ? false
                                         : true
                                     }
                                     onClick={() => {
