@@ -20,7 +20,6 @@ export default function ModalCreate({
 
   //state ข้อมูลการขึ้นเวร
   const [checkListShift, setCheckListShift] = useState([]);
-  const [listShiftOrigin, setListShiftOrigin] = useState([]);
 
   // function เพิ่มข้อมูล
   const onCheck = (onSelect) => {
@@ -89,7 +88,6 @@ export default function ModalCreate({
           className="relative z-10"
           onClose={async() => {
             await setCheckListShift([]) 
-            await setListShiftOrigin([])
             await setShowModal(false)
           }}
         >
@@ -134,7 +132,6 @@ export default function ModalCreate({
                         {day + " " + monthTH + " " + yearTH}
                       </p>
                     </div>
-
                     <div className="flex flex-wrap -mx-3 mb-6 mt-6">
                       <div className="w-full px-3">
                         <label
@@ -181,12 +178,9 @@ export default function ModalCreate({
                                     type="checkbox"
                                     className="sr-only peer"
                                     disabled={
-                                      checkListShift.find(
-                                        (listShift) => listShift.id === shif.id
+                                      dutyOfDay.find(
+                                        (listDuty) => listDuty.shifId === shif.id
                                       )
-                                        ? false //รอแก้
-                                        : 
-                                        document.getElementsByName("shift" + index).checked === true
                                         ? false
                                         : true
                                     }
