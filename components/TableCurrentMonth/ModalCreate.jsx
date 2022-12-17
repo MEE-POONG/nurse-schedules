@@ -17,9 +17,33 @@ export default function ModalCreate({
   const dutyOfDay = Duty?.filter(
     ({ datetime }) => dayjs(datetime).format("DD") == day
   );
-
   //state ข้อมูลการขึ้นเวร
   const [checkListShift, setCheckListShift] = useState([]);
+  //state ข้อมูลกะที่ต้องการลบ
+  const [checkDeleteShift, setCheckDeleteShift] = useState([]);
+  //state ข้อมูลกะที่เลือกเพื่อล็อคกะที่เหลือฃ
+  const [selectShiftCheck, setSelectShiftCheck] = useState({ checked: {} });
+
+  // function ล็อกปุ่มเมื่อเลือกเวร  //แก้
+  const onSelectedChange = (name) => {
+    if (name) {
+      setSelectShiftCheck(
+        selectShiftCheck.checked.name.filter((shiftName) => shiftName !== name)
+      );
+    } else {
+      setSelectShiftCheck(() => ({
+        checked: name,
+      }));
+    }
+  };
+  const shiftName = selectShiftCheck.checked;
+  const disabled =
+    selectShiftCheck.checked === "ช" ||
+    selectShiftCheck.checked === "บ" ||
+    selectShiftCheck.checked === "ด";
+  console.log("disabled=", disabled);
+  console.log("shiftName=", shiftName);
+  console.log("selectShift=", selectShiftCheck);
 
   // function เพิ่มข้อมูล
   const onCheck = (onSelect) => {
@@ -39,6 +63,7 @@ export default function ModalCreate({
     }
   };
 
+  // ฟังก์ชั่นเลือก OT
   const onSelectOT = (onSelect) => {
     const exist = checkListShift.find(
       (listShift) => listShift.id === onSelect.id
@@ -52,6 +77,21 @@ export default function ModalCreate({
             : listShift
         )
       );
+    }
+  };
+
+  // ฟังก์ชั่นเลือกกะที่ต้องการลบ
+  const onCheckDelete = (onDelete) => {
+    const exist = checkDeleteShift.find(
+      (listShift) => listShift.id === onDelete.id
+    );
+
+    if (exist) {
+      setCheckDeleteShift(
+        checkDeleteShift.filter((listShift) => listShift.id !== onDelete.id)
+      );
+    } else {
+      setCheckDeleteShift([...checkDeleteShift, { id: onDelete.id }]);
     }
   };
 
@@ -86,9 +126,10 @@ export default function ModalCreate({
         <Dialog
           as="div"
           className="relative z-10"
-          onClose={async() => {
-            await setCheckListShift([]) 
-            await setShowModal(false)
+          onClose={async () => {
+            await setCheckListShift([]);
+            await setCheckDeleteShift([]);
+            await setShowModal(false);
           }}
         >
           <Transition.Child
@@ -152,14 +193,26 @@ export default function ModalCreate({
                                     name={"shift" + index}
                                     type="checkbox"
                                     value={shif.id}
-                                    className="w-4 h-4 bg-gray-100 border-gray-300 accent-green-700 cursor-pointer"
-                                    onClick={() => {
-                                      onCheck(shif);
-                                    }}
+                                    className="checkbox-shift w-4 h-4 bg-gray-100 border-gray-300 accent-green-700 cursor-pointer"
                                     defaultChecked={dutyOfDay?.find(
                                       (checkDuty) =>
                                         checkDuty.shifId === shif.id
                                     )}
+                                    onClick={(event) => {
+                                      // เลือก id duty ของกะที่เลือก
+                                      const dutySelect = dutyOfDay?.find(
+                                        (checkDuty) =>
+                                          checkDuty.shifId === shif.id
+                                      );
+                                      //เช็คว่ามีค่า shiftId ของกะนั้นอยู่ใน state หรือไม่
+                                      if (event.target.checked !== true) {
+                                        onCheckDelete(dutySelect); //แก้
+                                      } else {
+                                        onCheck(shif); //แก้
+                                      }
+                                    }}
+                                    onChange={() => onSelectedChange(shif.name)} //แก้
+                                    disabled={!shiftName[index] && disabled} //แก้
                                   />
                                   <label
                                     htmlFor={"shift" + index}
@@ -179,8 +232,14 @@ export default function ModalCreate({
                                     className="sr-only peer"
                                     disabled={
                                       dutyOfDay.find(
-                                        (listDuty) => listDuty.shifId === shif.id
+                                        (listDuty) =>
+                                          listDuty.shifId === shif.id
                                       )
+                                        ? false
+                                        : checkListShift.find(
+                                            (listShift) =>
+                                              listShift.id === shif.id
+                                          )
                                         ? false
                                         : true
                                     }
@@ -207,6 +266,8 @@ export default function ModalCreate({
                       </div>
                     </div>
                   </form>
+                  {console.log("ADD", checkListShift)}
+                  {console.log("DELETE", checkDeleteShift)}
                   <div className="mt-4">
                     <button
                       type="button"
@@ -215,7 +276,6 @@ export default function ModalCreate({
                         const shiftData = checkListShift;
 
                         await deleteDutyById();
-
                         if (!shiftData) {
                           alert("กรุณาเลือกกะการทำงาน");
                           return;
@@ -227,7 +287,7 @@ export default function ModalCreate({
                         setShowModal(false);
                       }}
                     >
-                      เพิ่มข้อมูล
+                      บันทึกข้อมูล
                     </button>
                   </div>
                 </Dialog.Panel>
@@ -240,7 +300,7 @@ export default function ModalCreate({
   );
 
   async function deleteDutyById() {
-    for (const duty of dutyOfDay) {
+    for (const duty of checkDeleteShift) {
       await deleteDuty({ url: `/api/duty/${duty.id}`, method: "delete" });
     }
   }
