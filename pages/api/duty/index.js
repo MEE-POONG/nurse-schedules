@@ -20,7 +20,7 @@ export default async function handler(req, res) {
       try {
         await prisma.duty.createMany({
           data: req.body.map((dutyData) => ({
-            shifId: dutyData.id,
+            shifId: dutyData.shifId,
             userId: dutyData.userId,
             isOT: dutyData.isOT,
             datetime: dayjs(
