@@ -148,7 +148,6 @@ export const TableCurrentMonth = () => {
             const workingDay = person?.Duty?.filter(({ Shif }) =>
               ["ช","บ","ด"].includes(Shif?.name) //แก้
             )?.length;
-            console.log(workingDay);
             const ot = person?.Duty?.filter(({ isOT }) => isOT)?.length;
             return (
               <tr key={key} className="border odd:bg-green-100">
@@ -172,6 +171,7 @@ export const TableCurrentMonth = () => {
                     getUserList={getUserList}
                     executeDuty={executeDuty}
                     deleteDuty={deleteDuty}
+                    userLoading={userLoading}
                   />
                 ))}
                 <td className="border">{afternoonShift}</td>

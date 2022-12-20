@@ -1,5 +1,5 @@
 import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import dayjs from "dayjs";
 import { monthTH, yearTH, yearEN, monthEN } from "@/utils/day";
 
@@ -12,26 +12,36 @@ export default function ModalCreate({
   getUserList,
   executeDuty,
   deleteDuty,
+  userLoading,
 }) {
   const [showModal, setShowModal] = useState(false);
-  const defaultDutyOfDay = Duty?.filter(
-    ({ datetime }) => dayjs(datetime).format("DD") == day
+  const [defaultDutyOfDay, setDefaultDutyOfDay] = useState(
+    Duty?.filter(({ datetime }) => dayjs(datetime).format("DD") == day)
   );
   const [dutyOfDay, setDutyOfDay] = useState(
-    Duty?.filter(
-      ({ datetime }) => dayjs(datetime).format("DD") == day
-    )
+    Duty?.filter(({ datetime }) => dayjs(datetime).format("DD") == day)
   );
+
+  useEffect(() => {
+    setDutyOfDay(
+      Duty?.filter(({ datetime }) => dayjs(datetime).format("DD") == day)
+    );
+    setDefaultDutyOfDay(
+      Duty?.filter(({ datetime }) => dayjs(datetime).format("DD") == day)
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userLoading]);
 
   return (
     <>
       <td
-        className={`border hover:bg-green-300 cursor-pointer text-xs ${["เสาร์", "อาทิตย์"].includes(
-          dayjs(`${yearEN}-${monthEN}-${day}`).format("dddd")
-        )
-          ? "bg-lime-100"
-          : ""
-          }`}
+        className={`border hover:bg-green-300 cursor-pointer text-xs ${
+          ["เสาร์", "อาทิตย์"].includes(
+            dayjs(`${yearEN}-${monthEN}-${day}`).format("dddd")
+          )
+            ? "bg-lime-100"
+            : ""
+        }`}
         onClick={() => setShowModal(true)}
       >
         {dutyOfDay.map(({ Shif, isOT }, index) => {
@@ -127,14 +137,27 @@ export default function ModalCreate({
                                     )}
                                     onClick={() => {
                                       setDutyOfDay((oldState) => {
-                                        let returnState = [...oldState]
-                                        if (document.getElementById("shift" + index)?.checked) {
-                                          returnState = [...oldState, { shifId: shif.id, isOT: false, Shif: shif }]
+                                        let returnState = [...oldState];
+                                        if (
+                                          document.getElementById(
+                                            "shift" + index
+                                          )?.checked
+                                        ) {
+                                          returnState = [
+                                            ...oldState,
+                                            {
+                                              shifId: shif.id,
+                                              isOT: false,
+                                              Shif: shif,
+                                            },
+                                          ];
                                         } else {
-                                          returnState = oldState.filter((item) => item.shifId !== shif.id)
+                                          returnState = oldState.filter(
+                                            (item) => item.shifId !== shif.id
+                                          );
                                         }
-                                        return returnState
-                                      })
+                                        return returnState;
+                                      });
                                     }}
                                   />
                                   <label
@@ -146,8 +169,8 @@ export default function ModalCreate({
                                 </div>
                               </div>
                               {shif.name === "ช" ||
-                                shif.name === "บ" ||
-                                shif.name === "ด" ? (
+                              shif.name === "บ" ||
+                              shif.name === "ด" ? (
                                 <label className="inline-flex relative items-center cursor-pointer">
                                   <input
                                     id={"otShift" + index}
@@ -171,11 +194,16 @@ export default function ModalCreate({
                                       setDutyOfDay((oldState) => {
                                         return oldState.map((item) => {
                                           if (item.shifId === shif.id) {
-                                            return { ...item, isOT: document.getElementById("otShift" + index)?.checked }
+                                            return {
+                                              ...item,
+                                              isOT: document.getElementById(
+                                                "otShift" + index
+                                              )?.checked,
+                                            };
                                           }
-                                          return item
-                                        })
-                                      })
+                                          return item;
+                                        });
+                                      });
                                     }}
                                   />
                                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-700"></div>
@@ -205,13 +233,31 @@ export default function ModalCreate({
                             isOT: duty.isOT,
                           };
                         });
-                        console.log("shiftData", shiftData);
-                        shiftData = _.uniqBy(shiftData, 'shifId');
-
+                        shiftData = _.uniqBy(shiftData, "shifId");
 
                         shiftData = shiftData.sort((a, b) => {
-                          return a.id - b.id;
-                        })
+                          return a.shifId - b.shifId;
+                        });
+
+                        if (
+                          shiftData
+                            .map(({ shifId }) => {
+                              return shifId;
+                            })
+                            .includes(2) &&
+                          shiftData
+                            .map(({ shifId }) => {
+                              return shifId;
+                            })
+                            .includes(3)
+                        ) {
+                          shiftData = shiftData.sort((a, b) => {
+                            const idA = a.shifId;
+                            const idB = b.shifId;
+
+                            return idB - idA;
+                          });
+                        }
 
                         await deleteDutyById(defaultDutyOfDay);
                         if (!shiftData) {
@@ -222,7 +268,6 @@ export default function ModalCreate({
                         await executeDuty({ data: shiftData });
                         await getUserList();
                         setShowModal(false);
-
                       }}
                     >
                       บันทึกข้อมูล
