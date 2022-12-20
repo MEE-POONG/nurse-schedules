@@ -21,28 +21,28 @@ export default function ModalCreate({
   const [checkListShift, setCheckListShift] = useState([]);
   //state ข้อมูลกะที่ต้องการลบ
   const [checkDeleteShift, setCheckDeleteShift] = useState([]);
+  //state ข้อมูลOTที่ต้องการอัพเดท
+  const [checkUpdateShift, setCheckUpdateShift] = useState([]);
   //state ข้อมูลกะที่เลือกเพื่อล็อคกะที่เหลือฃ
-  const [selectShiftCheck, setSelectShiftCheck] = useState({ checked: {} });
+  const [selectShiftCheck, setSelectShiftCheck] = useState({});
 
   // function ล็อกปุ่มเมื่อเลือกเวร  //แก้
-  const onSelectedChange = (name) => {
-    if (name) {
-      setSelectShiftCheck(
-        selectShiftCheck.checked.name.filter((shiftName) => shiftName !== name)
-      );
-    } else {
-      setSelectShiftCheck(() => ({
-        checked: name,
-      }));
-    }
-  };
-  const shiftName = selectShiftCheck.checked;
-  const disabled =
-    selectShiftCheck.checked === "ช" ||
-    selectShiftCheck.checked === "บ" ||
-    selectShiftCheck.checked === "ด";
-  console.log("disabled=", disabled);
-  console.log("shiftName=", shiftName);
+  // const onSelectedChange = (shiftName) => {
+  //   const name = selectShiftCheck.find((selectName) => selectName.name === shiftName) 
+  //   if (name) {
+  //     setSelectShiftCheck(
+  //       selectShiftCheck.filter((setName) => setName.name !== name )
+  //     );
+  //   } else {
+  //     setSelectShiftCheck(() => ({
+  //       checked: name,
+  //     }));
+  //   }
+  // };
+  // const { checked } = selectShiftCheck
+  // const checkedCount = Object.keys(checked).filter(key => checked[key]).length;
+  // const disabled = checkedCount >= 2
+  // console.log("disabled=", disabled);
   console.log("selectShift=", selectShiftCheck);
 
   // function เพิ่มข้อมูล
@@ -79,6 +79,24 @@ export default function ModalCreate({
       );
     }
   };
+
+    // function อัพเดท OT
+    const onUpdate = (onUpdate) => {
+      const exist = checkUpdateShift.find(
+        (updateShift) => updateShift.id === onUpdate.id
+      );
+  
+      if (exist) {
+        setCheckUpdateShift(
+          checkUpdateShift.filter((updateShift) => updateShift.id !== onUpdate.id)
+        );
+      } else {
+        setCheckUpdateShift([
+          ...checkUpdateShift,
+          { isOT: false },
+        ]);
+      }
+    };
 
   // ฟังก์ชั่นเลือกกะที่ต้องการลบ
   const onCheckDelete = (onDelete) => {
@@ -205,14 +223,18 @@ export default function ModalCreate({
                                           checkDuty.shifId === shif.id
                                       );
                                       //เช็คว่ามีค่า shiftId ของกะนั้นอยู่ใน state หรือไม่
-                                      if (event.target.checked !== true) {
-                                        onCheckDelete(dutySelect); //แก้
-                                      } else {
-                                        onCheck(shif); //แก้
-                                      }
+                                        if(event.target.checked === true){
+                                          onCheck(shif);
+                                        }else{
+                                          if (dutySelect) {
+                                            onCheckDelete(dutySelect);
+                                          }else{
+                                            onCheck(shif);
+                                          }
+                                        }
                                     }}
-                                    onChange={() => onSelectedChange(shif.name)} //แก้
-                                    disabled={!shiftName[index] && disabled} //แก้
+                                    // onChange={() => onSelectedChange(shif.name)} //แก้
+                                    // disabled={!checked[index] && disabled} //แก้
                                   />
                                   <label
                                     htmlFor={"shift" + index}
@@ -243,14 +265,18 @@ export default function ModalCreate({
                                         ? false
                                         : true
                                     }
-                                    onClick={() => {
-                                      onSelectOT(shif);
-                                    }}
                                     defaultChecked={dutyOfDay?.find(
                                       (checkDuty) =>
                                         checkDuty.shifId === shif.id &&
                                         checkDuty.isOT === true
                                     )}
+                                    onClick={(event) => {
+                                      if (event.target.checked === true) {
+                                        onSelectOT(shif);
+                                      }else{
+                                        onUpdate(shif.id);
+                                      }
+                                    }}
                                   />
                                   <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-700"></div>
                                   <span className="ml-3 text-xl font-medium text-gray-900">
@@ -268,12 +294,17 @@ export default function ModalCreate({
                   </form>
                   {console.log("ADD", checkListShift)}
                   {console.log("DELETE", checkDeleteShift)}
+                  {console.log("UPDATE", checkUpdateShift)}
                   <div className="mt-4">
                     <button
                       type="button"
                       className="inline-flex justify-center rounded-md border border-transparent bg-green-100 px-4 py-2 text-sm font-medium text-green-800 hover:bg-green-700 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-green focus-visible:ring-offset-2"
                       onClick={async () => {
                         const shiftData = checkListShift;
+
+                        shiftData.sort((a, b) => {
+                          return a.id - b.id;
+                        })
 
                         await deleteDutyById();
                         if (!shiftData) {
