@@ -158,7 +158,6 @@ export const TableCurrentMonth = () => {
                 </td>
                 <td className="border">{person.Position.name}</td>
                 <td className="border">{person.Location.name}</td>
-
                 {/* แสดงรายละเอียดของตาราง กะ */}
                 {arrayDayInMonth.map((day, index) => (
                   <ModalCreate

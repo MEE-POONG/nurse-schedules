@@ -21,6 +21,18 @@ export default function ModalCreate({
   const [dutyOfDay, setDutyOfDay] = useState(
     Duty?.filter(({ datetime }) => dayjs(datetime).format("DD") == day)
   );
+  const [dutyIsShift, setDutyIsShift] = useState(null)
+
+    const ruleCheckbox = (isShif) => {
+      setDutyIsShift(() => {
+        if (isShif == true) {
+          return true
+        }else{
+          return false
+        }
+      }
+      );
+    };
 
   useEffect(() => {
     setDutyOfDay(
@@ -131,10 +143,12 @@ export default function ModalCreate({
                                     type="checkbox"
                                     value={shif.id}
                                     className="checkbox-shift w-4 h-4 bg-gray-100 border-gray-300 accent-green-700 cursor-pointer"
-                                    checked={dutyOfDay?.find(
+                                    defaultChecked={dutyOfDay?.find(
                                       (checkDuty) =>
                                         checkDuty.shifId === shif.id
                                     )}
+                                    onChange={() => ruleCheckbox(document.getElementById("shift" + index)?.checked)}
+                                    disabled={ dutyIsShift && !shif.isShif }
                                     onClick={() => {
                                       setDutyOfDay((oldState) => {
                                         let returnState = [...oldState];
@@ -160,6 +174,7 @@ export default function ModalCreate({
                                       });
                                     }}
                                   />
+                                  {console.log("isShif", dutyIsShift)}
                                   <label
                                     htmlFor={"shift" + index}
                                     className="ml-2 text-xl font-medium text-gray-700"
@@ -185,11 +200,12 @@ export default function ModalCreate({
                                         ? false
                                         : true
                                     }
-                                    checked={dutyOfDay?.find(
+                                    defaultChecked={dutyOfDay?.find(
                                       (checkDuty) =>
                                         checkDuty.shifId === shif.id &&
                                         checkDuty.isOT === true
-                                    )}
+                                    )
+                                  }
                                     onClick={() => {
                                       setDutyOfDay((oldState) => {
                                         return oldState.map((item) => {
@@ -206,7 +222,19 @@ export default function ModalCreate({
                                       });
                                     }}
                                   />
-                                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-700"></div>
+                                  {console.log("defaultDutyOfDay=",defaultDutyOfDay)}
+                                  {console.log("dutyOfDay=",dutyOfDay)}
+                                  <div
+                                    className={`w-11 h-6 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-700
+                                    ${dutyOfDay?.find(
+                                      (checkDuty) =>
+                                        checkDuty.shifId === shif.id &&
+                                        checkDuty.isOT === false
+                                    )
+                                    ? 'bg-gray-200'
+                                    : 'bg-red-600'
+                                  }`}
+                                  ></div>
                                   <span className="ml-3 text-xl font-medium text-gray-900">
                                     โอที
                                   </span>
@@ -240,11 +268,7 @@ export default function ModalCreate({
                         });
 
                         if (
-                          shiftData
-                            .map(({ shifId }) => {
-                              return shifId;
-                            })
-                            .includes(2) &&
+                          shiftData.map(({ shifId }) => {return shifId;}).includes(2) &&
                           shiftData
                             .map(({ shifId }) => {
                               return shifId;
@@ -264,10 +288,9 @@ export default function ModalCreate({
                           alert("กรุณาเลือกกะการทำงาน");
                           return;
                         }
-
+                        setShowModal(false);
                         await executeDuty({ data: shiftData });
                         await getUserList();
-                        setShowModal(false);
                       }}
                     >
                       บันทึกข้อมูล

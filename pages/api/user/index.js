@@ -1,5 +1,10 @@
 import { prisma } from "@/utils/prisma";
 
+const firstDay = new Date();
+firstDay.setDate(1);
+const lastDay = new Date();
+lastDay.setMonth(lastDay.getMonth() + 1, 0);
+
 export default async function handler(req, res) {
   const { method } = req;
   switch (method) {
@@ -10,8 +15,8 @@ export default async function handler(req, res) {
             Duty: {
               include: { Shif: true },
               where: {
-                AND: { datetime: { gte: new Date("2022-12-01") } },
-                datetime: { lte: new Date("2022-12-31") },
+                AND: { datetime: { gte: new Date(firstDay.toISOString().slice(0, 10)) } },
+                datetime: { lte: new Date(lastDay.toISOString().slice(0, 10)) },
               },
             },
             Location: true,
