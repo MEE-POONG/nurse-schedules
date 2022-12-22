@@ -21,7 +21,7 @@ export default function ModalCreate({
   const [dutyOfDay, setDutyOfDay] = useState(
     Duty?.filter(({ datetime }) => dayjs(datetime).format("DD") == day)
   );
-  const [dutyIsShift, setDutyIsShift] = useState(null)
+  const [dutyIsShift, setDutyIsShift] = useState()
 
     const ruleCheckbox = (isShif) => {
       setDutyIsShift(() => {
