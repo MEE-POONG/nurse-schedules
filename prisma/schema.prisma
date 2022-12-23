@@ -3,14 +3,14 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
 model Duty {
-  id       Int      @id @default(autoincrement())
-  shifId   Int
-  userId   Int
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  shifId   String   @db.ObjectId
+  userId   String   @db.ObjectId
   datetime DateTime @default(now())
   isOT     Boolean?
   Shif     Shif?    @relation(fields: [shifId], references: [id])
@@ -18,19 +18,19 @@ model Duty {
 }
 
 model Location {
-  id   Int    @id @default(autoincrement())
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
   name String @unique
   User User[]
 }
 
 model Position {
-  id   Int    @id @default(autoincrement())
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
   name String @unique
   User User[]
 }
 
 model Shif {
-  id       Int      @id @default(autoincrement())
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
   name     String   @unique
   isShif   Boolean?
   isDayOff Boolean?
@@ -38,12 +38,12 @@ model Shif {
 }
 
 model User {
-  id         Int       @id @default(autoincrement())
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
   firstname  String?
   lastname   String?
-  locationId Int
-  positionId Int
-  titleId    Int
+  locationId String    @db.ObjectId
+  positionId String    @db.ObjectId
+  titleId    String    @db.ObjectId
   Duty       Duty[]
   Location   Location? @relation(fields: [locationId], references: [id])
   Position   Position? @relation(fields: [positionId], references: [id])
@@ -51,7 +51,7 @@ model User {
 }
 
 model Title {
-  id   Int    @id @default(autoincrement())
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
   name String @unique
   User User[]
 }
