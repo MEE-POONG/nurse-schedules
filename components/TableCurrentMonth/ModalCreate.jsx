@@ -1,5 +1,5 @@
 import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import dayjs from "dayjs";
 import { monthTH, yearTH, yearEN, monthEN } from "@/utils/day";
 
@@ -21,18 +21,29 @@ export default function ModalCreate({
   const [dutyOfDay, setDutyOfDay] = useState(
     Duty?.filter(({ datetime }) => dayjs(datetime).format("DD") == day)
   );
-  const [dutyIsShift, setDutyIsShift] = useState()
 
-    const ruleCheckbox = (isShif) => {
-      setDutyIsShift(() => {
-        if (isShif == true) {
-          return true
-        }else{
-          return false
-        }
-      }
-      );
-    };
+  // const [dutyIsShift, setDutyIsShift] = useState([]);
+
+  // const ruleCheckbox = (element, index) => {
+  //   setDutyIsShift((prevState) => {
+  //     if (document.getElementById("shift" + index)?.checked) {
+  //       if (
+  //         element.value === "ช" ||
+  //         element.value === "บ" ||
+  //         element.value === "ด"
+  //       ) {
+  //         return [...prevState, element.value];
+  //       } else if (element.value === "x" || element.value === "ลาพัก") {
+  //         return [...prevState, element.value];
+  //       } else {
+  //         return prevState.filter((value) => value !== element.value);
+  //       }
+  //     } else {
+  //       return prevState.filter((value) => value !== element.value);
+  //     }
+  //   });
+  // };
+
 
   useEffect(() => {
     setDutyOfDay(
@@ -78,6 +89,7 @@ export default function ModalCreate({
           onClose={async () => {
             setShowModal(false);
             setDutyOfDay(defaultDutyOfDay);
+            // setDutyIsShift([]);
           }}
         >
           <Transition.Child
@@ -141,14 +153,53 @@ export default function ModalCreate({
                                     id={"shift" + index}
                                     name={"shift" + index}
                                     type="checkbox"
-                                    value={shif.id}
-                                    className="checkbox-shift w-4 h-4 bg-gray-100 border-gray-300 accent-green-700 cursor-pointer"
+                                    value={shif.name}
+                                    className="checkbox-shift w-4 h-4 bg-gray-100 border-gray-300 accent-green-700 cursor-pointer disabled:cursor-auto"
                                     defaultChecked={dutyOfDay?.find(
                                       (checkDuty) =>
                                         checkDuty.shifId === shif.id
                                     )}
-                                    onChange={() => ruleCheckbox(document.getElementById("shift" + index)?.checked)}
-                                    disabled={ dutyIsShift && !shif.isShif }
+                                    // onChange={() =>
+                                    //   ruleCheckbox(
+                                    //     document.getElementById(
+                                    //       "shift" + index
+                                    //     ),
+                                    //     index
+                                    //   )
+                                    // }
+                                    // disabled={
+                                    //   dutyIsShift[0] === "ช" ||
+                                    //   dutyIsShift[0] === "บ" ||
+                                    //   dutyIsShift[0] === "ด"
+                                    //     ? dutyIsShift.length < 2
+                                    //       ? !shif.isShif && true
+                                    //       : !document.getElementById("shift" + index).checked && true
+                                    //     : false ||
+                                    //       dutyIsShift[0] === "x" ||
+                                    //       dutyIsShift[0] === "ลาพัก"
+                                    //     ? (dutyIsShift[0] !== "x" ||
+                                    //         dutyIsShift[0] !== "ลาพัก") &&
+                                    //       !document.getElementById(
+                                    //         "shift" + index
+                                    //       ).checked
+                                    //     : false
+                                    // }
+                                    disabled={
+                                      dutyOfDay?.slice(0,1).map((firstDuty)=> firstDuty.Shif.name)[0] === "ช" ||
+                                      dutyOfDay?.slice(0,1).map((firstDuty)=> firstDuty.Shif.name)[0] === "บ" ||
+                                      dutyOfDay?.slice(0,1).map((firstDuty)=> firstDuty.Shif.name)[0] === "ด"
+                                        ? dutyOfDay.length < 2
+                                          ? !shif.isShif
+                                          : !document.getElementById("shift" + index)?.checked
+                                        : false ||
+                                        dutyOfDay?.slice(0,1).map((firstDuty)=> firstDuty.Shif.name)[0] === "x" ||
+                                        dutyOfDay?.slice(0,1).map((firstDuty)=> firstDuty.Shif.name)[0] === "ลาพัก"
+                                        ? (dutyOfDay?.slice(0,1).map((firstDuty)=> firstDuty.Shif.name)[0] !== "x" ||
+                                        dutyOfDay?.slice(0,1).map((firstDuty)=> firstDuty.Shif.name)[0] !== "ลาพัก") &&
+                                          !document.getElementById("shift" + index)?.checked
+                                        : false
+                                    }
+                                   
                                     onClick={() => {
                                       setDutyOfDay((oldState) => {
                                         let returnState = [...oldState];
@@ -174,7 +225,6 @@ export default function ModalCreate({
                                       });
                                     }}
                                   />
-                                  {console.log("isShif", dutyIsShift)}
                                   <label
                                     htmlFor={"shift" + index}
                                     className="ml-2 text-xl font-medium text-gray-700"
@@ -204,8 +254,7 @@ export default function ModalCreate({
                                       (checkDuty) =>
                                         checkDuty.shifId === shif.id &&
                                         checkDuty.isOT === true
-                                    )
-                                  }
+                                    )}
                                     onClick={() => {
                                       setDutyOfDay((oldState) => {
                                         return oldState.map((item) => {
@@ -222,18 +271,17 @@ export default function ModalCreate({
                                       });
                                     }}
                                   />
-                                  {console.log("defaultDutyOfDay=",defaultDutyOfDay)}
-                                  {console.log("dutyOfDay=",dutyOfDay)}
                                   <div
                                     className={`w-11 h-6 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-700
-                                    ${dutyOfDay?.find(
-                                      (checkDuty) =>
-                                        checkDuty.shifId === shif.id &&
-                                        checkDuty.isOT === false
-                                    )
-                                    ? 'bg-gray-200'
-                                    : 'bg-red-600'
-                                  }`}
+                                    ${
+                                      dutyOfDay?.find(
+                                        (checkDuty) =>
+                                          checkDuty.shifId === shif.id &&
+                                          checkDuty.isOT === false
+                                      )
+                                        ? "bg-gray-200"
+                                        : "bg-red-600"
+                                    }`}
                                   ></div>
                                   <span className="ml-3 text-xl font-medium text-gray-900">
                                     โอที
@@ -248,6 +296,10 @@ export default function ModalCreate({
                       </div>
                     </div>
                   </form>
+                  {console.log("dutyOfDay=",dutyOfDay)}
+                  {/* {console.log("dutyOfDay=",dutyOfDay)}
+                  {console.log("defaultDutyOfDay=",defaultDutyOfDay)}
+                  {console.log("firstDuty",defaultDutyOfDay?.slice(0,1).map((firstDuty)=> firstDuty.Shif.name)[0])} */}
                   <div className="mt-4">
                     <button
                       type="button"
@@ -258,38 +310,40 @@ export default function ModalCreate({
                             userId: userId,
                             day: day,
                             shifId: duty.shifId,
+                            code: duty.Shif.code,
                             isOT: duty.isOT,
                           };
                         });
+
                         shiftData = _.uniqBy(shiftData, "shifId");
 
                         shiftData = shiftData.sort((a, b) => {
-                          return a.shifId - b.shifId;
+                          return a.code - b.code;
                         });
-
                         if (
-                          shiftData.map(({ shifId }) => {return shifId;}).includes(2) &&
                           shiftData
-                            .map(({ shifId }) => {
-                              return shifId;
+                            .map(({ code }) => {
+                              return code;
+                            })
+                            .includes(2) &&
+                          shiftData
+                            .map(({ code }) => {
+                              return code;
                             })
                             .includes(3)
                         ) {
                           shiftData = shiftData.sort((a, b) => {
-                            const idA = a.shifId;
-                            const idB = b.shifId;
+                            const idA = a.code;
+                            const idB = b.code;
 
                             return idB - idA;
                           });
                         }
-
                         await deleteDutyById(defaultDutyOfDay);
-                        if (!shiftData) {
-                          alert("กรุณาเลือกกะการทำงาน");
-                          return;
+                        if (shiftData.length != 0) {
+                          executeDuty({ data: shiftData });
                         }
-                        setShowModal(false);
-                        await executeDuty({ data: shiftData });
+                        await setShowModal(false);
                         await getUserList();
                       }}
                     >

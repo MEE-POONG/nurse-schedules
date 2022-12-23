@@ -1,12 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 
 export default function DefaultNavbar() {
+
+  const [isNavCollapsed, setIsNavCollapsed] = useState(true);
+  const handleNavCollapse = () => setIsNavCollapsed(!isNavCollapsed);
   return (
     <div className="bg-gray-100 font-sans w-full m-0 border-solid border-t-2 border-green-700">
       <div className="bg-white shadow-xl">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between py-4">
-            <div>
+            <div className="cursor-pointer">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="w-10 h-10 text-green-700"
@@ -37,19 +40,13 @@ export default function DefaultNavbar() {
             <div className="hidden sm:flex sm:items-center">
               <a
                 href="#"
-                className="text-gray-800 text-sm font-semibold hover:text-green-700 mr-4"
-              >
-                เข้าสู่ระบบ
-              </a>
-              <a
-                href="#"
                 className="text-gray-800 text-sm font-semibold border px-4 py-2 rounded-lg hover:text-green-700 hover:border-green-700"
               >
                 ลงทะเบียน
               </a>
             </div>
 
-            <div className="sm:hidden cursor-pointer">
+            <div className="sm:hidden cursor-pointer" onClick={handleNavCollapse}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="w-6 h-6 text-green-700"
@@ -63,27 +60,21 @@ export default function DefaultNavbar() {
             </div>
           </div>
 
-          <div className="block sm:hidden bg-white border-t-2 py-2">
+          <div className={`${isNavCollapsed ? 'hidden' : 'block'} sm:hidden bg-white border-t-2 py-2`}>
             <div className="flex flex-col">
               <a
                 href="#"
-                className="text-gray-800 text-sm font-semibold hover:text-green-700 mb-1"
+                className="text-gray-800 text-sm font-semibold hover:text-green-700 mb-1 flex justify-center"
               >
                 หน้าแรก
               </a>
               <a
                 href="#"
-                className="text-gray-800 text-sm font-semibold hover:text-green-700 mb-1"
+                className="text-gray-800 text-sm font-semibold hover:text-green-700 mb-1 flex justify-center"
               >
                 สรุปยอด
               </a>
-              <div className="flex justify-between items-center border-t-2 pt-2">
-                <a
-                  href="#"
-                  className="text-gray-800 text-sm font-semibold hover:text-green-700 mr-4"
-                >
-                  เข้าสู่ระบบ
-                </a>
+              <div className="flex justify-center items-center border-t-2 pt-2">
                 <a
                   href="#"
                   className="text-gray-800 text-sm font-semibold border px-4 py-1 rounded-lg hover:text-green-700 hover:border-green-700"

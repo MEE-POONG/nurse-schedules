@@ -4,27 +4,27 @@ export default async function handler(req, res) {
   const { method } = req;
   switch (method) {
     case "PUT":
-    try {
-      const data = await prisma.duty.update({
-        where: {
-          id: +req.query.id,
-        },
-        data: {
-          isOT: req.body.isOT,
-        }
-      });
-      await prisma.$disconnect();
-      res.status(200).json(data);
-    } catch (error) {
-      await prisma.$disconnect();
-      res.status(400).json({ success: false });
-    }
-    break;
+      try {
+        const data = await prisma.duty.update({
+          where: {
+            id: req.query.id,
+          },
+          data: {
+            isOT: req.body.isOT,
+          },
+        });
+        await prisma.$disconnect();
+        res.status(200).json(data);
+      } catch (error) {
+        await prisma.$disconnect();
+        res.status(400).json({ success: false });
+      }
+      break;
     case "DELETE":
       try {
         const data = await prisma.duty.delete({
           where: {
-            id: +req.query.id,
+            id: req.query.id,
           },
         });
         await prisma.$disconnect();
