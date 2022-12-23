@@ -1,0 +1,57 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Duty {
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  shifId   String   @db.ObjectId
+  userId   String   @db.ObjectId
+  datetime DateTime @default(now())
+  isOT     Boolean?
+  Shif     Shif?    @relation(fields: [shifId], references: [id])
+  User     User?    @relation(fields: [userId], references: [id])
+}
+
+model Location {
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  name String @unique
+  User User[]
+}
+
+model Position {
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  name String @unique
+  User User[]
+}
+
+model Shif {
+  id       String   @id @default(auto()) @map("_id") @db.ObjectId
+  name     String   @unique
+  isShif   Boolean?
+  isDayOff Boolean?
+  Duty     Duty[]
+}
+
+model User {
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  firstname  String?
+  lastname   String?
+  locationId String    @db.ObjectId
+  positionId String    @db.ObjectId
+  titleId    String    @db.ObjectId
+  Duty       Duty[]
+  Location   Location? @relation(fields: [locationId], references: [id])
+  Position   Position? @relation(fields: [positionId], references: [id])
+  Title      Title?    @relation(fields: [titleId], references: [id])
+}
+
+model Title {
+  id   String @id @default(auto()) @map("_id") @db.ObjectId
+  name String @unique
+  User User[]
+}
