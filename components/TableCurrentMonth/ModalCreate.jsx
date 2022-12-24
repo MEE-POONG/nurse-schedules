@@ -15,8 +15,12 @@ export default function ModalCreate({
   userLoading,
 }) {
   const [showModal, setShowModal] = useState(false);
-  const [defaultDutyOfDay, setDefaultDutyOfDay] = useState(Duty?.filter(({ datetime }) => dayjs(datetime).format("DD") == day));
-  const [dutyOfDay, setDutyOfDay] = useState(Duty?.filter(({ datetime }) => dayjs(datetime).format("DD") == day));
+  const [defaultDutyOfDay, setDefaultDutyOfDay] = useState(
+    Duty?.filter(({ datetime }) => dayjs(datetime).format("DD") == day)
+  );
+  const [dutyOfDay, setDutyOfDay] = useState(
+    Duty?.filter(({ datetime }) => dayjs(datetime).format("DD") == day)
+  );
 
   useEffect(() => {
     setDutyOfDay(
@@ -27,31 +31,37 @@ export default function ModalCreate({
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userLoading]);
-  
 
   const ruleDuty = (name) => {
-    if (dutyOfDay?.filter(({ Shif }) => ["ช", "บ", "ด"].includes(Shif.name)).length > 0) {
+    if (
+      dutyOfDay?.filter(({ Shif }) => ["ช", "บ", "ด"].includes(Shif.name))
+        .length > 0
+    ) {
       if (dutyOfDay.length === 2) {
         return !dutyOfDay.map(({ Shif }) => Shif.name).includes(name);
       }
       return !["ช", "บ", "ด"].includes(name);
     }
-    if (dutyOfDay?.filter(({ Shif }) => ["x", "ลาพัก"].includes(Shif.name)).length > 0) {
+    if (
+      dutyOfDay?.filter(({ Shif }) => ["x", "ลาพัก"].includes(Shif.name))
+        .length > 0
+    ) {
       if (dutyOfDay.length === 1) {
         return !dutyOfDay.map(({ Shif }) => Shif.name).includes(name);
       }
       return !["x", "ลาพัก"].includes(name);
     }
-  }
+  };
   return (
     <>
       <td
-        className={`border hover:bg-green-300 cursor-pointer text-xs ${["เสาร์", "อาทิตย์"].includes(
-          dayjs(`${yearEN}-${monthEN}-${day}`).format("dddd")
-        )
-          ? "bg-lime-100"
-          : ""
-          }`}
+        className={`border hover:bg-green-300 cursor-pointer text-xs ${
+          ["เสาร์", "อาทิตย์"].includes(
+            dayjs(`${yearEN}-${monthEN}-${day}`).format("dddd")
+          )
+            ? "bg-lime-100"
+            : ""
+        }`}
         onClick={() => setShowModal(true)}
       >
         {dutyOfDay.map(({ Shif, isOT }, index) => {
@@ -132,7 +142,9 @@ export default function ModalCreate({
                             key={index}
                             className="grid space-y-2 mt-2 rounded-lg shadow"
                           >
-                            <label className={`bg-white p-3 justify-between flex w-full pr-8 border-gray-400 rounded-md text-sm focus:border-green-700 focus:ring-green-700`}>
+                            <label
+                              className={`bg-white p-3 justify-between flex w-full pr-8 border-gray-400 rounded-md text-sm focus:border-green-700 focus:ring-green-700`}
+                            >
                               <div>
                                 <div className="flex items-center mr-4">
                                   <input
@@ -146,7 +158,6 @@ export default function ModalCreate({
                                         checkDuty.shifId === shif.id
                                     )}
                                     disabled={ruleDuty(shif.name)}
-
                                     onClick={() => {
                                       setDutyOfDay((oldState) => {
                                         let returnState = [...oldState];
@@ -181,8 +192,8 @@ export default function ModalCreate({
                                 </div>
                               </div>
                               {shif.name === "ช" ||
-                                shif.name === "บ" ||
-                                shif.name === "ด" ? (
+                              shif.name === "บ" ||
+                              shif.name === "ด" ? (
                                 <label className="inline-flex relative items-center cursor-pointer">
                                   <input
                                     id={"otShift" + index}
@@ -220,14 +231,15 @@ export default function ModalCreate({
                                   />
                                   <div
                                     className={`w-11 h-6 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-700
-                                    ${dutyOfDay?.find(
-                                      (checkDuty) =>
-                                        checkDuty.shifId === shif.id &&
-                                        checkDuty.isOT === false
-                                    )
+                                    ${
+                                      dutyOfDay?.find(
+                                        (checkDuty) =>
+                                          checkDuty.shifId === shif.id &&
+                                          checkDuty.isOT === false
+                                      )
                                         ? "bg-gray-200"
                                         : "bg-red-600"
-                                      }`}
+                                    }`}
                                   ></div>
                                   <span className="ml-3 text-xl font-medium text-gray-900">
                                     โอที
@@ -242,8 +254,6 @@ export default function ModalCreate({
                       </div>
                     </div>
                   </form>
-                  {console.log('dutyOfDay',dutyOfDay)}
-                  {console.log('defaultDutyOfDay',defaultDutyOfDay)}
                   <div className="mt-4">
                     <button
                       type="button"
