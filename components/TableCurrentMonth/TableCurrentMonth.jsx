@@ -139,14 +139,13 @@ export const TableCurrentMonth = () => {
           {/* ข้อมูลการขึ้นเวร */}
           {user?.map((person, key) => {
             const afternoonShift = person?.Duty?.filter(
-              ({ Shif }) => Shif?.name == "บ"
+              ({ Shif,isOT }) => Shif?.name == "บ" && !isOT
             )?.length;
             const nightShift = person?.Duty?.filter(
-              ({ Shif }) => Shif?.name == "ด"
+              ({ Shif,isOT }) => Shif?.name == "ด" && !isOT
             )?.length;
-            // console.log(person.Duty);
-            const workingDay = person?.Duty?.filter(({ Shif }) =>
-              ["ช","บ","ด"].includes(Shif?.name) //แก้
+            const workingDay = person?.Duty?.filter(({ Shif,isOT }) =>
+              ["ช","บ","ด"].includes(Shif?.name) && !isOT
             )?.length;
             const ot = person?.Duty?.filter(({ isOT }) => isOT)?.length;
             return (
