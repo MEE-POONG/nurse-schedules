@@ -22,29 +22,6 @@ export default function ModalCreate({
     Duty?.filter(({ datetime }) => dayjs(datetime).format("DD") == day)
   );
 
-  // const [dutyIsShift, setDutyIsShift] = useState([]);
-
-  // const ruleCheckbox = (element, index) => {
-  //   setDutyIsShift((prevState) => {
-  //     if (document.getElementById("shift" + index)?.checked) {
-  //       if (
-  //         element.value === "ช" ||
-  //         element.value === "บ" ||
-  //         element.value === "ด"
-  //       ) {
-  //         return [...prevState, element.value];
-  //       } else if (element.value === "x" || element.value === "ลาพัก") {
-  //         return [...prevState, element.value];
-  //       } else {
-  //         return prevState.filter((value) => value !== element.value);
-  //       }
-  //     } else {
-  //       return prevState.filter((value) => value !== element.value);
-  //     }
-  //   });
-  // };
-
-
   useEffect(() => {
     setDutyOfDay(
       Duty?.filter(({ datetime }) => dayjs(datetime).format("DD") == day)
@@ -146,7 +123,7 @@ export default function ModalCreate({
                             key={index}
                             className="grid space-y-2 mt-2 rounded-lg shadow"
                           >
-                            <label className="p-3 justify-between flex w-full pr-8 bg-white border border-gray-400 rounded-md text-sm focus:border-green-700 focus:ring-green-700">
+                            <label className="p-3 justify-between flex w-full pr-8 border-gray-400 rounded-md text-sm focus:border-green-700 focus:ring-green-700">
                               <div>
                                 <div className="flex items-center mr-4">
                                   <input
@@ -159,31 +136,6 @@ export default function ModalCreate({
                                       (checkDuty) =>
                                         checkDuty.shifId === shif.id
                                     )}
-                                    // onChange={() =>
-                                    //   ruleCheckbox(
-                                    //     document.getElementById(
-                                    //       "shift" + index
-                                    //     ),
-                                    //     index
-                                    //   )
-                                    // }
-                                    // disabled={
-                                    //   dutyIsShift[0] === "ช" ||
-                                    //   dutyIsShift[0] === "บ" ||
-                                    //   dutyIsShift[0] === "ด"
-                                    //     ? dutyIsShift.length < 2
-                                    //       ? !shif.isShif && true
-                                    //       : !document.getElementById("shift" + index).checked && true
-                                    //     : false ||
-                                    //       dutyIsShift[0] === "x" ||
-                                    //       dutyIsShift[0] === "ลาพัก"
-                                    //     ? (dutyIsShift[0] !== "x" ||
-                                    //         dutyIsShift[0] !== "ลาพัก") &&
-                                    //       !document.getElementById(
-                                    //         "shift" + index
-                                    //       ).checked
-                                    //     : false
-                                    // }
                                     disabled={
                                       dutyOfDay?.slice(0,1).map((firstDuty)=> firstDuty.Shif.name)[0] === "ช" ||
                                       dutyOfDay?.slice(0,1).map((firstDuty)=> firstDuty.Shif.name)[0] === "บ" ||
@@ -296,10 +248,6 @@ export default function ModalCreate({
                       </div>
                     </div>
                   </form>
-                  {console.log("dutyOfDay=",dutyOfDay)}
-                  {/* {console.log("dutyOfDay=",dutyOfDay)}
-                  {console.log("defaultDutyOfDay=",defaultDutyOfDay)}
-                  {console.log("firstDuty",defaultDutyOfDay?.slice(0,1).map((firstDuty)=> firstDuty.Shif.name)[0])} */}
                   <div className="mt-4">
                     <button
                       type="button"
