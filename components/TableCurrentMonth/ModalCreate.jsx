@@ -1,5 +1,5 @@
 import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import dayjs from "dayjs";
 import { monthTH, yearTH, yearEN, monthEN } from "@/utils/day";
 
@@ -297,8 +297,9 @@ export default function ModalCreate({
                         if (shiftData.length != 0) {
                           await executeDuty({ data: shiftData });
                         }
-                        await setShowModal(false);
                         await getUserList();
+                        await setShowModal(false);
+                        
                       }}
                     >
                       บันทึกข้อมูล
