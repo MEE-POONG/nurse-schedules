@@ -5,7 +5,11 @@ export default async function handler(req, res) {
     switch (method) {
         case 'GET':
             try {
-                const data = await prisma.shif.findMany();
+                const data = await prisma.shif.findMany({
+                    orderBy: {
+                        id: 'asc'
+                    }
+                });
                 await prisma.$disconnect();
                 res.status(200).json(data)
             } catch (error) {

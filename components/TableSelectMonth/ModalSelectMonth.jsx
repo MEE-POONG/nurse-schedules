@@ -1,9 +1,8 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useEffect, useState } from "react";
 import dayjs from "dayjs";
-import { monthTH, yearTH, yearEN, monthEN } from "@/utils/day";
 
-export default function ModalCreate({
+export default function ModalSelectMonth({
   userId,
   Duty,
   day,
@@ -13,6 +12,10 @@ export default function ModalCreate({
   executeDuty,
   deleteDuty,
   userLoading,
+  monthEN,
+  monthTH,
+  yearEN,
+  yearTH,
 }) {
   const [showModal, setShowModal] = useState(false);
   const [defaultDutyOfDay, setDefaultDutyOfDay] = useState(

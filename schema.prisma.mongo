@@ -31,7 +31,6 @@ model Position {
 
 model Shif {
   id       String   @id @default(auto()) @map("_id") @db.ObjectId
-  code     Int?
   name     String   @unique
   isShif   Boolean?
   isDayOff Boolean?

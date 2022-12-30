@@ -1,21 +1,21 @@
 import useAxios from "axios-hooks";
 import React from "react";
-import ModalCreate from "./ModalCreate";
-import {
+import LoadingComponent from "../LoadingComponent";
+import ErrorComponent from "../ErrorComponent";
+import _ from "lodash";
+import dayjs from "dayjs";
+import ModalSelectMonth from "./ModalSelectMonth";
+import {  
   arrayDayInMonth,
   daysInMonth,
   monthEN,
   monthTH,
   yearEN,
-  yearTH,
-} from "@/utils/day";
-import LoadingComponent from "../LoadingComponent";
-import ErrorComponent from "../ErrorComponent";
-import _ from "lodash";
-import dayjs from "dayjs";
+  yearTH,} from "@/utils/daySelect";
 var isoWeek = require("dayjs/plugin/isoWeek");
 dayjs.extend(isoWeek);
-export const TableCurrentMonth = () => {
+export const TableSelectMonth = () => {
+
   const [{ data: user, loading: userLoading, error: userError }, getUserList] =
     useAxios({ url: "/api/user" });
   const [{ data: shif, loading: shifLoading, error: shifError }] = useAxios({
@@ -30,6 +30,7 @@ export const TableCurrentMonth = () => {
 
   if (userError || shifError || dutyError || dutyDeleteError)
     return <ErrorComponent />;
+
 
   return (
     <div className="w-100 bg-white shadow-xl p-5 m-10 rounded-md overflow-x-auto">
@@ -138,13 +139,13 @@ export const TableCurrentMonth = () => {
           {/* ข้อมูลการขึ้นเวร */}
           {user?.map((person, key) => {
             const afternoonShift = person?.Duty?.filter(
-              ({ Shif,isOT }) => Shif?.name == "บ" && !isOT
+              ({ Shif, isOT }) => Shif?.name == "บ" && !isOT
             )?.length;
             const nightShift = person?.Duty?.filter(
-              ({ Shif,isOT }) => Shif?.name == "ด" && !isOT
+              ({ Shif, isOT }) => Shif?.name == "ด" && !isOT
             )?.length;
-            const workingDay = person?.Duty?.filter(({ Shif,isOT }) =>
-              ["ช","บ","ด"].includes(Shif?.name) && !isOT
+            const workingDay = person?.Duty?.filter(
+              ({ Shif, isOT }) => ["ช", "บ", "ด"].includes(Shif?.name) && !isOT
             )?.length;
             const ot = person?.Duty?.filter(({ isOT }) => isOT)?.length;
             return (
@@ -158,7 +159,7 @@ export const TableCurrentMonth = () => {
                 <td className="border">{person.Location.name}</td>
                 {/* แสดงรายละเอียดของตาราง กะ */}
                 {arrayDayInMonth?.map((day, index) => (
-                   <ModalCreate
+                  <ModalSelectMonth
                     key={index}
                     userId={person.id}
                     Duty={person.Duty}
@@ -169,6 +170,10 @@ export const TableCurrentMonth = () => {
                     executeDuty={executeDuty}
                     deleteDuty={deleteDuty}
                     userLoading={userLoading}
+                    monthEN={monthEN}
+                    monthTH={monthTH}
+                    yearEN={yearEN}
+                    yearTH={yearTH}
                   />
                 ))}
                 <td className="border">{afternoonShift}</td>
