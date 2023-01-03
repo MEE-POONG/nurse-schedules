@@ -23,11 +23,7 @@ export default async function handler(req, res) {
             shifId: dutyData.shifId,
             userId: dutyData.userId,
             isOT: dutyData.isOT,
-            datetime: dayjs(
-              `${dayjs().year()}-${dayjs().month() + 1}-${dutyData.day}`
-            )
-              .add(7, "hour")
-              .format(),
+            datetime: dayjs(dutyData.day).add(7, "hour").format(),
           })),
         });
         await prisma.$disconnect();

@@ -265,7 +265,7 @@ export default function ModalSelectMonth({
                         let shiftData = dutyOfDay.map((duty) => {
                           return {
                             userId: userId,
-                            day: day,
+                            day: yearEN+'-'+monthEN+'-'+day,
                             shifId: duty.shifId,
                             code: duty.Shif.code,
                             isOT: duty.isOT,

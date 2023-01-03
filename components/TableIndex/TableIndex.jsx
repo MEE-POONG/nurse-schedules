@@ -3,22 +3,20 @@ import React from "react";
 import DropDownDate from "../DropDownDate/DropDownDate";
 import { TableSelectMonth } from "../TableSelectMonth/TableSelectMonth";
 
-const inputM = 4
-const inputY = 2023
+const inputM = '';
+const inputY = '';
 
 export default function TableIndex() {
-
   return (
     <>
       <div className="text-center mt-6">
-        <DropDownDate/>
+        <DropDownDate />
       </div>
-      {
-        inputM === ''  && inputY === '' 
-        ?<TableCurrentMonth/>
-        :<TableSelectMonth
-        />
-      }
+      {inputM === '' && inputY === '' ? (
+        <TableCurrentMonth />
+      ) : (
+        <TableSelectMonth />
+      )}
     </>
   );
 }

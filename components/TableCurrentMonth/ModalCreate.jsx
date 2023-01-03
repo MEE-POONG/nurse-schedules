@@ -254,6 +254,7 @@ export default function ModalCreate({
                       </div>
                     </div>
                   </form>
+                  {console.log('DutyOfDay',dutyOfDay)}
                   <div className="mt-4">
                     <button
                       type="button"
@@ -262,7 +263,7 @@ export default function ModalCreate({
                         let shiftData = dutyOfDay.map((duty) => {
                           return {
                             userId: userId,
-                            day: day,
+                            day: yearEN+'-'+monthEN+'-'+day,
                             shifId: duty.shifId,
                             code: duty.Shif.code,
                             isOT: duty.isOT,

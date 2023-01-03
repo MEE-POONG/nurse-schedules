@@ -11,7 +11,7 @@ import {
   monthEN,
   monthTH,
   yearEN,
-  yearTH,} from "@/utils/daySelect";
+  yearTH,} from "@/utils/day";
 var isoWeek = require("dayjs/plugin/isoWeek");
 dayjs.extend(isoWeek);
 export const TableSelectMonth = () => {

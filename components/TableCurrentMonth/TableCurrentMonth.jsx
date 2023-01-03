@@ -123,6 +123,9 @@ export const TableCurrentMonth = () => {
                     : "bg-orange-600"
                 } `}
               >
+                {console.log(["เสาร์", "อาทิตย์"].includes(
+                    dayjs(`${yearEN}-${monthEN}-${day + 1}`).format("dddd")
+                  ))}
                 {day + 1}
               </td>
             ))}
