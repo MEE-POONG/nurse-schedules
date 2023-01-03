@@ -3,7 +3,7 @@ import "dayjs/locale/th";
 
 //รับค่าวันที่
 export default function dayFunction(inputM, inputY) {
-  const inputMonth = inputM === '' ? new Date().getMonth() + 1 : inputM;
+  const inputMonth = inputM === '' ? new Date().getMonth() : inputM;
   const inputYear = inputY === '' ? new Date().getFullYear() : inputY;
   const daysInMonth = dayjs(`${inputMonth}`).daysInMonth();
   const arrayDayInMonth = Array.from(Array(daysInMonth).keys());

@@ -5,13 +5,6 @@ import ErrorComponent from "../ErrorComponent";
 import _ from "lodash";
 import dayjs from "dayjs";
 import ModalSelectMonth from "./ModalSelectMonth";
-// import {
-//   arrayDayInMonth,
-//   daysInMonth,
-//   monthEN,
-//   monthTH,
-//   yearEN,
-//   yearTH,} from "@/utils/day";
 var isoWeek = require("dayjs/plugin/isoWeek");
 dayjs.extend(isoWeek);
 export const TableSelectMonth = ({
@@ -21,9 +14,11 @@ export const TableSelectMonth = ({
   yearEN,
   monthTH,
   yearTH,
+  inputM,
+  inputY,
 }) => {
   const [{ data: user, loading: userLoading, error: userError }, getUserList] =
-    useAxios({ url: "/api/user/selectMonth" });
+    useAxios({ url: `/api/user/selectMonth?month=${inputM}&year=${inputY}`, method: "GET" });
   const [{ data: shif, loading: shifLoading, error: shifError }] = useAxios({
     url: "/api/shif",
   });
