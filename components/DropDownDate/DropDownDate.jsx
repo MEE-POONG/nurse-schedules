@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 
 export default function DropDownDate() {
-  const [date, setDate] = useState({ month: "", year: "" });
 
-  const year = 2021;
+  const [date, setDate] = useState({ month: "", year: "" });
+  const year = 2022;
   return (
     <>
     <label htmlFor="">เดือน</label>
@@ -66,7 +66,7 @@ export default function DropDownDate() {
               value={year + i}
               className={`${
                 year + i === new Date().getFullYear()
-                  ? "bg-green-500 text-white"
+                  ? "bg-green-600 text-white"
                   : ""
               }`}
             >

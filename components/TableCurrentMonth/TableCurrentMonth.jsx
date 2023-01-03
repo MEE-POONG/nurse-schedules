@@ -1,21 +1,28 @@
 import useAxios from "axios-hooks";
 import React from "react";
 import ModalCreate from "./ModalCreate";
-import {
-  arrayDayInMonth,
-  daysInMonth,
-  monthEN,
-  monthTH,
-  yearEN,
-  yearTH,
-} from "@/utils/day";
+// import {
+//   arrayDayInMonth,
+//   daysInMonth,
+//   monthEN,
+//   monthTH,
+//   yearEN,
+//   yearTH,
+// } from "@/utils/day";
 import LoadingComponent from "../LoadingComponent";
 import ErrorComponent from "../ErrorComponent";
 import _ from "lodash";
 import dayjs from "dayjs";
 var isoWeek = require("dayjs/plugin/isoWeek");
 dayjs.extend(isoWeek);
-export const TableCurrentMonth = () => {
+export const TableCurrentMonth = ({
+  daysInMonth,
+  arrayDayInMonth,
+  monthEN,
+  yearEN,
+  monthTH,
+  yearTH,
+}) => {
   const [{ data: user, loading: userLoading, error: userError }, getUserList] =
     useAxios({ url: "/api/user" });
   const [{ data: shif, loading: shifLoading, error: shifError }] = useAxios({
@@ -45,7 +52,7 @@ export const TableCurrentMonth = () => {
               <div className="text-center text-xl">
                 ตารางเวรประจำเดือน.........................{monthTH}
                 .........................พ.ศ...............{yearTH}
-                ................
+                ................  current
               </div>
             </td>
           </tr>
@@ -123,9 +130,6 @@ export const TableCurrentMonth = () => {
                     : "bg-orange-600"
                 } `}
               >
-                {console.log(["เสาร์", "อาทิตย์"].includes(
-                    dayjs(`${yearEN}-${monthEN}-${day + 1}`).format("dddd")
-                  ))}
                 {day + 1}
               </td>
             ))}
@@ -141,13 +145,13 @@ export const TableCurrentMonth = () => {
           {/* ข้อมูลการขึ้นเวร */}
           {user?.map((person, key) => {
             const afternoonShift = person?.Duty?.filter(
-              ({ Shif,isOT }) => Shif?.name == "บ" && !isOT
+              ({ Shif, isOT }) => Shif?.name == "บ" && !isOT
             )?.length;
             const nightShift = person?.Duty?.filter(
-              ({ Shif,isOT }) => Shif?.name == "ด" && !isOT
+              ({ Shif, isOT }) => Shif?.name == "ด" && !isOT
             )?.length;
-            const workingDay = person?.Duty?.filter(({ Shif,isOT }) =>
-              ["ช","บ","ด"].includes(Shif?.name) && !isOT
+            const workingDay = person?.Duty?.filter(
+              ({ Shif, isOT }) => ["ช", "บ", "ด"].includes(Shif?.name) && !isOT
             )?.length;
             const ot = person?.Duty?.filter(({ isOT }) => isOT)?.length;
             return (
@@ -161,7 +165,7 @@ export const TableCurrentMonth = () => {
                 <td className="border">{person.Location.name}</td>
                 {/* แสดงรายละเอียดของตาราง กะ */}
                 {arrayDayInMonth?.map((day, index) => (
-                   <ModalCreate
+                  <ModalCreate
                     key={index}
                     userId={person.id}
                     Duty={person.Duty}
@@ -172,6 +176,10 @@ export const TableCurrentMonth = () => {
                     executeDuty={executeDuty}
                     deleteDuty={deleteDuty}
                     userLoading={userLoading}
+                    monthEN={monthEN}
+                    yearEN={yearEN}
+                    monthTH={monthTH}
+                    yearTH={yearTH}
                   />
                 ))}
                 <td className="border">{afternoonShift}</td>

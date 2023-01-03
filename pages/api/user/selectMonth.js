@@ -31,28 +31,8 @@ export default async function handler(req, res) {
         res.status(400).json({ success: false });
       }
       break;
-    case "POST":
-      try {
-        await prisma.product.create({
-          data: {
-            name: req.body.name,
-            price: parseInt(req.body.price),
-            description: req.body.description,
-            image: req.body.image,
-            categoryId: req.body.categoryId,
-            amount: parseInt(req.body.amount),
-            unitId: req.body.unitId,
-          },
-        });
-        await prisma.$disconnect();
-        res.status(201).json({ success: true });
-      } catch (error) {
-        await prisma.$disconnect();
-        res.status(400).json({ success: false });
-      }
-      break;
     default:
-      res.setHeader("Allow", ["GET", "POST"]);
+      res.setHeader("Allow", ["GET"]);
       res.status(405).end(`Method ${method} Not Allowed`);
   }
 }

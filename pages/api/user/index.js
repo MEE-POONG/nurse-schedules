@@ -3,8 +3,8 @@ import dayjs from "dayjs";
 
 export default async function handler(req, res) {
 
-const firstDay = dayjs().startOf('month');
-const lastDay = dayjs().endOf('month');
+  const firstDay = dayjs().startOf("month");
+  const lastDay = dayjs().endOf("month");
 
   const { method } = req;
   switch (method) {

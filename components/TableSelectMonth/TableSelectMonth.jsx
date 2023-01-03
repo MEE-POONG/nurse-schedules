@@ -5,19 +5,25 @@ import ErrorComponent from "../ErrorComponent";
 import _ from "lodash";
 import dayjs from "dayjs";
 import ModalSelectMonth from "./ModalSelectMonth";
-import {  
-  arrayDayInMonth,
-  daysInMonth,
-  monthEN,
-  monthTH,
-  yearEN,
-  yearTH,} from "@/utils/day";
+// import {
+//   arrayDayInMonth,
+//   daysInMonth,
+//   monthEN,
+//   monthTH,
+//   yearEN,
+//   yearTH,} from "@/utils/day";
 var isoWeek = require("dayjs/plugin/isoWeek");
 dayjs.extend(isoWeek);
-export const TableSelectMonth = () => {
-
+export const TableSelectMonth = ({
+  daysInMonth,
+  arrayDayInMonth,
+  monthEN,
+  yearEN,
+  monthTH,
+  yearTH,
+}) => {
   const [{ data: user, loading: userLoading, error: userError }, getUserList] =
-    useAxios({ url: "/api/user" });
+    useAxios({ url: "/api/user/selectMonth" });
   const [{ data: shif, loading: shifLoading, error: shifError }] = useAxios({
     url: "/api/shif",
   });
@@ -30,7 +36,6 @@ export const TableSelectMonth = () => {
 
   if (userError || shifError || dutyError || dutyDeleteError)
     return <ErrorComponent />;
-
 
   return (
     <div className="w-100 bg-white shadow-xl p-5 m-10 rounded-md overflow-x-auto">
@@ -46,7 +51,7 @@ export const TableSelectMonth = () => {
               <div className="text-center text-xl">
                 ตารางเวรประจำเดือน.........................{monthTH}
                 .........................พ.ศ...............{yearTH}
-                ................
+                ................  select
               </div>
             </td>
           </tr>

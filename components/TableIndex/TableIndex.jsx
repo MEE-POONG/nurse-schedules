@@ -1,21 +1,23 @@
 import { TableCurrentMonth } from "@/components/TableCurrentMonth/TableCurrentMonth";
+import dayFunction from "@/utils/day";
 import React from "react";
 import DropDownDate from "../DropDownDate/DropDownDate";
 import { TableSelectMonth } from "../TableSelectMonth/TableSelectMonth";
-
 const inputM = '';
 const inputY = '';
+
+const {daysInMonth,arrayDayInMonth,monthEN,yearEN,monthTH,yearTH} = dayFunction(inputM,inputY)
 
 export default function TableIndex() {
   return (
     <>
       <div className="text-center mt-6">
-        <DropDownDate />
+        <DropDownDate/>
       </div>
       {inputM === '' && inputY === '' ? (
-        <TableCurrentMonth />
+        <TableCurrentMonth daysInMonth={daysInMonth} arrayDayInMonth={arrayDayInMonth}  monthEN={monthEN} yearEN={yearEN} monthTH={monthTH} yearTH={yearTH}/>
       ) : (
-        <TableSelectMonth />
+        <TableSelectMonth daysInMonth={daysInMonth} arrayDayInMonth={arrayDayInMonth}  monthEN={monthEN} yearEN={yearEN} monthTH={monthTH} yearTH={yearTH}/>
       )}
     </>
   );
