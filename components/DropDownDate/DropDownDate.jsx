@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-
+import React from "react";
+import { useDispatch } from "react-redux";
+import { setMonth, setYear } from "store/dateSlice";
 export default function DropDownDate() {
-
-  const [date, setDate] = useState({ month: "", year: "" });
+  const dispatch = useDispatch()
   const year = 2022;
   return (
     <>
@@ -21,7 +21,7 @@ export default function DropDownDate() {
         </svg>
         <select
           onChange={(event) => {
-            setDate((prev) => ({ ...prev, month: event.target.value }));
+            dispatch(setMonth(event.target.value));
           }}
           className="border border-gray-300 shadow-md rounded-full text-gray-600 h-10 pl-5 pr-10 bg-white hover:border-green-500 focus:border-green-500 focus:outline-none appearance-none"
         >
@@ -55,7 +55,7 @@ export default function DropDownDate() {
         </svg>
         <select
           onChange={(event) => {
-            setDate((prev) => ({ ...prev, year: event.target.value }));
+            dispatch(setYear( event.target.value ));
           }}
           className="border border-gray-300 shadow-md rounded-full text-gray-600 h-10 pl-5 pr-10 bg-white hover:border-green-500 focus:border-green-500 focus:outline-none appearance-none"
         >

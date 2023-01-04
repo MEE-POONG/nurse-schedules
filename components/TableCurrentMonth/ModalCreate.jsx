@@ -257,7 +257,6 @@ export default function ModalCreate({
                       </div>
                     </div>
                   </form>
-                  {console.log('DutyOfDay',dutyOfDay)}
                   <div className="mt-4">
                     <button
                       type="button"
