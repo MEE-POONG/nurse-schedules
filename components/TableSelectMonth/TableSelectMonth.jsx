@@ -1,5 +1,5 @@
 import useAxios from "axios-hooks";
-import React from "react";
+import React, { useEffect } from "react";
 import LoadingComponent from "../LoadingComponent";
 import ErrorComponent from "../ErrorComponent";
 import _ from "lodash";
@@ -17,8 +17,11 @@ export const TableSelectMonth = ({
   inputM,
   inputY,
 }) => {
+
+
   const [{ data: user, loading: userLoading, error: userError }, getUserList] =
     useAxios({ url: `/api/user/selectMonth?month=${inputM}&year=${inputY}`, method: "GET" });
+
   const [{ data: shif, loading: shifLoading, error: shifError }] = useAxios({
     url: "/api/shif",
   });
@@ -28,6 +31,14 @@ export const TableSelectMonth = ({
   );
   const [{ loading: dutyDeleteLoading, error: dutyDeleteError }, deleteDuty] =
     useAxios({ url: "/api/duty", method: "DELETE" }, { manual: true });
+
+  useEffect(() => {
+    const getUsers = async() => {
+      await getUserList()
+    }
+    getUsers()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inputM,inputY]);
 
   if (userError || shifError || dutyError || dutyDeleteError)
     return <ErrorComponent />;

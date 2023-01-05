@@ -34,7 +34,7 @@ export default function TableIndex() {
       {inputM === "" || inputY === "" ? (
         <TableCurrentMonth daysInMonth={daysInMonth} arrayDayInMonth={arrayDayInMonth}  monthEN={monthEN} yearEN={yearEN} monthTH={monthTH} yearTH={yearTH}/>
       ) : (
-        <TableSelectMonth daysInMonth={daysInMonth} arrayDayInMonth={arrayDayInMonth}  monthEN={monthEN} yearEN={yearEN} monthTH={monthTH} yearTH={yearTH} inputM={inputM} inputY={inputY}/>
+        <TableSelectMonth daysInMonth={daysInMonth} arrayDayInMonth={arrayDayInMonth}  monthEN={monthEN} yearEN={yearEN} monthTH={monthTH} yearTH={yearTH} inputM={monthValue} inputY={yearValue}/>
       )}
     </>
   );
