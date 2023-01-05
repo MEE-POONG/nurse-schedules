@@ -24,7 +24,6 @@ export default function DropDownDate() {
           onChange={(event) => {
             dispatch(setMonth(event.target.value));
           }}
-          value={date.month}
           className="border border-gray-300 shadow-md rounded-full text-gray-600 h-10 pl-5 pr-10 bg-white hover:border-green-500 focus:border-green-500 focus:outline-none appearance-none"
         >
           <option value={""}>-- เลือกเดือน --</option>
@@ -59,7 +58,6 @@ export default function DropDownDate() {
           onChange={(event) => {
             dispatch(setYear( event.target.value ));
           }}
-          value={date.year}
           className="border border-gray-300 shadow-md rounded-full text-gray-600 h-10 pl-5 pr-10 bg-white hover:border-green-500 focus:border-green-500 focus:outline-none appearance-none"
         >
           <option value={""}>-- เลือกปี --</option>
