@@ -1,4 +1,5 @@
-import { TableCurrentMonth } from "@/components/TableCurrentMonth/TableCurrentMonth";
+
+import { selectedDateState } from " atoms/selectedDate";
 import dayFunction from "@/utils/day";
 import React from "react";
 import { useSelector } from "react-redux";
@@ -29,13 +30,19 @@ export default function TableIndex() {
   return (
     <>
       <div className="text-center mt-6">
-        <DropDownDate/>
+        {value === null ? '' : <DropDownDate />}
       </div>
+<<<<<<< HEAD
       {inputM === "" || inputY === "" ? (
         <TableCurrentMonth daysInMonth={daysInMonth} arrayDayInMonth={arrayDayInMonth}  monthEN={monthEN} yearEN={yearEN} monthTH={monthTH} yearTH={yearTH}/>
       ) : (
         <TableSelectMonth daysInMonth={daysInMonth} arrayDayInMonth={arrayDayInMonth}  monthEN={monthEN} yearEN={yearEN} monthTH={monthTH} yearTH={yearTH} inputM={inputM} inputY={inputY}/>
       )}
+=======
+      {value === null ? '' :
+        <TableSelectMonth daysInMonth={value?.daysInMonth} arrayDayInMonth={value?.arrayDayInMonth} monthEN={value?.monthEN} yearEN={value?.yearEN} monthTH={value?.monthTH} yearTH={value?.yearTH} inputM={month} inputY={year} />
+      }
+>>>>>>> 4826c1516395c88d1827c6b7ca82ef1847ac6387
     </>
   );
 }

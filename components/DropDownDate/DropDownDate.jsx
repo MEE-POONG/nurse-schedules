@@ -4,12 +4,13 @@ import { setMonth, setYear } from "store/dateSlice";
 export default function DropDownDate() {
   const dispatch = useDispatch()
   const year = 2022;
+
   return (
     <>
     <label htmlFor="">เดือน</label>
       <div className="relative inline-flex mx-2">
         <svg
-          class="w-2 h-2 absolute top-0 right-0 m-4 pointer-events-none"
+          className="w-2 h-2 absolute top-0 right-0 m-4 pointer-events-none"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 412 232"
         >
@@ -23,6 +24,7 @@ export default function DropDownDate() {
           onChange={(event) => {
             dispatch(setMonth(event.target.value));
           }}
+          value={date.month}
           className="border border-gray-300 shadow-md rounded-full text-gray-600 h-10 pl-5 pr-10 bg-white hover:border-green-500 focus:border-green-500 focus:outline-none appearance-none"
         >
           <option value={""}>-- เลือกเดือน --</option>
@@ -43,7 +45,7 @@ export default function DropDownDate() {
       <label htmlFor="">ปี</label>
       <div className="relative inline-flex mx-2">
         <svg
-          class="w-2 h-2 absolute top-0 right-0 m-4 pointer-events-none"
+          className="w-2 h-2 absolute top-0 right-0 m-4 pointer-events-none"
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 412 232"
         >
@@ -57,9 +59,10 @@ export default function DropDownDate() {
           onChange={(event) => {
             dispatch(setYear( event.target.value ));
           }}
+          value={date.year}
           className="border border-gray-300 shadow-md rounded-full text-gray-600 h-10 pl-5 pr-10 bg-white hover:border-green-500 focus:border-green-500 focus:outline-none appearance-none"
         >
-          <option value={''}>-- เลือกปี --</option>
+          <option value={""}>-- เลือกปี --</option>
           {Array.from(new Array(5), (v, i) => (
             <option
               key={i}
