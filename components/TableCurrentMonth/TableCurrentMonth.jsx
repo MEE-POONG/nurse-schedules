@@ -8,6 +8,7 @@ import dayjs from "dayjs";
 import { BsPrinterFill } from "react-icons/bs";
 import * as htmlToImage from 'html-to-image';
 import { toPng, toJpeg, toBlob, toPixelData, toSvg } from "html-to-image";
+import download from "downloadjs";
 var isoWeek = require("dayjs/plugin/isoWeek");
 dayjs.extend(isoWeek);
 export const TableCurrentMonth = ({
@@ -247,9 +248,7 @@ export const TableCurrentMonth = ({
     htmlToImage
       .toJpeg(node)
       .then(function (dataUrl) {
-        var img = new Image();
-        img.src = dataUrl;
-        document.body.appendChild(img);
+        download(dataUrl, 'my-node.png');
       })
       .catch(function (error) {
         console.error("oops, something went wrong!", error);
