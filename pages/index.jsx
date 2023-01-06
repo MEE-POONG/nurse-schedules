@@ -7,6 +7,5 @@ export default function Home() {
     <Provider store={store}>
       <TableIndex />
     </Provider>
-      
   );
 }
