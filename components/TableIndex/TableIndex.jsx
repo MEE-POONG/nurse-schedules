@@ -1,5 +1,5 @@
 import dayFunction from "@/utils/day";
-import React from "react";
+import React, { useEffect } from "react";
 import { useSelector } from "react-redux";
 import DropDownDate from "../DropDownDate/DropDownDate";
 import { TableCurrentMonth } from "../TableCurrentMonth/TableCurrentMonth";
@@ -7,6 +7,7 @@ import { TableSelectMonth } from "../TableSelectMonth/TableSelectMonth";
 
 export default function TableIndex() {
   const { dateStore } = useSelector((state) => ({...state}))
+
 
   //function เช็คค่าวันที่
   const checkDateValue = (month,year) => {
@@ -26,6 +27,7 @@ export default function TableIndex() {
   const inputY = dateStore.value.year
   const {monthValue,yearValue} = checkDateValue(inputM,inputY)
   const {daysInMonth,arrayDayInMonth,monthEN,yearEN,monthTH,yearTH} = dayFunction(monthValue,yearValue)
+  
   return (
     <>
       <div className="text-center mt-6">

@@ -5,6 +5,8 @@ import ErrorComponent from "../ErrorComponent";
 import _ from "lodash";
 import dayjs from "dayjs";
 import ModalSelectMonth from "./ModalSelectMonth";
+import { useSelector } from "react-redux";
+import { BsPrinterFill } from "react-icons/bs";
 var isoWeek = require("dayjs/plugin/isoWeek");
 dayjs.extend(isoWeek);
 export const TableSelectMonth = ({
@@ -17,7 +19,7 @@ export const TableSelectMonth = ({
   inputM,
   inputY,
 }) => {
-
+  const { dateStore } = useSelector((state) => ({...state}))
 
   const [{ data: user, loading: userLoading, error: userError }, getUserList] =
     useAxios({ url: `/api/user/selectMonth?month=${inputM}&year=${inputY}`, method: "GET" });
@@ -38,12 +40,19 @@ export const TableSelectMonth = ({
     }
     getUsers()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [inputM,inputY]);
+  }, [dateStore]);
 
   if (userError || shifError || dutyError || dutyDeleteError)
     return <ErrorComponent />;
 
   return (
+    <>
+    <div className="w-full flex justify-center items-center">
+      <button class="bg-green-600 hover:bg-green-800 text-white font-bold mt-6 -mb-10 py-2 px-4 rounded-xl inline-flex items-center">
+        <BsPrinterFill className="my-auto"/>
+        <span className="mx-2">ออกรายงาน</span>
+      </button>
+    </div>
     <div className="w-100 bg-white shadow-xl p-5 m-10 rounded-md overflow-x-auto">
       {userLoading || shifLoading || dutyLoading || dutyDeleteLoading ? (
         <LoadingComponent />
@@ -57,7 +66,7 @@ export const TableSelectMonth = ({
               <div className="text-center text-xl">
                 ตารางเวรประจำเดือน.........................{monthTH}
                 .........................พ.ศ...............{yearTH}
-                ................  select
+                ................
               </div>
             </td>
           </tr>
@@ -233,6 +242,7 @@ export const TableSelectMonth = ({
         </tbody>
       </table>
     </div>
+    </>
   );
 
   function sumDuty(array) {

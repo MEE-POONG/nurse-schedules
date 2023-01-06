@@ -1,18 +1,11 @@
 import useAxios from "axios-hooks";
 import React from "react";
 import ModalCreate from "./ModalCreate";
-// import {
-//   arrayDayInMonth,
-//   daysInMonth,
-//   monthEN,
-//   monthTH,
-//   yearEN,
-//   yearTH,
-// } from "@/utils/day";
 import LoadingComponent from "../LoadingComponent";
 import ErrorComponent from "../ErrorComponent";
 import _ from "lodash";
 import dayjs from "dayjs";
+import { BsPrinterFill } from "react-icons/bs";
 var isoWeek = require("dayjs/plugin/isoWeek");
 dayjs.extend(isoWeek);
 export const TableCurrentMonth = ({
@@ -39,6 +32,13 @@ export const TableCurrentMonth = ({
     return <ErrorComponent />;
 
   return (
+    <>
+    <div className="flex justify-end items-end w-11/12">
+      <button class="bg-green-600 hover:bg-green-800 text-white font-bold mt-6 -mb-10 py-2 px-4 rounded-xl inline-flex items-center">
+        <BsPrinterFill className="my-auto"/>
+        <span className="mx-2">ออกรายงาน</span>
+      </button>
+    </div>
     <div className="w-100 bg-white shadow-xl p-5 m-10 rounded-md overflow-x-auto">
       {userLoading || shifLoading || dutyLoading || dutyDeleteLoading ? (
         <LoadingComponent />
@@ -52,7 +52,7 @@ export const TableCurrentMonth = ({
               <div className="text-center text-xl">
                 ตารางเวรประจำเดือน.........................{monthTH}
                 .........................พ.ศ...............{yearTH}
-                ................  current
+                ................
               </div>
             </td>
           </tr>
@@ -228,6 +228,7 @@ export const TableCurrentMonth = ({
         </tbody>
       </table>
     </div>
+    </>
   );
 
   function sumDuty(array) {
