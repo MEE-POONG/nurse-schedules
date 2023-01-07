@@ -110,7 +110,7 @@ export const TableSelectMonth = ({
               สรุป
             </td>
             <td
-              className="border bg-green-600 min-w-[50px]"
+              className="border bg-green-600 min-w-[30px]"
               colSpan={1}
               rowSpan={1}
             >
@@ -124,7 +124,7 @@ export const TableSelectMonth = ({
               วันทำ
             </td>
             <td
-              className="border bg-green-600 min-w-[60px]"
+              className="border bg-green-600 min-w-[50px]"
               colSpan={1}
               rowSpan={1}
             >
@@ -147,11 +147,11 @@ export const TableSelectMonth = ({
                 {day + 1}
               </td>
             ))}
-            <td className="border bg-cyan-600 text-white min-w-[35px]">บ</td>
-            <td className="border bg-cyan-600 text-white min-w-[35px]">ด</td>
-            <td className="border bg-green-600 text-white min-w-[35px]">ที</td>
-            <td className="border bg-green-600 text-white min-w-[35px]">การ</td>
-            <td className="border bg-green-600 text-white min-w-[35px]">
+            <td className="border bg-cyan-600 text-white min-w-[30px]">บ</td>
+            <td className="border bg-cyan-600 text-white min-w-[30px]">ด</td>
+            <td className="border bg-green-600 text-white min-w-[30px]">ที</td>
+            <td className="border bg-green-600 text-white min-w-[30px]">การ</td>
+            <td className="border bg-green-600 text-white min-w-[30px]">
               ทำงาน
             </td>
           </tr>

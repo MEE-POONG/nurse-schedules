@@ -1,16 +1,16 @@
 import useAxios from "axios-hooks";
-import React from "react";
+import React, { useRef } from "react";
 import ModalCreate from "./ModalCreate";
 import LoadingComponent from "../LoadingComponent";
 import ErrorComponent from "../ErrorComponent";
 import _ from "lodash";
 import dayjs from "dayjs";
 import { BsPrinterFill } from "react-icons/bs";
-import * as htmlToImage from 'html-to-image';
-import { toPng, toJpeg, toBlob, toPixelData, toSvg } from "html-to-image";
-import download from "downloadjs";
+import { useReactToPrint } from "react-to-print";
+import printStyle from "@/utils/printStyle";
 var isoWeek = require("dayjs/plugin/isoWeek");
 dayjs.extend(isoWeek);
+
 export const TableCurrentMonth = ({
   daysInMonth,
   arrayDayInMonth,
@@ -31,14 +31,21 @@ export const TableCurrentMonth = ({
   const [{ loading: dutyDeleteLoading, error: dutyDeleteError }, deleteDuty] =
     useAxios({ url: "/api/duty", method: "DELETE" }, { manual: true });
 
+    //React to print
+  const componentRef = useRef();
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+    documentTitle: `รายงานตารางเวรประจำเดือน ${monthTH} ${yearTH}`
+  })
+
   if (userError || shifError || dutyError || dutyDeleteError)
     return <ErrorComponent />;
 
- 
   return (
     <>
+      <style>{printStyle()}</style>
       <div className="flex justify-end items-end w-11/12">
-        <button onClick={printImage} class="bg-green-600 hover:bg-green-800 text-white font-bold mt-6 -mb-10 py-2 px-4 rounded-xl inline-flex items-center">
+        <button onClick={handlePrint} className="bg-green-600 hover:bg-green-800 text-white font-bold mt-6 -mb-10 py-2 px-4 rounded-xl inline-flex items-center">
           <BsPrinterFill className="my-auto" />
           <span className="mx-2">ออกรายงาน</span>
         </button>
@@ -50,8 +57,8 @@ export const TableCurrentMonth = ({
           <></>
         )}
         <table
-          id="my-node"
-          className="border-collapse border w-full text-center shadow-md border-spacing-2"
+          ref={componentRef}
+          className="shift-table border-collapse border text-center border-spacing-2 mx-auto"
         >
           <tbody>
             <tr className="bg-white">
@@ -103,11 +110,11 @@ export const TableCurrentMonth = ({
                 สรุป
               </td>
               <td
-                className="border bg-green-600 min-w-[50px]"
+                className="border bg-green-600 min-w-[30px]"
                 colSpan={1}
                 rowSpan={1}
               >
-                โอ {}
+                โอ
               </td>
               <td
                 className="border bg-green-600 min-w-[50px]"
@@ -117,7 +124,7 @@ export const TableCurrentMonth = ({
                 วันทำ
               </td>
               <td
-                className="border bg-green-600 min-w-[60px]"
+                className="border bg-green-600 min-w-[50px]"
                 colSpan={1}
                 rowSpan={1}
               >
@@ -140,15 +147,15 @@ export const TableCurrentMonth = ({
                   {day + 1}
                 </td>
               ))}
-              <td className="border bg-cyan-600 text-white min-w-[35px]">บ</td>
-              <td className="border bg-cyan-600 text-white min-w-[35px]">ด</td>
-              <td className="border bg-green-600 text-white min-w-[35px]">
+              <td className="border bg-cyan-600 text-white min-w-[30px]">บ</td>
+              <td className="border bg-cyan-600 text-white min-w-[30px]">ด</td>
+              <td className="border bg-green-600 text-white min-w-[30px]">
                 ที
               </td>
-              <td className="border bg-green-600 text-white min-w-[35px]">
+              <td className="border bg-green-600 text-white min-w-[30px]">
                 การ
               </td>
-              <td className="border bg-green-600 text-white min-w-[35px]">
+              <td className="border bg-green-600 text-white min-w-[30px]">
                 ทำงาน
               </td>
             </tr>
@@ -243,17 +250,7 @@ export const TableCurrentMonth = ({
     </>
   );
 
-  function printImage() {
-    var node = document.getElementById("my-node")
-    htmlToImage
-      .toJpeg(node)
-      .then(function (dataUrl) {
-        download(dataUrl, 'my-node.png');
-      })
-      .catch(function (error) {
-        console.error("oops, something went wrong!", error);
-      });
-  }
+
 
   function sumDuty(array) {
     return _.sumBy(user, function (o) {
