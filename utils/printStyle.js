@@ -8,8 +8,9 @@ export default function printStyle() {
             size: A4 landscape;
         }
         .shift-table{
-            transform: scale(0.85);
             margin-top: 100px;
+            margin-left: 3rem;
+            margin-right: 3rem;
         }
       }`;
 }

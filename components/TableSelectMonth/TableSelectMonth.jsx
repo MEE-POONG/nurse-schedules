@@ -74,11 +74,11 @@ export const TableSelectMonth = ({
       )}
       <table 
       ref={componentRef}
-      className="shift-table border-collapse border text-center border-spacing-2 mx-auto">
+      className="shift-table border-collapse border text-center border-spacing-2 mx-auto text-sm">
         <tbody>
           <tr className="bg-white">
             <td className="border border-white" colSpan={daysInMonth + 9}>
-              <div className="text-center text-xl">
+              <div className="text-center">
                 ตารางเวรประจำเดือน.........................{monthTH}
                 .........................พ.ศ...............{yearTH}
                 ................
@@ -101,14 +101,14 @@ export const TableSelectMonth = ({
               ชื่อ - สกุล
             </td>
             <td
-              className="border bg-green-600 min-w-[150px]"
+              className="border bg-green-600 min-w-[120px]"
               colSpan={1}
               rowSpan={2}
             >
               ตำแหน่ง
             </td>
             <td
-              className="border bg-green-600 min-w-[100px]"
+              className="border bg-green-600 min-w-[80px]"
               colSpan={1}
               rowSpan={2}
             >
@@ -151,7 +151,7 @@ export const TableSelectMonth = ({
             {arrayDayInMonth.map((day, index) => (
               <td
                 key={index}
-                className={`border text-white min-w-[35px] ${
+                className={`border text-white min-w-[30px] ${
                   ["เสาร์", "อาทิตย์"].includes(
                     dayjs(`${yearEN}-${monthEN}-${day + 1}`).format("dddd")
                   )

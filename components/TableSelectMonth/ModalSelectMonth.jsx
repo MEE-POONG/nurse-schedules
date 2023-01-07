@@ -69,7 +69,7 @@ export default function ModalSelectMonth({
   };
 
   //function change color disabled
-  const disableColorElement = (index) => {
+  const disableColorElement = (index,) => {
     const elm = document.getElementById("shift" + index);
     if (elm?.disabled == true) {
       return 'bg-red-600'
@@ -91,11 +91,11 @@ export default function ModalSelectMonth({
       >
         {dutyOfDay.map(({ Shif, isOT }, index) => {
           if (!isOT) {
-            return <span key={index}>{Shif?.name}</span>;
+            return <span className="text-[0.6rem]" key={index}>{Shif?.name}</span>;
           } else {
             return (
               <span
-                className="text-red-500 underline decoration-red-500 decoration-1"
+                className="text-red-500 text-[0.6rem] underline decoration-red-500 decoration-1"
                 key={index}
               >
                 {Shif?.name}
