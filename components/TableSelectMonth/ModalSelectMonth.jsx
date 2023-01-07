@@ -17,7 +17,6 @@ export default function ModalSelectMonth({
   yearEN,
   yearTH,
 }) {
-
   const [showModal, setShowModal] = useState(false);
   const [defaultDutyOfDay, setDefaultDutyOfDay] = useState(
     Duty?.filter(({ datetime }) => dayjs(datetime).format("DD") == day)
@@ -35,8 +34,8 @@ export default function ModalSelectMonth({
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userLoading]);
-  
 
+  //function rule checkbox shift
   const ruleDuty = (name) => {
     if (
       dutyOfDay?.filter(({ Shif }) => ["ช", "บ", "ด"].includes(Shif.name))
@@ -57,6 +56,16 @@ export default function ModalSelectMonth({
       return !["x", "ลาพัก"].includes(name);
     }
   };
+
+  //function auto uncheck OT
+  const autoUncheck = (shiftElmID,otElmID) => {
+    let targetElm = document.getElementById(shiftElmID)
+    let checkElm = document.getElementById(otElmID);
+    if (targetElm?.checked == false) {
+      checkElm.checked = false;
+    }
+  };
+
   return (
     <>
       <td
@@ -233,6 +242,7 @@ export default function ModalSelectMonth({
                                         });
                                       });
                                     }}
+                                    onChange={autoUncheck("shift" + index,"otShift" + index)}
                                   />
                                   <div
                                     className={`w-11 h-6 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-700
@@ -267,7 +277,7 @@ export default function ModalSelectMonth({
                         let shiftData = dutyOfDay.map((duty) => {
                           return {
                             userId: userId,
-                            day: yearEN+'-'+monthEN+'-'+day,
+                            day: yearEN + "-" + monthEN + "-" + day,
                             shifId: duty.shifId,
                             code: duty.Shif.code,
                             isOT: duty.isOT,
@@ -304,7 +314,6 @@ export default function ModalSelectMonth({
                         }
                         await getUserList();
                         await setShowModal(false);
-                        
                       }}
                     >
                       บันทึกข้อมูล
