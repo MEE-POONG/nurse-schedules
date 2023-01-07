@@ -18,13 +18,13 @@ export const TableSelectMonth = ({
   yearEN,
   monthTH,
   yearTH,
-  inputM,
-  inputY,
+  monthValue,
+  yearValue,
 }) => {
   const { dateStore } = useSelector((state) => ({...state}))
 
   const [{ data: user, loading: userLoading, error: userError }, getUserList] =
-    useAxios({ url: `/api/user/selectMonth?month=${inputM}&year=${inputY}`, method: "GET" });
+    useAxios({ url: `/api/user/selectMonth?month=${monthValue}&year=${yearValue}`, method: "GET" });
 
   const [{ data: shif, loading: shifLoading, error: shifError }] = useAxios({
     url: "/api/shif",

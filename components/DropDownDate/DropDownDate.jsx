@@ -1,10 +1,13 @@
+import dayFunction from "@/utils/day";
 import React from "react";
 import { useDispatch } from "react-redux";
 import { setMonth, setYear } from "store/dateSlice";
 export default function DropDownDate() {
   const dispatch = useDispatch()
-  const year = 2022;
-
+  const { monthTH,yearTH,yearEN,monthEN } = dayFunction("","")
+  const yearInt = +yearEN
+  const year = 2022
+  
   return (
     <>
     <label htmlFor="">เดือน</label>
@@ -26,7 +29,7 @@ export default function DropDownDate() {
           }}
           className="border border-gray-300 shadow-md rounded-full text-gray-600 h-10 pl-5 pr-10 bg-white hover:border-green-500 focus:border-green-500 focus:outline-none appearance-none"
         >
-          <option value={""}>-- เลือกเดือน --</option>
+          <option className="text-green-600" value={+monthEN - 1}>{monthTH}</option>
           <option value={0}>มกราคม</option>
           <option value={1}>กุมภาพันธ์</option>
           <option value={2}>มีนาคม</option>
@@ -60,7 +63,7 @@ export default function DropDownDate() {
           }}
           className="border border-gray-300 shadow-md rounded-full text-gray-600 h-10 pl-5 pr-10 bg-white hover:border-green-500 focus:border-green-500 focus:outline-none appearance-none"
         >
-          <option value={""}>-- เลือกปี --</option>
+          <option className="text-green-600" value={yearInt}>{yearTH}</option>
           {Array.from(new Array(5), (v, i) => (
             <option
               key={i}
