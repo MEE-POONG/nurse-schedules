@@ -1,5 +1,5 @@
 import useAxios from "axios-hooks";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import LoadingComponent from "../LoadingComponent";
 import ErrorComponent from "../ErrorComponent";
 import _ from "lodash";
@@ -7,6 +7,8 @@ import dayjs from "dayjs";
 import ModalSelectMonth from "./ModalSelectMonth";
 import { useSelector } from "react-redux";
 import { BsPrinterFill } from "react-icons/bs";
+import { useReactToPrint } from "react-to-print";
+import printStyle from "@/utils/printStyle";
 var isoWeek = require("dayjs/plugin/isoWeek");
 dayjs.extend(isoWeek);
 export const TableSelectMonth = ({
@@ -33,22 +35,33 @@ export const TableSelectMonth = ({
   );
   const [{ loading: dutyDeleteLoading, error: dutyDeleteError }, deleteDuty] =
     useAxios({ url: "/api/duty", method: "DELETE" }, { manual: true });
-
+    
+    //reRender userList
   useEffect(() => {
-    const getUsers = async() => {
-      await getUserList()
+    if (userLoading === false) {
+      const getUsers = async() => {
+        await getUserList()
+      }
+      getUsers()
     }
-    getUsers()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dateStore]);
+
+  //React to print
+  const componentRef = useRef();
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+    documentTitle: `รายงานตารางเวรประจำเดือน ${monthTH} ${yearTH}`
+  })
 
   if (userError || shifError || dutyError || dutyDeleteError)
     return <ErrorComponent />;
 
   return (
     <>
-    <div className="w-full flex justify-center items-center">
-      <button class="bg-green-600 hover:bg-green-800 text-white font-bold mt-6 -mb-10 py-2 px-4 rounded-xl inline-flex items-center">
+    <style>{printStyle()}</style>
+    <div className="flex justify-end items-end w-11/12">
+      <button onClick={handlePrint} className="bg-green-600 hover:bg-green-800 text-white font-bold mt-6 -mb-10 py-2 px-4 rounded-xl inline-flex items-center">
         <BsPrinterFill className="my-auto"/>
         <span className="mx-2">ออกรายงาน</span>
       </button>
@@ -59,7 +72,9 @@ export const TableSelectMonth = ({
       ) : (
         <></>
       )}
-      <table className="border-collapse border w-full text-center shadow-md border-spacing-2">
+      <table 
+      ref={componentRef}
+      className="shift-table border-collapse border text-center border-spacing-2 mx-auto">
         <tbody>
           <tr className="bg-white">
             <td className="border border-white" colSpan={daysInMonth + 9}>
