@@ -68,15 +68,6 @@ export default function ModalSelectMonth({
     }
   };
 
-  //function change color disabled
-  const disableColorElement = (index,) => {
-    const elm = document.getElementById("shift" + index);
-    if (elm?.disabled == true) {
-      return 'bg-red-600'
-    }
-    return 'bg-white'
-  };
-
   return (
     <>
       <td
@@ -168,7 +159,7 @@ export default function ModalSelectMonth({
                             className="grid space-y-2 mt-2 rounded-lg shadow"
                           >
                             <label
-                              className={`${disableColorElement(index)} p-3 justify-between flex w-full pr-8 border-gray-400 rounded-md text-sm focus:border-green-700 focus:ring-green-700`}
+                              className={`${ruleDuty(shif.name) === true ?'bg-red-500' :'bg-white'} p-3 justify-between flex w-full pr-8 border-gray-400 rounded-md text-sm focus:border-green-700 focus:ring-green-700`}
                             >
                               <div className="flex items-center mr-4">
                                 <input
