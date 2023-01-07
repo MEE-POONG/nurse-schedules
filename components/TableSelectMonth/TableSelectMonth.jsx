@@ -1,10 +1,14 @@
 import useAxios from "axios-hooks";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import LoadingComponent from "../LoadingComponent";
 import ErrorComponent from "../ErrorComponent";
 import _ from "lodash";
 import dayjs from "dayjs";
 import ModalSelectMonth from "./ModalSelectMonth";
+import { useSelector } from "react-redux";
+import { BsPrinterFill } from "react-icons/bs";
+import { useReactToPrint } from "react-to-print";
+import printStyle from "@/utils/printStyle";
 var isoWeek = require("dayjs/plugin/isoWeek");
 dayjs.extend(isoWeek);
 export const TableSelectMonth = ({
@@ -14,11 +18,14 @@ export const TableSelectMonth = ({
   yearEN,
   monthTH,
   yearTH,
-  inputM,
-  inputY,
+  monthValue,
+  yearValue,
 }) => {
+  const { dateStore } = useSelector((state) => ({...state}))
+
   const [{ data: user, loading: userLoading, error: userError }, getUserList] =
-    useAxios({ url: `/api/user/selectMonth?month=${inputM}&year=${inputY}`, method: "GET" });
+    useAxios({ url: `/api/user/selectMonth?month=${monthValue}&year=${yearValue}`, method: "GET" });
+
   const [{ data: shif, loading: shifLoading, error: shifError }] = useAxios({
     url: "/api/shif",
   });
@@ -28,25 +35,53 @@ export const TableSelectMonth = ({
   );
   const [{ loading: dutyDeleteLoading, error: dutyDeleteError }, deleteDuty] =
     useAxios({ url: "/api/duty", method: "DELETE" }, { manual: true });
+    
+    //reRender userList
+  useEffect(() => {
+    if (userLoading === false) {
+      const getUsers = async() => {
+        await getUserList()
+      }
+      getUsers()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dateStore]);
+
+  //React to print
+  const componentRef = useRef();
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+    documentTitle: `รายงานตารางเวรประจำเดือน ${monthTH} ${yearTH}`
+  })
 
   if (userError || shifError || dutyError || dutyDeleteError)
     return <ErrorComponent />;
 
   return (
+    <>
+    <style>{printStyle()}</style>
+    <div className="flex justify-end items-end w-11/12">
+      <button onClick={handlePrint} className="bg-green-600 hover:bg-green-800 text-white font-bold mt-6 -mb-10 py-2 px-4 rounded-xl inline-flex items-center">
+        <BsPrinterFill className="my-auto"/>
+        <span className="mx-2">ออกรายงาน</span>
+      </button>
+    </div>
     <div className="w-100 bg-white shadow-xl p-5 m-10 rounded-md overflow-x-auto">
       {userLoading || shifLoading || dutyLoading || dutyDeleteLoading ? (
         <LoadingComponent />
       ) : (
         <></>
       )}
-      <table className="border-collapse border w-full text-center shadow-md border-spacing-2">
+      <table 
+      ref={componentRef}
+      className="shift-table border-collapse border text-center border-spacing-2 mx-auto text-sm">
         <tbody>
           <tr className="bg-white">
             <td className="border border-white" colSpan={daysInMonth + 9}>
-              <div className="text-center text-xl">
+              <div className="text-center">
                 ตารางเวรประจำเดือน.........................{monthTH}
                 .........................พ.ศ...............{yearTH}
-                ................  select
+                ................
               </div>
             </td>
           </tr>
@@ -59,21 +94,21 @@ export const TableSelectMonth = ({
               ลำดับ
             </td>
             <td
-              className="border bg-green-600 min-w-[200px]"
+              className="border bg-green-600 min-w-[200px] sticky -left-5"
               colSpan={1}
               rowSpan={2}
             >
               ชื่อ - สกุล
             </td>
             <td
-              className="border bg-green-600 min-w-[150px]"
+              className="border bg-green-600 min-w-[120px]"
               colSpan={1}
               rowSpan={2}
             >
               ตำแหน่ง
             </td>
             <td
-              className="border bg-green-600 min-w-[100px]"
+              className="border bg-green-600 min-w-[80px]"
               colSpan={1}
               rowSpan={2}
             >
@@ -90,7 +125,7 @@ export const TableSelectMonth = ({
               สรุป
             </td>
             <td
-              className="border bg-green-600 min-w-[50px]"
+              className="border bg-green-600 min-w-[30px]"
               colSpan={1}
               rowSpan={1}
             >
@@ -104,7 +139,7 @@ export const TableSelectMonth = ({
               วันทำ
             </td>
             <td
-              className="border bg-green-600 min-w-[60px]"
+              className="border bg-green-600 min-w-[50px]"
               colSpan={1}
               rowSpan={1}
             >
@@ -116,7 +151,7 @@ export const TableSelectMonth = ({
             {arrayDayInMonth.map((day, index) => (
               <td
                 key={index}
-                className={`border text-white min-w-[35px] ${
+                className={`border text-white min-w-[30px] ${
                   ["เสาร์", "อาทิตย์"].includes(
                     dayjs(`${yearEN}-${monthEN}-${day + 1}`).format("dddd")
                   )
@@ -127,11 +162,11 @@ export const TableSelectMonth = ({
                 {day + 1}
               </td>
             ))}
-            <td className="border bg-cyan-600 text-white min-w-[35px]">บ</td>
-            <td className="border bg-cyan-600 text-white min-w-[35px]">ด</td>
-            <td className="border bg-green-600 text-white min-w-[35px]">ที</td>
-            <td className="border bg-green-600 text-white min-w-[35px]">การ</td>
-            <td className="border bg-green-600 text-white min-w-[35px]">
+            <td className="border bg-cyan-600 text-white min-w-[30px]">บ</td>
+            <td className="border bg-cyan-600 text-white min-w-[30px]">ด</td>
+            <td className="border bg-green-600 text-white min-w-[30px]">ที</td>
+            <td className="border bg-green-600 text-white min-w-[30px]">การ</td>
+            <td className="border bg-green-600 text-white min-w-[30px]">
               ทำงาน
             </td>
           </tr>
@@ -151,7 +186,7 @@ export const TableSelectMonth = ({
             return (
               <tr key={key} className="border odd:bg-green-100">
                 <td className="border">{key + 1}</td>
-                <td className="border text-left pl-3">
+                <td className={`border text-left pl-3 sticky -left-5 ${key % 2 == 0 ?"bg-white border-r-2" :"even:bg-green-100" }`}>
                   {person.Title.name}
                   {person.firstname} {person.lastname}
                 </td>
@@ -222,6 +257,7 @@ export const TableSelectMonth = ({
         </tbody>
       </table>
     </div>
+    </>
   );
 
   function sumDuty(array) {

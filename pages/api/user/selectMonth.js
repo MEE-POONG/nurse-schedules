@@ -5,7 +5,6 @@ export default async function handler(req, res) {
 
   const firstDay = dayjs().month(req.query.month).year(req.query.year).startOf("month");
   const lastDay = dayjs().month(req.query.month).year(req.query.year).endOf("month");
-
   const { method } = req;
   switch (method) {
     case "GET":
@@ -15,8 +14,8 @@ export default async function handler(req, res) {
             Duty: {
               include: { Shif: true },
               where: {
-                AND: { datetime: { gte: new Date(firstDay) } },
-                datetime: { lte: new Date(lastDay) },
+                AND: { datetime: { gte: firstDay.format()} },
+                datetime: { lte: lastDay.format() },
               },
             },
             Location: true,

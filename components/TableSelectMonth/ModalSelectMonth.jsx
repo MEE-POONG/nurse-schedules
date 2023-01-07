@@ -1,5 +1,5 @@
 import { Dialog, Transition } from "@headlessui/react";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import dayjs from "dayjs";
 
 export default function ModalSelectMonth({
@@ -25,6 +25,7 @@ export default function ModalSelectMonth({
     Duty?.filter(({ datetime }) => dayjs(datetime).format("DD") == day)
   );
 
+
   useEffect(() => {
     setDutyOfDay(
       Duty?.filter(({ datetime }) => dayjs(datetime).format("DD") == day)
@@ -34,7 +35,9 @@ export default function ModalSelectMonth({
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userLoading]);
+  
 
+  //function rule checkbox shift
   const ruleDuty = (name) => {
     if (
       dutyOfDay?.filter(({ Shif }) => ["ช", "บ", "ด"].includes(Shif.name))
@@ -55,6 +58,16 @@ export default function ModalSelectMonth({
       return !["x", "ลาพัก"].includes(name);
     }
   };
+
+  //function auto uncheck OT
+  const autoUncheck = (shiftElmID, otElmID) => {
+    let targetElm = document.getElementById(shiftElmID);
+    let checkElm = document.getElementById(otElmID);
+    if (targetElm?.checked == false) {
+      checkElm.checked = false;
+    }
+  };
+
   return (
     <>
       <td
@@ -69,11 +82,11 @@ export default function ModalSelectMonth({
       >
         {dutyOfDay.map(({ Shif, isOT }, index) => {
           if (!isOT) {
-            return <span key={index}>{Shif?.name}</span>;
+            return <span className="text-[0.6rem]" key={index}>{Shif?.name}</span>;
           } else {
             return (
               <span
-                className="text-red-500 underline decoration-red-500 decoration-1"
+                className="text-red-500 text-[0.6rem] underline decoration-red-500 decoration-1"
                 key={index}
               >
                 {Shif?.name}
@@ -146,53 +159,49 @@ export default function ModalSelectMonth({
                             className="grid space-y-2 mt-2 rounded-lg shadow"
                           >
                             <label
-                              className={`bg-white p-3 justify-between flex w-full pr-8 border-gray-400 rounded-md text-sm focus:border-green-700 focus:ring-green-700`}
+                              className={`${ruleDuty(shif.name) === true ?'bg-red-500' :'bg-white'} p-3 justify-between flex w-full pr-8 border-gray-400 rounded-md text-sm focus:border-green-700 focus:ring-green-700`}
                             >
-                              <div>
-                                <div className="flex items-center mr-4">
-                                  <input
-                                    id={"shift" + index}
-                                    name={"shift" + index}
-                                    type="checkbox"
-                                    value={shif.name}
-                                    className="w-4 h-4 bg-gray-100 border-gray-300 accent-green-700 cursor-pointer disabled:cursor-auto"
-                                    defaultChecked={dutyOfDay?.find(
-                                      (checkDuty) =>
-                                        checkDuty.shifId === shif.id
-                                    )}
-                                    disabled={ruleDuty(shif.name)}
-                                    onClick={() => {
-                                      setDutyOfDay((oldState) => {
-                                        let returnState = [...oldState];
-                                        if (
-                                          document.getElementById(
-                                            "shift" + index
-                                          )?.checked
-                                        ) {
-                                          returnState = [
-                                            ...oldState,
-                                            {
-                                              shifId: shif.id,
-                                              isOT: false,
-                                              Shif: shif,
-                                            },
-                                          ];
-                                        } else {
-                                          returnState = oldState.filter(
-                                            (item) => item.shifId !== shif.id
-                                          );
-                                        }
-                                        return returnState;
-                                      });
-                                    }}
-                                  />
-                                  <label
-                                    htmlFor={"shift" + index}
-                                    className="ml-2 text-xl font-medium text-gray-700"
-                                  >
-                                    {shif.name}
-                                  </label>
-                                </div>
+                              <div className="flex items-center mr-4">
+                                <input
+                                  id={"shift" + index}
+                                  name={"shift" + index}
+                                  type="checkbox"
+                                  value={shif.name}
+                                  className="w-4 h-4 bg-gray-100 border-gray-300 accent-green-700 cursor-pointer disabled:cursor-auto"
+                                  defaultChecked={dutyOfDay?.find(
+                                    (checkDuty) => checkDuty.shifId === shif.id
+                                  )}
+                                  disabled={ruleDuty(shif.name)}
+                                  onClick={() => {
+                                    setDutyOfDay((oldState) => {
+                                      let returnState = [...oldState];
+                                      if (
+                                        document.getElementById("shift" + index)
+                                          ?.checked
+                                      ) {
+                                        returnState = [
+                                          ...oldState,
+                                          {
+                                            shifId: shif.id,
+                                            isOT: false,
+                                            Shif: shif,
+                                          },
+                                        ];
+                                      } else {
+                                        returnState = oldState.filter(
+                                          (item) => item.shifId !== shif.id
+                                        );
+                                      }
+                                      return returnState;
+                                    });
+                                  }}
+                                />
+                                <label
+                                  htmlFor={"shift" + index}
+                                  className="ml-2 text-xl font-medium text-gray-700"
+                                >
+                                  {shif.name}
+                                </label>
                               </div>
                               {shif.name === "ช" ||
                               shif.name === "บ" ||
@@ -231,6 +240,10 @@ export default function ModalSelectMonth({
                                         });
                                       });
                                     }}
+                                    onChange={autoUncheck(
+                                      "shift" + index,
+                                      "otShift" + index
+                                    )}
                                   />
                                   <div
                                     className={`w-11 h-6 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-700
@@ -265,7 +278,7 @@ export default function ModalSelectMonth({
                         let shiftData = dutyOfDay.map((duty) => {
                           return {
                             userId: userId,
-                            day: yearEN+'-'+monthEN+'-'+day,
+                            day: yearEN + "-" + monthEN + "-" + day,
                             shifId: duty.shifId,
                             code: duty.Shif.code,
                             isOT: duty.isOT,
@@ -302,7 +315,6 @@ export default function ModalSelectMonth({
                         }
                         await getUserList();
                         await setShowModal(false);
-                        
                       }}
                     >
                       บันทึกข้อมูล
