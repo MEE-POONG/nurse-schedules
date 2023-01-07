@@ -27,9 +27,10 @@ export default function DropDownDate() {
           onChange={(event) => {
             dispatch(setMonth(event.target.value));
           }}
+          defaultValue={+monthEN-1}
           className="border border-gray-300 shadow-md rounded-full text-gray-600 h-10 pl-5 pr-10 bg-white hover:border-green-500 focus:border-green-500 focus:outline-none appearance-none"
         >
-          <option className="text-green-600" value={+monthEN - 1}>{monthTH}</option>
+          {/* <option className="text-green-600" value={+monthEN - 1}>{monthTH}</option> */}
           <option value={0}>มกราคม</option>
           <option value={1}>กุมภาพันธ์</option>
           <option value={2}>มีนาคม</option>
@@ -61,9 +62,10 @@ export default function DropDownDate() {
           onChange={(event) => {
             dispatch(setYear( event.target.value ));
           }}
+          defaultValue={yearInt}
           className="border border-gray-300 shadow-md rounded-full text-gray-600 h-10 pl-5 pr-10 bg-white hover:border-green-500 focus:border-green-500 focus:outline-none appearance-none"
         >
-          <option className="text-green-600" value={yearInt}>{yearTH}</option>
+          {/* <option className="text-green-600" value={yearInt}>{yearTH}</option> */}
           {Array.from(new Array(5), (v, i) => (
             <option
               key={i}

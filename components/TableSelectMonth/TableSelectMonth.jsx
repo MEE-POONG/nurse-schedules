@@ -239,6 +239,13 @@ export const TableSelectMonth = ({
               {sumDuty(["ช", "บ", "ด"]) + sumDuty(["โอที"])}
             </td>
           </tr>
+
+          <tr className="border">
+            <td className="border border-white py-5" colSpan={daysInMonth + 9}>
+              &nbsp;
+            </td>
+          </tr>
+
           <tr className="border">
             <td className="border border-white" colSpan={daysInMonth + 9}>
               ................................................................................................................................หัวหน้าตึก
