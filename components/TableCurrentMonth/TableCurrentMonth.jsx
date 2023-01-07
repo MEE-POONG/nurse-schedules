@@ -79,7 +79,7 @@ export const TableCurrentMonth = ({
                 ลำดับ
               </td>
               <td
-                className="border bg-green-600 min-w-[200px]"
+                className="border bg-green-600 min-w-[200px] sticky -left-5"
                 colSpan={1}
                 rowSpan={2}
               >
@@ -176,7 +176,7 @@ export const TableCurrentMonth = ({
               return (
                 <tr key={key} className="border odd:bg-green-100 even:bg-white">
                   <td className="border">{key + 1}</td>
-                  <td className="border text-left pl-3">
+                  <td className={`border text-left pl-3 sticky -left-5 ${key % 2 == 0 ?"bg-white border-r-2" :"even:bg-green-100" }`}>
                     {person.Title.name}
                     {person.firstname} {person.lastname}
                   </td>
