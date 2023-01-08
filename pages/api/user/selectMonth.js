@@ -22,6 +22,11 @@ export default async function handler(req, res) {
             Position: true,
             Title: true,
           },
+          orderBy: {
+            Location: {
+              name: "asc",
+            }
+          }
         });
         await prisma.$disconnect();
         res.status(200).json(data);
