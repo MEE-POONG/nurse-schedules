@@ -298,7 +298,7 @@ export const TableSelectMonth = ({
                 ชื่อ-นามสกุล
               </label>
               <div class="relative">
-                <select id="userId" name="userId" class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-state">
+                <select id="userId" name="userId" class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
                   {userList?.filter(x => !user?.map(x => { return x.id }).includes(x.id))?.map((person, index) => (
                     <option key={index} value={person.id}>{person.firstname + " " + person.lastname}</option>
                   ))}
@@ -313,7 +313,7 @@ export const TableSelectMonth = ({
                 งานที่ปฏิบัติ
               </label>
               <div class="relative">
-                <select id="locationId" name="locationId" class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-state">
+                <select id="locationId" name="locationId" class="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500">
                   {location?.map(({ id, name }) => (
                     <option key={id} value={id}>{name}</option>
                   ))}
