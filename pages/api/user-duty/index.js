@@ -2,34 +2,47 @@ import { prisma } from "@/utils/prisma";
 import dayjs from "dayjs";
 
 export default async function handler(req, res) {
-
   const { method } = req;
   switch (method) {
     case "GET":
       try {
-        const data = await prisma.user.findMany({});
+        const data = await prisma.duty.findMany({
+          include: { Shif: true, User: true },
+        });
+
         res.status(200).json(data);
       } catch (error) {
+
         res.status(400).json({ success: false });
       }
       break;
     case "POST":
       try {
-        await prisma.product.create({
+        await prisma.duty.create({
           data: {
-            name: req.body.name,
-            price: parseInt(req.body.price),
-            description: req.body.description,
-            image: req.body.image,
-            categoryId: req.body.categoryId,
-            amount: parseInt(req.body.amount),
-            unitId: req.body.unitId,
+            userId: req.body.userId,
+            locationId: req.body.locationId,
+            datetime: dayjs(new Date()).add(7, "hour").format(),
           },
         });
-        
         res.status(201).json({ success: true });
       } catch (error) {
-        
+        res.status(400).json({ success: false, error });
+      }
+      break;
+    case "DELETE":
+      try {
+        await prisma.duty.deleteMany({
+          data: req.body.map((deleteData) => ({
+            where: {
+              id: deleteData.id,
+            },
+          })),
+        });
+
+        res.status(200).json(data);
+      } catch (error) {
+
         res.status(400).json({ success: false });
       }
       break;

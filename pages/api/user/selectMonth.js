@@ -12,26 +12,38 @@ export default async function handler(req, res) {
         const data = await prisma.user.findMany({
           include: {
             Duty: {
-              include: { Shif: true },
+              include: {
+                Shif: true,
+                Location: true
+              },
               where: {
-                AND: { datetime: { gte: firstDay.format()} },
+                AND: { datetime: { gte: firstDay.format() } },
                 datetime: { lte: lastDay.format() },
               },
+              orderBy: {
+                Location: {
+                  name: "asc",
+                }
+              },
             },
-            Location: true,
             Position: true,
             Title: true,
           },
-          orderBy: {
-            Location: {
-              name: "asc",
+          where: {
+            Duty: {
+              some: {
+                AND: {
+                  datetime: { gte: firstDay.format() },
+                  locationId: {
+                    not: null
+                  }
+                },
+              }
             }
-          }
+          },
         });
-        await prisma.$disconnect();
         res.status(200).json(data);
       } catch (error) {
-        await prisma.$disconnect();
         res.status(400).json({ success: false });
       }
       break;

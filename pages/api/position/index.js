@@ -6,10 +6,10 @@ export default async function handler(req, res) {
         case 'GET':
             try {
                 const data = await prisma.position.findMany();
-                await prisma.$disconnect();
+                
                 res.status(200).json(data)
             } catch (error) {
-                await prisma.$disconnect();
+                
                 res.status(400).json({ success: false })
             }
             break
@@ -26,10 +26,10 @@ export default async function handler(req, res) {
                         unitId: req.body.unitId,
                     }
                 })
-                await prisma.$disconnect();
+                
                 res.status(201).json({ success: true })
             } catch (error) {
-                await prisma.$disconnect();
+                
                 res.status(400).json({ success: false })
             }
             break

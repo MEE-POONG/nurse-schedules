@@ -40,20 +40,20 @@ export default function ModalSelectMonth({
   //function rule checkbox shift
   const ruleDuty = (name) => {
     if (
-      dutyOfDay?.filter(({ Shif }) => ["ช", "บ", "ด"].includes(Shif.name))
+      dutyOfDay?.filter(({ Shif }) => ["ช", "บ", "ด"].includes(Shif?.name))
         .length > 0
     ) {
       if (dutyOfDay.length === 2) {
-        return !dutyOfDay.map(({ Shif }) => Shif.name).includes(name);
+        return !dutyOfDay.map(({ Shif }) => Shif?.name).includes(name);
       }
       return !["ช", "บ", "ด"].includes(name);
     }
     if (
-      dutyOfDay?.filter(({ Shif }) => ["x", "ลาพัก"].includes(Shif.name))
+      dutyOfDay?.filter(({ Shif }) => ["x", "ลาพัก"].includes(Shif?.name))
         .length > 0
     ) {
       if (dutyOfDay.length === 1) {
-        return !dutyOfDay.map(({ Shif }) => Shif.name).includes(name);
+        return !dutyOfDay.map(({ Shif }) => Shif?.name).includes(name);
       }
       return !["x", "ลาพัก"].includes(name);
     }
@@ -280,7 +280,7 @@ export default function ModalSelectMonth({
                             userId: userId,
                             day: yearEN + "-" + monthEN + "-" + day,
                             shifId: duty.shifId,
-                            code: duty.Shif.code,
+                            code: duty.Shif?.code,
                             isOT: duty.isOT,
                           };
                         });
