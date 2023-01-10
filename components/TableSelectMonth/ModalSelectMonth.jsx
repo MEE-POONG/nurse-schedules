@@ -82,11 +82,11 @@ export default function ModalSelectMonth({
       >
         {dutyOfDay.map(({ Shif, isOT }, index) => {
           if (!isOT) {
-            return <span className="text-[0.6rem]" key={index}>{Shif?.name}</span>;
+            return <span className={`${Shif?.name === 'ลาพัก'?'text-[0.6rem]' : 'text-md'}`} key={index}>{Shif?.name}</span>;
           } else {
             return (
               <span
-                className="text-red-500 text-[0.6rem] underline decoration-red-500 decoration-1"
+                className="text-red-500 text-md underline decoration-red-500 decoration-1"
                 key={index}
               >
                 {Shif?.name}
@@ -159,7 +159,7 @@ export default function ModalSelectMonth({
                             className="grid space-y-2 mt-2 rounded-lg shadow"
                           >
                             <label
-                              className={`${ruleDuty(shif.name) === true ?'bg-red-500' :'bg-white'} p-3 justify-between flex w-full pr-8 border-gray-400 rounded-md text-sm focus:border-green-700 focus:ring-green-700`}
+                              className={`${ruleDuty(shif.name) === true ?'bg-gray-200' :'bg-white'} p-3 justify-between flex w-full pr-8 border-gray-400 rounded-md text-sm focus:border-green-700 focus:ring-green-700`}
                             >
                               <div className="flex items-center mr-4">
                                 <input
