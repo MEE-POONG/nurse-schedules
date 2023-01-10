@@ -1,16 +1,17 @@
 import dayFunction from "@/utils/day";
+import { Listbox } from "@headlessui/react";
 import React from "react";
 import { useDispatch } from "react-redux";
 import { setMonth, setYear } from "store/dateSlice";
 export default function DropDownDate() {
-  const dispatch = useDispatch()
-  const { monthTH,yearTH,yearEN,monthEN } = dayFunction("","")
-  const yearInt = +yearEN
-  const year = 2022
-  
+  const dispatch = useDispatch();
+  const { monthTH, yearTH, yearEN, monthEN } = dayFunction("", "");
+  const yearInt = +yearEN;
+  const year = 2022;
+
   return (
     <>
-    <label htmlFor="">เดือน</label>
+      <label htmlFor="">เดือน</label>
       <div className="relative inline-flex mx-2">
         <svg
           className="w-2 h-2 absolute top-0 right-0 m-4 pointer-events-none"
@@ -27,7 +28,7 @@ export default function DropDownDate() {
           onChange={(event) => {
             dispatch(setMonth(event.target.value));
           }}
-          defaultValue={+monthEN-1}
+          defaultValue={+monthEN - 1}
           className="border border-gray-300 shadow-md rounded-full text-gray-600 h-10 pl-5 pr-10 bg-white hover:border-green-500 focus:border-green-500 focus:outline-none appearance-none"
         >
           {/* <option className="text-green-600" value={+monthEN - 1}>{monthTH}</option> */}
@@ -60,7 +61,7 @@ export default function DropDownDate() {
         </svg>
         <select
           onChange={(event) => {
-            dispatch(setYear( event.target.value ));
+            dispatch(setYear(event.target.value));
           }}
           defaultValue={yearInt}
           className="border border-gray-300 shadow-md rounded-full text-gray-600 h-10 pl-5 pr-10 bg-white hover:border-green-500 focus:border-green-500 focus:outline-none appearance-none"
