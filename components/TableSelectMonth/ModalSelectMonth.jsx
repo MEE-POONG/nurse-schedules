@@ -39,11 +39,13 @@ export default function ModalSelectMonth({
 
   //function rule checkbox shift
   const ruleDuty = (name) => {
+    return false;
+    console.log('42',dutyOfDay);
     if (
       dutyOfDay?.filter(({ Shif }) => ["ช", "บ", "ด"].includes(Shif?.name))
         .length > 0
     ) {
-      if (dutyOfDay.length === 2) {
+      if (dutyOfDay.filter(({ Shif }) => Shif !== null).length === 2) {
         return !dutyOfDay.map(({ Shif }) => Shif?.name).includes(name);
       }
       return !["ช", "บ", "ด"].includes(name);
@@ -52,7 +54,7 @@ export default function ModalSelectMonth({
       dutyOfDay?.filter(({ Shif }) => ["x", "ลาพัก"].includes(Shif?.name))
         .length > 0
     ) {
-      if (dutyOfDay.length === 1) {
+      if (dutyOfDay.filter(({ Shif }) => Shif !== null).length === 1) {
         return !dutyOfDay.map(({ Shif }) => Shif?.name).includes(name);
       }
       return !["x", "ลาพัก"].includes(name);
@@ -173,6 +175,7 @@ export default function ModalSelectMonth({
                                   )}
                                   disabled={ruleDuty(shif.name)}
                                   onClick={() => {
+                                    console.log('shif', shif);
                                     setDutyOfDay((oldState) => {
                                       let returnState = [...oldState];
                                       if (
@@ -183,7 +186,7 @@ export default function ModalSelectMonth({
                                           ...oldState,
                                           {
                                             shifId: shif.id,
-                                            isOT: false,
+                                            isOT: shif.isOT,
                                             Shif: shif,
                                           },
                                         ];

@@ -1,5 +1,5 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
   previewFeatures = ["orderByRelation"]
 }
 
@@ -9,15 +9,15 @@ datasource db {
 }
 
 model Duty {
-  id         String @id @default(auto()) @map("_id") @db.ObjectId
-  Shif     Shif?     @relation(fields: [shifId], references: [id])
-  User     User?     @relation(fields: [userId], references: [id])
-  Location Location? @relation(fields: [locationId], references: [id])
-  locationId String? @db.ObjectId
-  shifId   String?    @db.ObjectId
-  userId   String    @db.ObjectId
-  datetime DateTime  @default(now())
-  isOT     Boolean?
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  Shif       Shif?     @relation(fields: [shifId], references: [id])
+  User       User?     @relation(fields: [userId], references: [id])
+  Location   Location? @relation(fields: [locationId], references: [id])
+  locationId String?   @db.ObjectId
+  shifId     String?   @db.ObjectId
+  userId     String    @db.ObjectId
+  datetime   DateTime  @default(now())
+  isOT       Boolean?
 }
 
 model Location {
@@ -38,6 +38,7 @@ model Shif {
   name     String   @unique
   Duty     Duty[]
   code     Int?
+  isOT     Boolean?
   isShif   Boolean?
   isDayOff Boolean?
 }

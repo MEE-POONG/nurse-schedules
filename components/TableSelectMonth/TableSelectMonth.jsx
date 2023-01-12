@@ -245,6 +245,7 @@ export const TableSelectMonth = ({
                     ["ช", "บ", "ด"].includes(Shif?.name) && !isOT
                 )?.length;
                 const ot = person?.Duty?.filter(({ isOT }) => isOT)?.length;
+                console.log('isOT' , person?.Duty?.filter(({ isOT }) => isOT));
                 return (
                   <tr key={key} className="border odd:bg-green-100">
                     <td className="border">{key + 1}</td>
@@ -306,10 +307,10 @@ export const TableSelectMonth = ({
                 </td>
                 <td className="border">{sumDuty(["บ"])}</td>
                 <td className="border">{sumDuty(["ด"])}</td>
-                <td className="border">{sumDuty(["โอที"])}</td>
+                <td className="border">{sumDuty(["โอที", "ชR", "บR", "ดR"])}</td>
                 <td className="border">{sumDuty(["ช", "บ", "ด"])}</td>
                 <td className="border">
-                  {sumDuty(["ช", "บ", "ด"]) + sumDuty(["โอที"])}
+                  {sumDuty(["ช", "บ", "ด"]) + sumDuty(["โอที", "ชR", "บR", "ดR"])}
                 </td>
               </tr>
 
