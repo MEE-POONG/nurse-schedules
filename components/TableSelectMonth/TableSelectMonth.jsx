@@ -307,10 +307,10 @@ export const TableSelectMonth = ({
                 </td>
                 <td className="border">{sumDuty(["บ"])}</td>
                 <td className="border">{sumDuty(["ด"])}</td>
-                <td className="border">{sumDuty(["โอที", "ชR", "บR", "ดR"])}</td>
+                <td className="border">{sumOT()}</td>
                 <td className="border">{sumDuty(["ช", "บ", "ด"])}</td>
                 <td className="border">
-                  {sumDuty(["ช", "บ", "ด"]) + sumDuty(["โอที", "ชR", "บR", "ดR"])}
+                  {sumDuty(["ช", "บ", "ด"]) + sumOT()}
                 </td>
               </tr>
 
@@ -455,7 +455,15 @@ export const TableSelectMonth = ({
 
   function sumDuty(array) {
     return _.sumBy(user, function (o) {
-      return o.Duty?.filter(({ Shif }) => array.includes(Shif?.name))?.length;
+      return o.Duty?.filter(({ Shif, isOT }) => array.includes(Shif?.name) && !isOT)?.length;
     });
   }
+
+  function sumOT() {
+    console.log(user);
+    return _.sumBy(user, function (o) {
+      return o.Duty?.filter(({ isOT }) => isOT)?.length;
+    });
+  }
+
 };
