@@ -11,6 +11,11 @@ export default async function handler(req, res) {
       try {
         const data = await prisma.user.findMany({
           include: {
+            UserDuty:{
+              include: {
+                Location: true
+              },
+            },
             Duty: {
               include: {
                 Shif: true,
@@ -30,7 +35,7 @@ export default async function handler(req, res) {
             Title: true,
           },
           where: {
-            Duty: {
+            UserDuty: {
               some: {
                 AND: {
                   datetime: { gte: firstDay.format() },

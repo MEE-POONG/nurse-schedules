@@ -56,7 +56,6 @@ export const TableSelectMonth = ({
   const [{ loading: dutyDeleteLoading, error: dutyDeleteError }, deleteDuty] =
     useAxios({ url: "/api/duty", method: "DELETE" }, { manual: true });
 
-  //reRender userList
   useEffect(() => {
     if (userLoading === false) {
       const getUsers = async () => {
@@ -262,7 +261,7 @@ export const TableSelectMonth = ({
                     <td className="border">{person.Position.name}</td>
                     <td className="border">
                       {
-                        person.Duty.find((x) => x.Location?.name)?.Location
+                        person.UserDuty.find((x) => x.Location?.name)?.Location
                           ?.name
                       }
                     </td>

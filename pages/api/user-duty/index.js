@@ -6,8 +6,8 @@ export default async function handler(req, res) {
   switch (method) {
     case "GET":
       try {
-        const data = await prisma.duty.findMany({
-          include: { Shif: true, User: true },
+        const data = await prisma.userDuty.findMany({
+          include: { Location: true, User: true },
         });
 
         res.status(200).json(data);
@@ -18,7 +18,7 @@ export default async function handler(req, res) {
       break;
     case "POST":
       try {
-        await prisma.duty.create({
+        await prisma.userDuty.create({
           data: {
             userId: req.body.userId,
             locationId: req.body.locationId,
@@ -32,7 +32,7 @@ export default async function handler(req, res) {
       break;
     case "DELETE":
       try {
-        await prisma.duty.deleteMany({
+        await prisma.userDuty.deleteMany({
           data: req.body.map((deleteData) => ({
             where: {
               id: deleteData.id,

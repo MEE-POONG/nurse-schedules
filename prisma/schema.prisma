@@ -1,6 +1,5 @@
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["orderByRelation"]
 }
 
 datasource db {
@@ -20,11 +19,21 @@ model Duty {
   isOT       Boolean?
 }
 
+model UserDuty {
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  datetime   DateTime  @default(now())
+  User       User?     @relation(fields: [userId], references: [id])
+  Location   Location? @relation(fields: [locationId], references: [id])
+  userId     String    @db.ObjectId
+  locationId String?   @db.ObjectId
+}
+
 model Location {
-  id   String @id @default(auto()) @map("_id") @db.ObjectId
-  name String @unique
-  User User[]
-  Duty Duty[]
+  id       String     @id @default(auto()) @map("_id") @db.ObjectId
+  name     String     @unique
+  User     User[]
+  Duty     Duty[]
+  UserDuty UserDuty[]
 }
 
 model Position {
@@ -44,16 +53,17 @@ model Shif {
 }
 
 model User {
-  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  id         String     @id @default(auto()) @map("_id") @db.ObjectId
   firstname  String?
   lastname   String?
   Duty       Duty[]
-  Location   Location? @relation(fields: [locationId], references: [id])
-  Position   Position? @relation(fields: [positionId], references: [id])
-  Title      Title?    @relation(fields: [titleId], references: [id])
-  locationId String    @db.ObjectId
-  positionId String    @db.ObjectId
-  titleId    String    @db.ObjectId
+  Location   Location?  @relation(fields: [locationId], references: [id])
+  Position   Position?  @relation(fields: [positionId], references: [id])
+  Title      Title?     @relation(fields: [titleId], references: [id])
+  locationId String     @db.ObjectId
+  positionId String     @db.ObjectId
+  titleId    String     @db.ObjectId
+  UserDuty   UserDuty[]
 }
 
 model Title {
