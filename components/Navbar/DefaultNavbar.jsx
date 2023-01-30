@@ -23,17 +23,18 @@ export default function DefaultNavbar() {
             </div>
 
             <div className="hidden sm:flex sm:items-center">
-              {/* <a
-                href="#"
-                className="text-gray-800 text-sm font-semibold hover:text-green-700 mr-4"
-              >
-                หน้าแรก
-              </a> */}
+
               <a
-                href="#"
+                href="/"
                 className="text-gray-800 text-sm font-semibold hover:text-green-700 mr-4"
               >
                 สรุปยอดตารางเวรประจำเดือน
+              </a>
+              <a
+                href="/on-call"
+                className="text-gray-800 text-sm font-semibold hover:text-green-700 mr-4"
+              >
+                สรุปยอด ON - CALL
               </a>
             </div>
 
@@ -62,17 +63,18 @@ export default function DefaultNavbar() {
 
           <div className={`${isNavCollapsed ? 'hidden' : 'block'} sm:hidden bg-white border-t-2 py-2`}>
             <div className="flex flex-col">
-              {/* <a
-                href="#"
-                className="text-gray-800 text-sm font-semibold hover:text-green-700 mb-1 flex justify-center"
-              >
-                หน้าแรก
-              </a> */}
+
               <a
-                href="#"
+                href="/"
                 className="text-gray-800 text-sm font-semibold hover:text-green-700 mb-1 flex justify-center"
               >
                 สรุปยอดตารางเวรประจำเดือน
+              </a>
+              <a
+                href="/on-call"
+                className="text-gray-800 text-sm font-semibold hover:text-green-700 mb-1 flex justify-center"
+              >
+                สรุปยอด ON - CALL
               </a>
               <div className="flex justify-center items-center border-t-2 pt-2">
                 <a

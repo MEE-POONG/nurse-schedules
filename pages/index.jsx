@@ -1,11 +1,14 @@
 import TableIndex from "@/components/TableIndex/TableIndex";
-import { Provider } from "react-redux";
-import { store } from "store/store";
 
 export default function Home() {
   return (
-    <Provider store={store}>
+    <>
+    <div className="my-5">
+      <div className="text-center mt-10">
+        <h1>สรุปยอดตารางเวรประจำเดือน</h1>
+      </div>
+    </div>
       <TableIndex />
-    </Provider>
+    </>
   );
 }

@@ -1,5 +1,5 @@
 generator client {
-  provider        = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -8,6 +8,18 @@ datasource db {
 }
 
 model Duty {
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  Shif       Shif?     @relation(fields: [shifId], references: [id])
+  User       User?     @relation(fields: [userId], references: [id])
+  Location   Location? @relation(fields: [locationId], references: [id])
+  locationId String?   @db.ObjectId
+  shifId     String?   @db.ObjectId
+  userId     String    @db.ObjectId
+  datetime   DateTime  @default(now())
+  isOT       Boolean?
+}
+
+model OnCallDuty {
   id         String    @id @default(auto()) @map("_id") @db.ObjectId
   Shif       Shif?     @relation(fields: [shifId], references: [id])
   User       User?     @relation(fields: [userId], references: [id])
@@ -29,11 +41,12 @@ model UserDuty {
 }
 
 model Location {
-  id       String     @id @default(auto()) @map("_id") @db.ObjectId
-  name     String     @unique
-  User     User[]
-  Duty     Duty[]
-  UserDuty UserDuty[]
+  id         String       @id @default(auto()) @map("_id") @db.ObjectId
+  name       String       @unique
+  User       User[]
+  Duty       Duty[]
+  UserDuty   UserDuty[]
+  OnCallDuty OnCallDuty[]
 }
 
 model Position {
@@ -43,27 +56,29 @@ model Position {
 }
 
 model Shif {
-  id       String   @id @default(auto()) @map("_id") @db.ObjectId
-  name     String   @unique
-  Duty     Duty[]
-  code     Int?
-  isOT     Boolean?
-  isShif   Boolean?
-  isDayOff Boolean?
+  id         String       @id @default(auto()) @map("_id") @db.ObjectId
+  name       String       @unique
+  Duty       Duty[]
+  code       Int?
+  isOT       Boolean?
+  isShif     Boolean?
+  isDayOff   Boolean?
+  OnCallDuty OnCallDuty[]
 }
 
 model User {
-  id         String     @id @default(auto()) @map("_id") @db.ObjectId
+  id         String       @id @default(auto()) @map("_id") @db.ObjectId
   firstname  String?
   lastname   String?
   Duty       Duty[]
-  Location   Location?  @relation(fields: [locationId], references: [id])
-  Position   Position?  @relation(fields: [positionId], references: [id])
-  Title      Title?     @relation(fields: [titleId], references: [id])
-  locationId String     @db.ObjectId
-  positionId String     @db.ObjectId
-  titleId    String     @db.ObjectId
+  Location   Location?    @relation(fields: [locationId], references: [id])
+  Position   Position?    @relation(fields: [positionId], references: [id])
+  Title      Title?       @relation(fields: [titleId], references: [id])
+  locationId String       @db.ObjectId
+  positionId String       @db.ObjectId
+  titleId    String       @db.ObjectId
   UserDuty   UserDuty[]
+  OnCallDuty OnCallDuty[]
 }
 
 model Title {
