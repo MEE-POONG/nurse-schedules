@@ -23,12 +23,12 @@ export default function DefaultNavbar() {
             </div>
 
             <div className="hidden sm:flex sm:items-center">
-              <a
+              {/* <a
                 href="#"
                 className="text-gray-800 text-sm font-semibold hover:text-green-700 mr-4"
               >
                 หน้าแรก
-              </a>
+              </a> */}
               <a
                 href="#"
                 className="text-gray-800 text-sm font-semibold hover:text-green-700 mr-4"
@@ -62,12 +62,12 @@ export default function DefaultNavbar() {
 
           <div className={`${isNavCollapsed ? 'hidden' : 'block'} sm:hidden bg-white border-t-2 py-2`}>
             <div className="flex flex-col">
-              <a
+              {/* <a
                 href="#"
                 className="text-gray-800 text-sm font-semibold hover:text-green-700 mb-1 flex justify-center"
               >
                 หน้าแรก
-              </a>
+              </a> */}
               <a
                 href="#"
                 className="text-gray-800 text-sm font-semibold hover:text-green-700 mb-1 flex justify-center"
