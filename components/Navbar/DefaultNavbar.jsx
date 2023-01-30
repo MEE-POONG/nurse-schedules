@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import Link from 'next/link'
 
 export default function DefaultNavbar() {
 
@@ -24,18 +25,18 @@ export default function DefaultNavbar() {
 
             <div className="hidden sm:flex sm:items-center">
 
-              <a
+              <Link
                 href="/"
                 className="text-gray-800 text-sm font-semibold hover:text-green-700 mr-4"
               >
                 สรุปยอดตารางเวรประจำเดือน
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/on-call"
                 className="text-gray-800 text-sm font-semibold hover:text-green-700 mr-4"
               >
                 สรุปยอด ON - CALL
-              </a>
+              </Link>
             </div>
 
             <div className="hidden sm:flex sm:items-center">
@@ -64,25 +65,25 @@ export default function DefaultNavbar() {
           <div className={`${isNavCollapsed ? 'hidden' : 'block'} sm:hidden bg-white border-t-2 py-2`}>
             <div className="flex flex-col">
 
-              <a
+              <Link
                 href="/"
                 className="text-gray-800 text-sm font-semibold hover:text-green-700 mb-1 flex justify-center"
               >
                 สรุปยอดตารางเวรประจำเดือน
-              </a>
-              <a
+              </Link>
+              <Link
                 href="/on-call"
                 className="text-gray-800 text-sm font-semibold hover:text-green-700 mb-1 flex justify-center"
               >
                 สรุปยอด ON - CALL
-              </a>
+              </Link>
               <div className="flex justify-center items-center border-t-2 pt-2">
-                <a
+                <Link
                   href="#"
                   className="text-gray-800 text-sm font-semibold border px-4 py-1 rounded-lg hover:text-green-700 hover:border-green-700"
                 >
                   ลงทะเบียน
-                </a>
+                </Link>
               </div>
             </div>
           </div>
