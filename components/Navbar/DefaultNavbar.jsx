@@ -33,7 +33,7 @@ export default function DefaultNavbar() {
                 href="#"
                 className="text-gray-800 text-sm font-semibold hover:text-green-700 mr-4"
               >
-                สรุปยอด
+                สรุปยอดตารางเวรประจำเดือน
               </a>
             </div>
 
@@ -72,7 +72,7 @@ export default function DefaultNavbar() {
                 href="#"
                 className="text-gray-800 text-sm font-semibold hover:text-green-700 mb-1 flex justify-center"
               >
-                สรุปยอด
+                สรุปยอดตารางเวรประจำเดือน
               </a>
               <div className="flex justify-center items-center border-t-2 pt-2">
                 <a
