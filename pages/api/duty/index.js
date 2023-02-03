@@ -26,8 +26,10 @@ export default async function handler(req, res) {
             datetime: dayjs(dutyData.day).add(7, "hour").format(),
           })),
         });
+        console.log(req.body);
         res.status(201).json({ success: true });
       } catch (error) {
+        console.log(error);
         res.status(400).json({ success: false, error });
       }
       break;
