@@ -313,11 +313,13 @@ export default function ModalSelectMonth({
                           });
                         }
                         await deleteDutyById(defaultDutyOfDay);
+
                         if (shiftData.length != 0) {
                           await executeDuty({ data: shiftData });
                         }
+                        
                         await getUserList();
-                        await setShowModal(false);
+                        setShowModal(false);
                       }}
                     >
                       บันทึกข้อมูล
