@@ -35,12 +35,12 @@ export default function ModalSelectMonth({
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userLoading]);
-  
+
 
   //function rule checkbox shift
   const ruleDuty = (name) => {
     return false;
-    console.log('42',dutyOfDay);
+    console.log('42', dutyOfDay);
     if (
       dutyOfDay?.filter(({ Shif }) => ["ช", "บ", "ด"].includes(Shif?.name))
         .length > 0
@@ -73,18 +73,17 @@ export default function ModalSelectMonth({
   return (
     <>
       <td
-        className={`border hover:bg-green-300 cursor-pointer text-xs ${
-          ["เสาร์", "อาทิตย์"].includes(
-            dayjs(`${yearEN}-${monthEN}-${day}`).format("dddd")
-          )
-            ? "bg-lime-100"
-            : ""
-        }`}
+        className={`border hover:bg-green-300 cursor-pointer text-xs ${["เสาร์", "อาทิตย์"].includes(
+          dayjs(`${yearEN}-${monthEN}-${day}`).format("dddd")
+        )
+          ? "bg-lime-100"
+          : ""
+          }`}
         onClick={() => setShowModal(true)}
       >
         {dutyOfDay.map(({ Shif, isOT }, index) => {
           if (!isOT) {
-            return <span className={`${Shif?.name === 'ลาพัก'?'text-[0.6rem]' : 'text-md'}`} key={index}>{Shif?.name}</span>;
+            return <span className={`${Shif?.name === 'ลาพัก' ? 'text-[0.6rem]' : 'text-md'}`} key={index}>{Shif?.name}</span>;
           } else {
             return (
               <span
@@ -161,7 +160,7 @@ export default function ModalSelectMonth({
                             className="grid space-y-2 mt-2 rounded-lg shadow"
                           >
                             <label
-                              className={`${ruleDuty(shif.name) === true ?'bg-gray-200' :'bg-white'} p-3 justify-between flex w-full pr-8 border-gray-400 rounded-md text-sm focus:border-green-700 focus:ring-green-700`}
+                              className={`${ruleDuty(shif.name) === true ? 'bg-gray-200' : 'bg-white'} p-3 justify-between flex w-full pr-8 border-gray-400 rounded-md text-sm focus:border-green-700 focus:ring-green-700`}
                             >
                               <div className="flex items-center mr-4">
                                 <input
@@ -207,8 +206,8 @@ export default function ModalSelectMonth({
                                 </label>
                               </div>
                               {shif.name === "ช" ||
-                              shif.name === "บ" ||
-                              shif.name === "ด" ? (
+                                shif.name === "บ" ||
+                                shif.name === "ด" ? (
                                 <label className="inline-flex relative items-center cursor-pointer">
                                   <input
                                     id={"otShift" + index}
@@ -250,15 +249,14 @@ export default function ModalSelectMonth({
                                   />
                                   <div
                                     className={`w-11 h-6 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-green-600 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[4px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-700
-                                    ${
-                                      dutyOfDay?.find(
-                                        (checkDuty) =>
-                                          checkDuty.shifId === shif.id &&
-                                          checkDuty.isOT === false
-                                      )
+                                    ${dutyOfDay?.find(
+                                      (checkDuty) =>
+                                        checkDuty.shifId === shif.id &&
+                                        checkDuty.isOT === false
+                                    )
                                         ? "bg-gray-200"
                                         : "bg-red-600"
-                                    }`}
+                                      }`}
                                   ></div>
                                   <span className="ml-3 text-xl font-medium text-gray-900">
                                     โอที
@@ -293,18 +291,11 @@ export default function ModalSelectMonth({
                         shiftData = shiftData.sort((a, b) => {
                           return a.code - b.code;
                         });
-                        if (
-                          shiftData
-                            .map(({ code }) => {
-                              return code;
-                            })
-                            .includes(2) &&
-                          shiftData
-                            .map(({ code }) => {
-                              return code;
-                            })
-                            .includes(3)
-                        ) {
+                        
+                        const CODE_2 = shiftData.map(({ code }) => { return code }).includes(2)
+                        const CODE_3 = shiftData.map(({ code }) => { return code }).includes(3)
+
+                        if (CODE_2 && CODE_3) {
                           shiftData = shiftData.sort((a, b) => {
                             const idA = a.code;
                             const idB = b.code;
@@ -317,7 +308,7 @@ export default function ModalSelectMonth({
                         if (shiftData.length != 0) {
                           await executeDuty({ data: shiftData });
                         }
-                        
+
                         await getUserList();
                         setShowModal(false);
                       }}
