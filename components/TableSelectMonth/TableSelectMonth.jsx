@@ -204,7 +204,7 @@ export const TableSelectMonth = ({
                   <td
                     key={index}
                     className={`border text-white min-w-[30px] ${["เสาร์", "อาทิตย์"].includes(
-                      dayjs(`${yearEN}-${monthEN}-${day + 1}`).format("dddd")
+                      dayjs(`${yearEN}-${monthValue + 1}-${day + 1}`).format("dddd")
                     )
                         ? "bg-green-600"
                         : "bg-orange-600"
@@ -276,7 +276,7 @@ export const TableSelectMonth = ({
                         executeDuty={executeDuty}
                         deleteDuty={deleteDuty}
                         userLoading={userLoading}
-                        monthEN={monthEN}
+                        monthEN={monthValue + 1}
                         monthTH={monthTH}
                         yearEN={yearEN}
                         yearTH={yearTH}
