@@ -1,12 +1,15 @@
-import dayFunction from "@/utils/day";
-import dayjs from "dayjs";
+import { useSelector } from "react-redux";
 import React from "react";
 import { useDispatch } from "react-redux";
 import { setMonth, setYear } from "store/dateSlice";
 
 export default function DropDownDate() {
   const dispatch = useDispatch();
-  const { yearEN, monthEN } = dayFunction(dayjs().month(), dayjs().year())
+  const { dateStore } = useSelector((state) => ({ ...state }))
+
+  const monthEN = dateStore.value.month + 1
+  const yearEN = dateStore.value.year
+
   const yearInt = +yearEN;
   const year = 2022;
 
@@ -71,8 +74,8 @@ export default function DropDownDate() {
               key={i}
               value={year + i}
               className={`${year + i === new Date().getFullYear()
-                  ? "bg-green-600 text-white"
-                  : ""
+                ? "bg-green-600 text-white"
+                : ""
                 }`}
             >
               {year + i + 543}
