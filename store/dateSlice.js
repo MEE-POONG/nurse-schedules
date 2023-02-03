@@ -1,6 +1,6 @@
 import dayFunction from "@/utils/day";
 import { createSlice } from "@reduxjs/toolkit";
-const {yearEN , monthEN} = dayFunction("","")
+const { yearEN, monthEN } = dayFunction("", "")
 
 const initialState = {
   value: { month: +monthEN - 1, year: yearEN },
@@ -19,5 +19,5 @@ export const dateSlice = createSlice({
   },
 });
 
-export const { setMonth,setYear } = dateSlice.actions;
+export const { setMonth, setYear } = dateSlice.actions;
 export default dateSlice.reducer;

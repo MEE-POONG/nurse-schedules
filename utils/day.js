@@ -2,6 +2,9 @@ import dayjs from "dayjs";
 import "dayjs/locale/th";
 
 //รับค่าวันที่
+
+// const d = new Date();
+// let month = d.getMonth();
 export default function dayFunction(inputM, inputY) {
   const inputMonth = inputM === '' ? dayjs().month() : +inputM + 1;
   const inputYear = inputY === '' ? dayjs().year() : inputY;

@@ -2,6 +2,7 @@ import dayFunction from "@/utils/day";
 import React from "react";
 import { useDispatch } from "react-redux";
 import { setMonth, setYear } from "store/dateSlice";
+
 export default function DropDownDate() {
   const dispatch = useDispatch();
   const { yearEN, monthEN } = dayFunction("", "");
@@ -68,11 +69,10 @@ export default function DropDownDate() {
             <option
               key={i}
               value={year + i}
-              className={`${
-                year + i === new Date().getFullYear()
+              className={`${year + i === new Date().getFullYear()
                   ? "bg-green-600 text-white"
                   : ""
-              }`}
+                }`}
             >
               {year + i + 543}
             </option>
