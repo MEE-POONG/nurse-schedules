@@ -259,7 +259,7 @@ export const TableSelectMonthOnCall = ({
                     <td className="border">{person.Position.name}</td>
                     <td className="border">
                       {
-                        person.UserDuty.find((x) => x.Location?.name)?.Location
+                        person.UserDuty?.Location
                           ?.name
                       }
                     </td>
