@@ -243,7 +243,7 @@ export const TableSelectMonth = ({
                     ["ช", "บ", "ด"].includes(Shif?.name) && !isOT
                 )?.length;
                 const ot = person?.Duty?.filter(({ isOT }) => isOT)?.length;
-                console.log('isOT', person?.Duty?.filter(({ isOT }) => isOT));
+
                 return (
                   <tr key={key} className="border odd:bg-green-100">
                     <td className="border">{key + 1}</td>
@@ -253,13 +253,12 @@ export const TableSelectMonth = ({
                           : "even:bg-green-100"
                         }`}
                     >
-                      {person.Title.name}
-                      {person.firstname} {person.lastname}
+                      {person.Title.name} {person.firstname} {person.lastname}
                     </td>
                     <td className="border">{person.Position.name}</td>
                     <td className="border">
                       {
-                        person.UserDuty.find((x) => x.Location?.name)?.Location
+                        person.UserDuty?.Location
                           ?.name
                       }
                     </td>

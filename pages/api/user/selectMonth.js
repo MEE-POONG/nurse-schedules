@@ -9,11 +9,19 @@ export default async function handler(req, res) {
   switch (method) {
     case "GET":
       try {
-        const data = await prisma.user.findMany({
+        let data = await prisma.user.findMany({
           include: {
-            UserDuty:{
+            UserDuty: {
               include: {
                 Location: true
+              },
+              where: {
+                AND: {
+                  datetime: { gte: firstDay.format() },
+                  locationId: {
+                    not: null
+                  }
+                },
               },
             },
             Duty: {
@@ -47,6 +55,12 @@ export default async function handler(req, res) {
             }
           },
         });
+        data = data?.map(e => {
+          return {
+            ...e,
+            UserDuty: e.UserDuty[0]
+          }
+        }).sort((a, b) => new Date(a.UserDuty.datetime) - new Date(b.UserDuty.datetime))
         res.status(200).json(data);
       } catch (error) {
         res.status(400).json({ success: false });
