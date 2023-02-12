@@ -334,7 +334,7 @@ export default function ModalSelectMonthOnCall({
 
   async function deleteDutyById(defaultDutyOfDay) {
     for (const duty of defaultDutyOfDay) {
-      await deleteDuty({ url: `/api/duty/${duty.id}`, method: "delete" });
+      await deleteDuty({ url: `/api/on-call/${duty.id}`, method: "delete" });
     }
   }
 }
