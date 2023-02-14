@@ -131,7 +131,7 @@ export const TableSelectMonth = ({
               <tr className="bg-white">
                 <td className="border border-white" colSpan={daysInMonth + 9}>
                   <div className="text-center text-lg">
-                    ตารางเวรประจำเดือน.........................{monthTH}
+                    ตารางเวรประจำเดือน.........................{dayjs(+monthValue + 1).format("MMMM")}
                     .........................พ.ศ...............{yearTH}
                     ................
                   </div>
