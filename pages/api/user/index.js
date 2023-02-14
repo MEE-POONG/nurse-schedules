@@ -1,5 +1,4 @@
 import { prisma } from "@/utils/prisma";
-import dayjs from "dayjs";
 
 export default async function handler(req, res) {
 
@@ -15,21 +14,18 @@ export default async function handler(req, res) {
       break;
     case "POST":
       try {
-        await prisma.product.create({
+        await prisma.user.create({
           data: {
-            name: req.body.name,
-            price: parseInt(req.body.price),
-            description: req.body.description,
-            image: req.body.image,
-            categoryId: req.body.categoryId,
-            amount: parseInt(req.body.amount),
-            unitId: req.body.unitId,
+            firstname: req.body.firstname,
+            lastname: req.body.lastname,
+            positionId: req.body.positionId,
+            titleId: req.body.titleId,
           },
         });
-        
+
         res.status(201).json({ success: true });
       } catch (error) {
-        
+
         res.status(400).json({ success: false });
       }
       break;

@@ -74,7 +74,7 @@ model User {
   Location   Location?    @relation(fields: [locationId], references: [id])
   Position   Position?    @relation(fields: [positionId], references: [id])
   Title      Title?       @relation(fields: [titleId], references: [id])
-  locationId String       @db.ObjectId
+  locationId String?       @db.ObjectId
   positionId String       @db.ObjectId
   titleId    String       @db.ObjectId
   UserDuty   UserDuty[]
