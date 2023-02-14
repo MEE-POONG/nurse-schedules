@@ -87,7 +87,7 @@ export const TableSelectMonth = ({
   return (
     <>
       <style>{printStyle()}</style>
-      <div className="flex justify-end items-end w-11/12">
+      <div className="flex justify-center items-center pb-10">
         <button
           onClick={handlePrint}
           className="bg-green-600 hover:bg-green-800 text-white font-bold mt-6 -mb-10 py-2 px-4 rounded-xl inline-flex items-center"
