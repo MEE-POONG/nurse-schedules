@@ -57,7 +57,7 @@ model Position {
 
 model Shif {
   id         String       @id @default(auto()) @map("_id") @db.ObjectId
-  name       String       @unique
+  name       String
   Duty       Duty[]
   code       Int?
   isOT       Boolean?
