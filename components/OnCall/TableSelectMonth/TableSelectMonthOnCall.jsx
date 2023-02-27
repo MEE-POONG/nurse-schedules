@@ -160,7 +160,7 @@ export const TableSelectMonthOnCall = ({
                   ตำแหน่ง
                 </td>
                 <td
-                  className="border bg-green-600 min-w-[45px]"
+                  className="border bg-green-600 min-w-[50px]"
                   colSpan={1}
                   rowSpan={2}
                 >
@@ -203,7 +203,7 @@ export const TableSelectMonthOnCall = ({
                 {arrayDayInMonth.map((day, index) => (
                   <td
                     key={index}
-                    className={`border text-white min-w-[40px] ${["เสาร์", "อาทิตย์"].includes(
+                    className={`border text-white ${["เสาร์", "อาทิตย์"].includes(
                       dayjs(`${yearEN}-${+monthValue + 1}-${day + 1}`).format("dddd")
                     )
                         ? "bg-green-600"
