@@ -160,7 +160,7 @@ export const TableSelectMonth = ({
                   ตำแหน่ง
                 </td>
                 <td
-                  className="border bg-green-600 min-w-[40px]"
+                  className="border bg-green-600 min-w-[45px]"
                   colSpan={1}
                   rowSpan={2}
                 >

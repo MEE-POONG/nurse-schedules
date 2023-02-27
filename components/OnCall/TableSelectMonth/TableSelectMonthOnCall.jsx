@@ -153,14 +153,14 @@ export const TableSelectMonthOnCall = ({
                   ชื่อ - สกุล
                 </td>
                 <td
-                  className="border bg-green-600 min-w-[120px]"
+                  className="border bg-green-600 min-w-[110px]"
                   colSpan={1}
                   rowSpan={2}
                 >
                   ตำแหน่ง
                 </td>
                 <td
-                  className="border bg-green-600 min-w-[80px]"
+                  className="border bg-green-600 min-w-[45px]"
                   colSpan={1}
                   rowSpan={2}
                 >
@@ -203,7 +203,7 @@ export const TableSelectMonthOnCall = ({
                 {arrayDayInMonth.map((day, index) => (
                   <td
                     key={index}
-                    className={`border text-white min-w-[30px] ${["เสาร์", "อาทิตย์"].includes(
+                    className={`border text-white min-w-[40px] ${["เสาร์", "อาทิตย์"].includes(
                       dayjs(`${yearEN}-${+monthValue + 1}-${day + 1}`).format("dddd")
                     )
                         ? "bg-green-600"
