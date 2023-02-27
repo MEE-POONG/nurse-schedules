@@ -114,23 +114,23 @@ export const TableSelectMonthOnCall = ({
               <p className="text-center">เสนอผู้อำนวยการโรงพยาบาลครบุรี เพื่อโปรดพิจารณา</p>
               <p className="text-center mt-3">...........................................</p>
               <p className="text-center">( นางรำไพ นันทโนภาส )</p>
-              <p className="text-sm text-center">หัวหน้ากลุ่มงานการพยาบาล</p>
+              <p className="text-base text-center">หัวหน้ากลุ่มงานการพยาบาล</p>
             </div>
             <div>
-              <p className="text-lg">กลุ่มงานการพยาบาล โรงพยาบาลครบุรี</p>
+              <p className="text-xl">กลุ่มงานการพยาบาล โรงพยาบาลครบุรี</p>
             </div>
             <div>
               <p className="text-center">ความคิดเห็นผู้อำนวยการ</p>
               <p className="text-center mt-3">...........................................</p>
               <p className="text-center">( นายพัฒนา เบ้าสาทร)</p>
-              <p className="text-sm text-center">ผู้อำนวยการโรงพยาบาลครบุรี</p>
+              <p className="text-base text-center">ผู้อำนวยการโรงพยาบาลครบุรี</p>
             </div>
           </div>
-          <table className="border-collapse border text-center border-spacing-2 mx-auto text-sm">
+          <table className="border-collapse border text-center border-spacing-2 mx-auto text-base">
             <tbody>
               <tr className="bg-white">
                 <td className="border border-white" colSpan={daysInMonth + 9}>
-                  <div className="text-center text-lg">
+                  <div className="text-center text-base">
                   ตารางเวรประจำเดือน.........................{dayjs(`${dayjs().year()}-${+monthValue + 1}-${+monthValue + 1}`).format("MMMM")}
                     .........................พ.ศ...............{yearTH}
                     ................

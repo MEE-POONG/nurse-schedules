@@ -114,19 +114,19 @@ export const TableSelectMonth = ({
               <p className="text-center">เสนอผู้อำนวยการโรงพยาบาลครบุรี เพื่อโปรดพิจารณา</p>
               <p className="text-center mt-3">...........................................</p>
               <p className="text-center">( นางรำไพ นันทโนภาส )</p>
-              <p className="text-sm text-center">หัวหน้ากลุ่มงานการพยาบาล</p>
+              <p className="text-base text-center">หัวหน้ากลุ่มงานการพยาบาล</p>
             </div>
             <div>
-              <p className="text-lg">กลุ่มงานการพยาบาล โรงพยาบาลครบุรี</p>
+              <p className="text-xl">กลุ่มงานการพยาบาล โรงพยาบาลครบุรี</p>
             </div>
             <div>
               <p className="text-center">ความคิดเห็นผู้อำนวยการ</p>
               <p className="text-center mt-3">...........................................</p>
               <p className="text-center">( นายพัฒนา เบ้าสาทร)</p>
-              <p className="text-sm text-center">ผู้อำนวยการโรงพยาบาลครบุรี</p>
+              <p className="text-base text-center">ผู้อำนวยการโรงพยาบาลครบุรี</p>
             </div>
           </div>
-          <table className="border-collapse border text-center border-spacing-2 mx-auto text-sm">
+          <table className="border-collapse border text-center border-spacing-2 mx-auto text-base">
             <tbody>
               <tr className="bg-white">
                 <td className="border border-white" colSpan={daysInMonth + 9}>
@@ -139,7 +139,7 @@ export const TableSelectMonth = ({
               </tr>
               <tr className="border text-white">
                 <td
-                  className="border bg-green-600 min-w-[50px]"
+                  className="border bg-green-600 min-w-[40px]"
                   colSpan={1}
                   rowSpan={2}
                 >
@@ -153,14 +153,14 @@ export const TableSelectMonth = ({
                   ชื่อ - สกุล
                 </td>
                 <td
-                  className="border bg-green-600 min-w-[120px]"
+                  className="border bg-green-600 min-w-[110px]"
                   colSpan={1}
                   rowSpan={2}
                 >
                   ตำแหน่ง
                 </td>
                 <td
-                  className="border bg-green-600 min-w-[80px]"
+                  className="border bg-green-600 min-w-[40px]"
                   colSpan={1}
                   rowSpan={2}
                 >
@@ -203,7 +203,7 @@ export const TableSelectMonth = ({
                 {arrayDayInMonth.map((day, index) => (
                   <td
                     key={index}
-                    className={`border text-white min-w-[30px] ${["เสาร์", "อาทิตย์"].includes(
+                    className={`border text-white min-w-[40px] ${["เสาร์", "อาทิตย์"].includes(
                       dayjs(`${yearEN}-${+monthValue + 1}-${day + 1}`).format("dddd")
                     )
                         ? "bg-green-600"
