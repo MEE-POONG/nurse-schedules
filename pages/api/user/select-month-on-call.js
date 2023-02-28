@@ -61,7 +61,7 @@ export default async function handler(req, res) {
             ...e,
             UserDuty: e.UserDuty[0]
           }
-        }).sort((a, b) => new Date(a.UserDuty.datetime) - new Date(b.UserDuty.datetime))
+        }).sort((a, b) => ('' + a.UserDuty.locationId).localeCompare(b.UserDuty.locationId))
         
         res.status(200).json(data);
       } catch (error) {
