@@ -1,7 +1,5 @@
 FROM node:lts AS dependencies
 
-ARG DATABASE_URL
-ENV DATABASE_URL=${DATABASE_URL}
 
 WORKDIR /app
 COPY package.json ./
@@ -12,6 +10,9 @@ FROM node:lts AS build
 WORKDIR /app
 COPY --from=dependencies /app/node_modules ./node_modules
 COPY . .
+
+ARG DATABASE_URL
+ENV DATABASE_URL=${DATABASE_URL}
 
 RUN npx prisma generate
 RUN yarn build
