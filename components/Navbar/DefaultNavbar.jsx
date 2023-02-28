@@ -41,7 +41,7 @@ export default function DefaultNavbar() {
 
             <div className="hidden sm:flex sm:items-center">
               <a
-                href="#"
+                href="/register"
                 className="text-gray-800 text-sm font-semibold border px-4 py-2 rounded-lg hover:text-green-700 hover:border-green-700"
               >
                 ลงทะเบียน
@@ -79,7 +79,7 @@ export default function DefaultNavbar() {
               </Link>
               <div className="flex justify-center items-center border-t-2 pt-2">
                 <Link
-                  href="#"
+                  href="/register"
                   className="text-gray-800 text-sm font-semibold border px-4 py-1 rounded-lg hover:text-green-700 hover:border-green-700"
                 >
                   ลงทะเบียน

@@ -22,16 +22,25 @@ async function main() {
             data: [
                 {
                     name: 'พยาบาลวิชาชีพ',
+                },
+                {
+                    name: 'พนักงานช่วยเหลือคนไข้',
+                },
+                {
+                    name: 'พนักงานเปล',
                 }
             ]
         }),
         prisma.title.createMany({
             data: [
                 {
+                    name: 'น.ส.',
+                },
+                {
                     name: 'นาง',
                 },
                 {
-                    name: 'น.ส.',
+                    name: 'นาย',
                 },
             ]
         }),
@@ -62,6 +71,84 @@ async function main() {
                     isShif: false,
                     isDayOff: true,
                 },
+                {
+                    name: 'R',
+                    isShif: false,
+                    isDayOff: false,
+                },
+                {
+                    name: 'R',
+                    isShif: false,
+                    isDayOff: false,
+                },
+                {
+                    name: 'R',
+                    isShif: false,
+                    isDayOff: false,
+                },
+                {
+                    name: 'ช',
+                    class: 'circle-dark',
+                    isOT: true,
+                    isShif: false,
+                    isDayOff: false,
+                },
+                {
+                    name: 'ช',
+                    class: 'circle-red',
+                    isOT: true,
+                    isShif: false,
+                    isDayOff: false,
+                },
+                {
+                    name: 'ช',
+                    class: 'circle-blue',
+                    isOT: true,
+                    isShif: false,
+                    isDayOff: false,
+                },
+                {
+                    name: 'บ',
+                    class: 'circle-dark',
+                    isOT: true,
+                    isShif: false,
+                    isDayOff: false,
+                },
+                {
+                    name: 'บ',
+                    class: 'circle-red',
+                    isOT: true,
+                    isShif: false,
+                    isDayOff: false,
+                },
+                {
+                    name: 'บ',
+                    class: 'circle-blue',
+                    isOT: true,
+                    isShif: false,
+                    isDayOff: false,
+                },
+                {
+                    name: 'ด',
+                    class: 'circle-dark',
+                    isOT: true,
+                    isShif: false,
+                    isDayOff: false,
+                },
+                {
+                    name: 'ด',
+                    class: 'circle-red',
+                    isOT: true,
+                    isShif: false,
+                    isDayOff: false,
+                },
+                {
+                    name: 'ด',
+                    class: 'circle-blue',
+                    isOT: true,
+                    isShif: false,
+                    isDayOff: false,
+                },
 
             ]
         })
@@ -76,74 +163,67 @@ async function main() {
     await prisma.user.createMany({
         data: [
             {
-                firstname: 'มะลิ',
-                lastname: 'มอบกระโทก',
-                locationId: location.find((item) => item.name === 'พาสุข').id,
-                positionId: position.find((item) => item.name === 'พยาบาลวิชาชีพ').id,
+                firstname: 'รุ่งเพชร',
+                lastname: 'ยิ่งยืน',
+                locationId: location.find((item) => item.name === 'พาสุข1').id,
+                positionId: position.find((item) => item.name === 'พนักงานช่วยเหลือคนไข้').id,
+                titleId: title.find((item) => item.name === 'น.ส.').id,
+            },
+            {
+                firstname: 'ภาวิณี',
+                lastname: 'วิทยกิตติกุล',
+                locationId: location.find((item) => item.name === 'พาสุข1').id,
+                positionId: position.find((item) => item.name === 'พนักงานช่วยเหลือคนไข้').id,
                 titleId: title.find((item) => item.name === 'นาง').id,
             },
             {
-                firstname: 'อุมาพร',
-                lastname: 'ครอบกระโทก',
+                firstname: 'กชกร',
+                lastname: 'ญาติกระโทก',
                 locationId: location.find((item) => item.name === 'พาสุข1').id,
-                positionId: position.find((item) => item.name === 'พยาบาลวิชาชีพ').id,
-                titleId: title.find((item) => item.name === 'นาง').id,
-            },
-            {
-                firstname: 'เกศรา',
-                lastname: 'มากสมบูรณ์',
-                locationId: location.find((item) => item.name === 'พาสุข1').id,
-                positionId: position.find((item) => item.name === 'พยาบาลวิชาชีพ').id,
+                positionId: position.find((item) => item.name === 'พนักงานช่วยเหลือคนไข้').id,
                 titleId: title.find((item) => item.name === 'น.ส.').id,
             },
             {
-                firstname: 'อรุณกมล',
-                lastname: 'พึ่งเกิดผล',
+                firstname: 'ธนากร',
+                lastname: 'หัสสะครบุรี',
                 locationId: location.find((item) => item.name === 'พาสุข1').id,
-                positionId: position.find((item) => item.name === 'พยาบาลวิชาชีพ').id,
-                titleId: title.find((item) => item.name === 'นาง').id,
+                positionId: position.find((item) => item.name === 'พนักงานช่วยเหลือคนไข้').id,
+                titleId: title.find((item) => item.name === 'นาย').id,
             },
             {
-                firstname: 'นิสารัตน์',
-                lastname: 'โพธิ์ศรี',
-                locationId: location.find((item) => item.name === 'พาสุข1').id,
-                positionId: position.find((item) => item.name === 'พยาบาลวิชาชีพ').id,
-                titleId: title.find((item) => item.name === 'น.ส.').id,
-            },
-            {
-                firstname: 'สิริลักษณ์',
-                lastname: 'ไหลครบุรี',
-                locationId: location.find((item) => item.name === 'พาสุข1').id,
-                positionId: position.find((item) => item.name === 'พยาบาลวิชาชีพ').id,
-                titleId: title.find((item) => item.name === 'น.ส.').id,
-            },
-            {
-                firstname: 'อรุณี',
-                lastname: 'จรครบุรี',
-                locationId: location.find((item) => item.name === 'พาสุข1').id,
-                positionId: position.find((item) => item.name === 'พยาบาลวิชาชีพ').id,
-                titleId: title.find((item) => item.name === 'น.ส.').id,
-            },
-            {
-                firstname: 'มิชา',
-                lastname: 'ใจเถิน',
-                locationId: location.find((item) => item.name === 'พาสุข1').id,
-                positionId: position.find((item) => item.name === 'พยาบาลวิชาชีพ').id,
-                titleId: title.find((item) => item.name === 'น.ส.').id,
-            },
-            {
-                firstname: 'อุไรวรรณ',
-                lastname: 'นอกกระโทก',
-                locationId: location.find((item) => item.name === 'พาสุข1').id,
-                positionId: position.find((item) => item.name === 'พยาบาลวิชาชีพ').id,
-                titleId: title.find((item) => item.name === 'น.ส.').id,
-            },
-            {
-                firstname: 'สายฝน',
-                lastname: 'โก้กระโทก',
+                firstname: 'ภารดี',
+                lastname: 'ย้อยผักแว่น',
                 locationId: location.find((item) => item.name === 'พาสุข2').id,
-                positionId: position.find((item) => item.name === 'พยาบาลวิชาชีพ').id,
+                positionId: position.find((item) => item.name === 'พนักงานช่วยเหลือคนไข้').id,
+                titleId: title.find((item) => item.name === 'นาง').id,
+            },
+            {
+                firstname: 'กานต์ชนา',
+                lastname: 'ล้อมกระโทก',
+                locationId: location.find((item) => item.name === 'พาสุข2').id,
+                positionId: position.find((item) => item.name === 'พนักงานช่วยเหลือคนไข้').id,
                 titleId: title.find((item) => item.name === 'น.ส.').id,
+            },
+            {
+                firstname: 'วาสิตา',
+                lastname: 'ธนารักษ์',
+                locationId: location.find((item) => item.name === 'พาสุข2').id,
+                positionId: position.find((item) => item.name === 'พนักงานช่วยเหลือคนไข้').id,
+                titleId: title.find((item) => item.name === 'น.ส.').id,
+            },
+            {
+                firstname: 'สันติ',
+                lastname: 'ชุมกระโทก',
+                locationId: location.find((item) => item.name === 'พาสุข1').id,
+                positionId: position.find((item) => item.name === 'พนักงานเปล').id,
+                titleId: title.find((item) => item.name === 'นาย').id,
+            },
+            {
+                firstname: 'คงศักดิ์',
+                lastname: 'แฝงด่านกลาง',
+                locationId: location.find((item) => item.name === 'พาสุข2').id,
+                positionId: position.find((item) => item.name === 'พนักงานเปล').id,
+                titleId: title.find((item) => item.name === 'นาย').id,
             },
             {
                 firstname: 'เจนรวี',
