@@ -1,5 +1,8 @@
 FROM node:lts AS dependencies
 
+ARG DATABASE_URL
+ENV DATABASE_URL ${DATABASE_URL}
+
 WORKDIR /app
 COPY package.json ./
 RUN yarn
