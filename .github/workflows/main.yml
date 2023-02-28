@@ -2,63 +2,57 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    
-    - id: string
-      uses: ASzc/change-string-case-action@v1
-      with:
-        string: ${{ github.event.repository.name }}
-        
-    - name: Check out the repo
-      uses: actions/checkout@v2
-    - name: Log in to Docker Hub
-      uses: docker/login-action@v1
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_TOKEN }}
-        
-#     - name: Build the Docker image
-#       run: docker build -t chunwarayut/${{ steps.string.outputs.lowercase }}:latest .
-      
-    - name: Push to Docker Hub RN
-      uses: docker/build-push-action@v2
-      with:
-        push: true
-        tags: chunwarayut/${{ steps.string.outputs.lowercase }}:latest
-        secrets: DATABASE_URL="mongodb://nurse-schedules-user-dev:IB98uQsN0164p3c7@128.199.79.240:27017,167.71.218.166:27017,167.71.220.110:27017/nurse-schedules-db-dev?authSource=admin&replicaSet=me_mongodb"
-        build-args: DATABASE_URL="mongodb://nurse-schedules-user-dev:IB98uQsN0164p3c7@128.199.79.240:27017,167.71.218.166:27017,167.71.220.110:27017/nurse-schedules-db-dev?authSource=admin&replicaSet=me_mongodb"
-        
+      - id: string
+        uses: ASzc/change-string-case-action@v1
+        with:
+          string: ${{ github.event.repository.name }}
 
-    - name: Push to Docker Hub PN
-      uses: docker/build-push-action@v2
-      with:
-        push: true
-        tags: chunwarayut/pasuk-pn-tarangwen:latest
-        secrets: DATABASE_URL="mongodb://pasuk-pn-tarangwen-user:IB98uQsN0164p3c7@128.199.79.240:27017,167.71.218.166:27017,167.71.220.110:27017/pasuk-pn-tarangwen-db?authSource=admin&replicaSet=me_mongodb"
-        build-args: DATABASE_URL="mongodb://pasuk-pn-tarangwen-user:IB98uQsN0164p3c7@128.199.79.240:27017,167.71.218.166:27017,167.71.220.110:27017/pasuk-pn-tarangwen-db?authSource=admin&replicaSet=me_mongodb"
-        
-    - name: SSH Command
-      uses: D3rHase/ssh-command-action@v0.2.2
-      with:
-        host: ${{ secrets.SERVER_HOST }}
-        user: ${{ secrets.SERVER_USER }}
-        private_key: ${{ secrets.SSH_KEY }}
-        command: docker pull chunwarayut/${{ steps.string.outputs.lowercase }}:latest && docker stop ${{ steps.string.outputs.lowercase }} && docker rm ${{ steps.string.outputs.lowercase }} && docker run --name ${{ steps.string.outputs.lowercase }} --restart=always -d -p 6040:3000 chunwarayut/${{ steps.string.outputs.lowercase }} 
+      - name: Check out the repo
+        uses: actions/checkout@v2
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_TOKEN }}
 
-    - name: SSH Command
-      uses: D3rHase/ssh-command-action@v0.2.2
-      with:
-        host: ${{ secrets.SERVER_HOST }}
-        user: ${{ secrets.SERVER_USER }}
-        private_key: ${{ secrets.SSH_KEY }}
-        command: docker pull chunwarayut/pasuk-pn-tarangwen:latest && docker stop pasuk-pn-tarangwen && docker rm pasuk-pn-tarangwen && docker run --name pasuk-pn-tarangwen --restart=always -d -p 6041:3000 chunwarayut/pasuk-pn-tarangwen 
+      #     - name: Build the Docker image
+      #       run: docker build -t chunwarayut/${{ steps.string.outputs.lowercase }}:latest .
+
+      - name: Push to Docker Hub RN
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: chunwarayut/${{ steps.string.outputs.lowercase }}:latest
+          build-args: DATABASE_URL=${{ secrets.DATABASE_URL_RN }}
+
+      - name: Push to Docker Hub PN
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: chunwarayut/pasuk-pn-tarangwen:latest
+          build-args: DATABASE_URL=${{ secrets.DATABASE_URL_PN }}
+
+      - name: SSH Command
+        uses: D3rHase/ssh-command-action@v0.2.2
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          user: ${{ secrets.SERVER_USER }}
+          private_key: ${{ secrets.SSH_KEY }}
+          command: docker pull chunwarayut/${{ steps.string.outputs.lowercase }}:latest && docker stop ${{ steps.string.outputs.lowercase }} && docker rm ${{ steps.string.outputs.lowercase }} && docker run --name ${{ steps.string.outputs.lowercase }} --restart=always -d -p 6040:3000 chunwarayut/${{ steps.string.outputs.lowercase }}
+
+      - name: SSH Command
+        uses: D3rHase/ssh-command-action@v0.2.2
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          user: ${{ secrets.SERVER_USER }}
+          private_key: ${{ secrets.SSH_KEY }}
+          command: docker pull chunwarayut/pasuk-pn-tarangwen:latest && docker stop pasuk-pn-tarangwen && docker rm pasuk-pn-tarangwen && docker run --name pasuk-pn-tarangwen --restart=always -d -p 6041:3000 chunwarayut/pasuk-pn-tarangwen
