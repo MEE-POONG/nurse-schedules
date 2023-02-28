@@ -1,12 +1,7 @@
 FROM node:lts AS dependencies
 
 ARG DATABASE_URL
-ENV DATABASE_URL ${DATABASE_URL}
-ENV DATABASE_URL $(cat /run/secrets/DATABASE_URL)
-
-RUN --mount=type=secret,id=DATABASE_URL \
-   export DATABASE_URL=$(cat /run/secrets/DATABASE_URL) && \
-   yarn gen
+ENV DATABASE_URL=${DATABASE_URL}
 
 WORKDIR /app
 COPY package.json ./
