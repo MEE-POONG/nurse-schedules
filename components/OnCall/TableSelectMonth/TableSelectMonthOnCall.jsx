@@ -126,7 +126,7 @@ export const TableSelectMonthOnCall = ({
               <p className="text-lg text-center">ผู้อำนวยการโรงพยาบาลครบุรี</p>
             </div>
           </div>
-          <table className="border-collapse border text-center border-spacing-2 mx-auto text-lg">
+          <table className="border-collapse border text-center border-spacing-2 mx-auto text-lg whitespace-nowrap">
             <tbody>
               <tr className="bg-white">
                 <td className="border border-white" colSpan={daysInMonth + 9}>
@@ -164,7 +164,7 @@ export const TableSelectMonthOnCall = ({
                   colSpan={1}
                   rowSpan={2}
                 >
-                  งานที่ปฏิบัติ
+                  งานที่<br />ปฏิบัติ
                 </td>
                 <td
                   className="border bg-orange-600"

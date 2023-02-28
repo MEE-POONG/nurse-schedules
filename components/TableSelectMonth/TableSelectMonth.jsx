@@ -126,7 +126,7 @@ export const TableSelectMonth = ({
               <p className="text-lg text-center">ผู้อำนวยการโรงพยาบาลครบุรี</p>
             </div>
           </div>
-          <table className="border-collapse border text-center border-spacing-2 mx-auto text-lg">
+          <table className="border-collapse border text-center border-spacing-2 mx-auto text-lg whitespace-nowrap">
             <tbody>
               <tr className="bg-white">
                 <td className="border border-white" colSpan={daysInMonth + 9}>
@@ -164,10 +164,10 @@ export const TableSelectMonth = ({
                   colSpan={1}
                   rowSpan={2}
                 >
-                  งานที่ปฏิบัติ
+                งานที่<br />ปฏิบัติ
                 </td>
                 <td
-                  className="border bg-orange-600"
+                  className="border bg-orange-600 whitespace-nowrap"
                   colSpan={daysInMonth}
                   rowSpan={1}
                 >
@@ -177,21 +177,21 @@ export const TableSelectMonth = ({
                   สรุป
                 </td>
                 <td
-                  className="border bg-green-600 min-w-[30px]"
+                  className="border bg-green-600 min-w-[30px] whitespace-nowrap"
                   colSpan={1}
                   rowSpan={1}
                 >
                   โอ { }
                 </td>
                 <td
-                  className="border bg-green-600 min-w-[50px]"
+                  className="border bg-green-600 min-w-[50px] whitespace-nowrap"
                   colSpan={1}
                   rowSpan={1}
                 >
                   วันทำ
                 </td>
                 <td
-                  className="border bg-green-600 min-w-[50px]"
+                  className="border bg-green-600 min-w-[50px] whitespace-nowrap"
                   colSpan={1}
                   rowSpan={1}
                 >
@@ -248,15 +248,15 @@ export const TableSelectMonth = ({
                   <tr key={key} className="border odd:bg-green-100">
                     <td className="border">{key + 1}</td>
                     <td
-                      className={`border text-left pl-3 sticky -left-5 ${key % 2 == 0
+                      className={`whitespace-nowrap border text-left pl-3 sticky -left-5 ${key % 2 == 0
                           ? "bg-white border-r-2"
                           : "even:bg-green-100"
                         }`}
                     >
                       {person.Title.name} {person.firstname} {person.lastname}
                     </td>
-                    <td className="border">{person.Position.name}</td>
-                    <td className="border">
+                    <td className="border whitespace-nowrap">{person.Position.name}</td>
+                    <td className="border whitespace-nowrap">
                       {
                         person.UserDuty?.Location
                           ?.name

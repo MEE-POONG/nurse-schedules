@@ -81,20 +81,20 @@ export default function ModalSelectMonth({
           }`}
         onClick={() => setShowModal(true)}
       >
-        {dutyOfDay.map(({ Shif, isOT }, index) => {
-          if (!isOT) {
-            return <span className={`${Shif?.name === 'ลาพัก' ? ' text-[0.7rem] ' : Shif?.name === 'R' ? ' circle-red text-[0.55rem]  w-[11px] h-[11px] inline-block leading-[.7rem]' : ' text-lg '}`} key={index}>{Shif?.name}</span>;
-          } else {
-            return (
-              <span
-                className={`${Shif?.class} text-lg ${Shif?.class ? " text-sm w-[16px] h-[16px] inline-block leading-[.9rem]" : " text-red-500 underline decoration-red-500 decoration-1"}`  }
-                key={index}
-              >
-                {Shif?.name}
-              </span>
-            );
-          }
-        })}
+      {dutyOfDay.map(({ Shif, isOT }, index) => {
+        if (!isOT) {
+          return <span className={`${Shif?.name === 'ลาพัก' ? ' text-[0.7rem] ' : Shif?.name === 'R' ? ' circle-red text-[12px]  w-[12px] h-[12px] inline-block leading-[12px]' : ' text-lg '}`} key={index}>{Shif?.name}</span>;
+        } else {
+          return (
+            <span
+            className={`${Shif?.class} text-lg ${Shif?.class ? " text-sm w-[16px] h-[16px] inline-block leading-[16px]" : " text-red-500 underline decoration-red-500 decoration-1"}`  }
+            key={index}
+            >
+              {Shif?.name}
+            </span>
+          );
+        }
+      })}
       </td>
       <Transition appear show={showModal} as={Fragment}>
         <Dialog
