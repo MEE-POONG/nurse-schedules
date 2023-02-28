@@ -108,13 +108,13 @@ export const TableSelectMonth = ({
         ) : (
           <></>
         )}
-        <div ref={componentRef} className="shift-table">
+        <div ref={componentRef} className="shift-table text-lg">
           <div className="justify-between w-11/12 hidden lg:flex">
             <div>
               <p className="text-center">เสนอผู้อำนวยการโรงพยาบาลครบุรี เพื่อโปรดพิจารณา</p>
               <p className="text-center mt-3">...........................................</p>
               <p className="text-center">( นางรำไพ นันทโนภาส )</p>
-              <p className="text-base text-center">หัวหน้ากลุ่มงานการพยาบาล</p>
+              <p className="text-lg text-center">หัวหน้ากลุ่มงานการพยาบาล</p>
             </div>
             <div>
               <p className="text-xl">กลุ่มงานการพยาบาล โรงพยาบาลครบุรี</p>
@@ -123,10 +123,10 @@ export const TableSelectMonth = ({
               <p className="text-center">ความคิดเห็นผู้อำนวยการ</p>
               <p className="text-center mt-3">...........................................</p>
               <p className="text-center">( นายพัฒนา เบ้าสาทร)</p>
-              <p className="text-base text-center">ผู้อำนวยการโรงพยาบาลครบุรี</p>
+              <p className="text-lg text-center">ผู้อำนวยการโรงพยาบาลครบุรี</p>
             </div>
           </div>
-          <table className="border-collapse border text-center border-spacing-2 mx-auto text-base">
+          <table className="border-collapse border text-center border-spacing-2 mx-auto text-lg">
             <tbody>
               <tr className="bg-white">
                 <td className="border border-white" colSpan={daysInMonth + 9}>

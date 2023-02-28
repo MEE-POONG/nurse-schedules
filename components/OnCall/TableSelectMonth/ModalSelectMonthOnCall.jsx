@@ -73,7 +73,7 @@ export default function ModalSelectMonthOnCall({
   return (
     <>
       <td
-        className={`border hover:bg-green-300 cursor-pointer text-base whitespace-nowrap ${["เสาร์", "อาทิตย์"].includes(
+        className={`border hover:bg-green-300 cursor-pointer text-lg whitespace-nowrap ${["เสาร์", "อาทิตย์"].includes(
           dayjs(`${yearEN}-${monthEN}-${day}`).format("dddd")
         )
             ? "bg-lime-100"
@@ -83,11 +83,11 @@ export default function ModalSelectMonthOnCall({
       >
         {dutyOfDay.map(({ Shif, isOT }, index) => {
           if (!isOT) {
-            return <span className={`${Shif?.name === 'ลาพัก' ? ' text-[0.7rem] ' : Shif?.name === 'R' ? ' circle-red text-[0.55rem]  w-[11px] h-[11px] inline-block leading-[.7rem]' : ' text-base '}`} key={index}>{Shif?.name}</span>;
+            return <span className={`${Shif?.name === 'ลาพัก' ? ' text-[0.7rem] ' : Shif?.name === 'R' ? ' circle-red text-[0.55rem]  w-[11px] h-[11px] inline-block leading-[.7rem]' : ' text-lg '}`} key={index}>{Shif?.name}</span>;
           } else {
             return (
               <span
-              className={`${Shif?.class} text-base ${Shif?.class ? " text-sm w-[16px] h-[16px] inline-block leading-[.9rem]" : " text-red-500 underline decoration-red-500 decoration-1"}`  }
+              className={`${Shif?.class} text-lg ${Shif?.class ? " text-sm w-[16px] h-[16px] inline-block leading-[.9rem]" : " text-red-500 underline decoration-red-500 decoration-1"}`  }
               key={index}
               >
                 {Shif?.name}
@@ -131,18 +131,18 @@ export default function ModalSelectMonthOnCall({
                 <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
                   <form className="w-full max-w-lg">
                     <div className="flex">
-                      <p className="text-base font-medium text-black">
+                      <p className="text-lg font-medium text-black">
                         ชื่อ - นามสกุล :
                       </p>
-                      <p className="text-base font-medium text-green-700 ml-2">
+                      <p className="text-lg font-medium text-green-700 ml-2">
                         {name}
                       </p>
                     </div>
                     <div className="flex">
-                      <p className="text-base font-medium text-black">
+                      <p className="text-lg font-medium text-black">
                         วันที่ปฏิบัติงาน :
                       </p>
-                      <p className="text-base font-medium text-green-700 ml-2">
+                      <p className="text-lg font-medium text-green-700 ml-2">
                         {day + " " + monthTH + " " + yearTH}
                       </p>
                     </div>
@@ -150,7 +150,7 @@ export default function ModalSelectMonthOnCall({
                       <div className="w-full px-3">
                         <label
                           htmlFor="shift"
-                          className="block text-base font-medium text-black"
+                          className="block text-lg font-medium text-black"
                         >
                           เลือกกะ
                         </label>
@@ -161,7 +161,7 @@ export default function ModalSelectMonthOnCall({
                               className={`space-y-2 mt-2 rounded-lg shadow ${shif.name === 'ลาพัก' ? 'col-span-2 ' : 'col-span-1'}`}
                             >
                               <label
-                                className={`${ruleDuty(shif.name) === true ? 'bg-gray-200' : 'bg-white'} p-3 justify-between flex w-full pr-8 border-gray-400 rounded-md text-base focus:border-green-700 focus:ring-green-700`}
+                                className={`${ruleDuty(shif.name) === true ? 'bg-gray-200' : 'bg-white'} p-3 justify-between flex w-full pr-8 border-gray-400 rounded-md text-lg focus:border-green-700 focus:ring-green-700`}
                               >
                                 <div className="flex items-center mr-4">
                                   <input
@@ -201,7 +201,7 @@ export default function ModalSelectMonthOnCall({
                                   />
                                   <label
                                     htmlFor={"shift" + index}
-                                    className={`ml-2 text-base font-medium text-gray-700 ${shif.class} ${shif.class ? " text-sm w-[20px] h-[20px] block " : ""}`}
+                                    className={`ml-2 text-lg font-medium text-gray-700 ${shif.class} ${shif.class ? " text-sm w-[20px] h-[20px] block " : ""}`}
                                   >
                                     {shif.name}
                                   </label>
@@ -216,7 +216,7 @@ export default function ModalSelectMonthOnCall({
                   <div className="mt-4">
                     <button
                       type="button"
-                      className="inline-flex justify-center rounded-md border border-transparent bg-green-100 px-4 py-2 text-base font-medium text-green-800 hover:bg-green-700 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-green focus-visible:ring-offset-2"
+                      className="inline-flex justify-center rounded-md border border-transparent bg-green-100 px-4 py-2 text-lg font-medium text-green-800 hover:bg-green-700 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-green focus-visible:ring-offset-2"
                       onClick={async () => {
                         let shiftData = dutyOfDay.map((duty) => {
                           return {
