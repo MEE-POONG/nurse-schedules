@@ -11,7 +11,7 @@ export default async function handler(req, res) {
       try {
         let data = await prisma.user.findMany({
           include: {
-            UserDuty:{
+            UserDuty: {
               include: {
                 Location: true
               },
@@ -61,8 +61,9 @@ export default async function handler(req, res) {
             ...e,
             UserDuty: e.UserDuty[0]
           }
-        }).sort((a, b) => ('' + a.UserDuty.locationId).localeCompare(b.UserDuty.locationId))
-        
+        }).sort((a, b) => ('' + a.UserDuty.id).localeCompare(b.UserDuty.id))
+          .sort((a, b) => ('' + a.UserDuty.locationId).localeCompare(b.UserDuty.locationId))
+
         res.status(200).json(data);
       } catch (error) {
         res.status(400).json({ success: false });
