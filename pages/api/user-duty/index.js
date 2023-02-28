@@ -22,7 +22,7 @@ export default async function handler(req, res) {
           data: {
             userId: req.body.userId,
             locationId: req.body.locationId,
-            datetime: dayjs(new Date()).add(7, "hour").format(),
+            datetime: dayjs(req.body.day).add(7, "hour").format(),
           },
         });
         res.status(201).json({ success: true });

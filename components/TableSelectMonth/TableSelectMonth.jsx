@@ -352,6 +352,7 @@ export const TableSelectMonth = ({
               data: {
                 userId: userId,
                 locationId: locationId,
+                day: yearEN + "-" + monthEN + "-" + 15,
               },
             });
             await getUserList();
