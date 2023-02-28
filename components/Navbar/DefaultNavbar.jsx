@@ -40,12 +40,12 @@ export default function DefaultNavbar() {
             </div>
 
             <div className="hidden sm:flex sm:items-center">
-              <a
+              <Link
                 href="/register"
                 className="text-gray-800 text-sm font-semibold border px-4 py-2 rounded-lg hover:text-green-700 hover:border-green-700"
               >
                 ลงทะเบียน
-              </a>
+              </Link>
             </div>
 
             <div className="sm:hidden cursor-pointer" onClick={handleNavCollapse}>
