@@ -353,7 +353,7 @@ export const TableSelectMonthOnCall = ({
               data: {
                 userId: userId,
                 locationId: locationId,
-                day: yearEN + "-" + monthEN + "-" + 15,
+                day: yearEN + "-" + (+monthValue + 1) + "-" + 15,
               },
             });
             await getUserList();
