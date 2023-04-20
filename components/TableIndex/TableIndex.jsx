@@ -5,6 +5,7 @@ import DropDownDate from "../DropDownDate/DropDownDate";
 import { TableSelectMonth } from "../TableSelectMonth/TableSelectMonth";
 import { TableSelectMonthAF } from "../TableSelectMonth/TableSelectMonthAF";
 import { TableSelectMonthOT } from "../TableSelectMonth/TableSelectMonthOT";
+import { TableSelectMonthR } from "../TableSelectMonth/TableSelectMonthR";
 
 export default function TableIndex() {
   const { dateStore } = useSelector((state) => ({ ...state }))
@@ -21,6 +22,7 @@ export default function TableIndex() {
       <TableSelectMonth daysInMonth={daysInMonth} arrayDayInMonth={arrayDayInMonth} monthEN={monthEN} yearEN={yearEN} monthTH={monthTH} yearTH={yearTH} monthValue={monthValue} yearValue={yearValue} />
       <TableSelectMonthAF daysInMonth={daysInMonth} arrayDayInMonth={arrayDayInMonth} monthEN={monthEN} yearEN={yearEN} monthTH={monthTH} yearTH={yearTH} monthValue={monthValue} yearValue={yearValue} />
       <TableSelectMonthOT daysInMonth={daysInMonth} arrayDayInMonth={arrayDayInMonth} monthEN={monthEN} yearEN={yearEN} monthTH={monthTH} yearTH={yearTH} monthValue={monthValue} yearValue={yearValue} />
+      <TableSelectMonthR daysInMonth={daysInMonth} arrayDayInMonth={arrayDayInMonth} monthEN={monthEN} yearEN={yearEN} monthTH={monthTH} yearTH={yearTH} monthValue={monthValue} yearValue={yearValue} />
     </>
   );
 }
