@@ -253,7 +253,7 @@ export const TableSelectMonthOT = ({
                     </td>
                     <td className="border whitespace-nowrap">{person.Position.name}</td>
                     <td className="border whitespace-nowrap">
-                      290
+                      720
                     </td>
                     {/* แสดงรายละเอียดของตาราง กะ */}
                     {arrayDayInMonth?.map((day, index) => (
@@ -278,7 +278,7 @@ export const TableSelectMonthOT = ({
                     <td className="border hidden">{nightShift}</td>
                     <td className="border hidden">{ot}</td>
                     <td className="border">{ot || ''}</td>
-                    <td className="border text-right">{((workingDay + ot) * 290).toLocaleString('TH-th') || ''}</td>
+                    <td className="border text-right">{((workingDay + ot) * 720).toLocaleString('TH-th') || ''}</td>
                     <td className="border"></td>
                     <td className="border"></td>
                   </tr>
@@ -291,14 +291,14 @@ export const TableSelectMonthOT = ({
                 <td className="border">&nbsp;</td>
                 <td className="border">&nbsp;</td>
                 <td className="border" colSpan={daysInMonth}>
-                  รวมจ่ายเงินทั้งสิ้น = {THBText(((sumDuty(["ช", "บ", "ด"]) + sumOT()) * 290))}
+                  รวมจ่ายเงินทั้งสิ้น = {THBText(((sumDuty(["ช", "บ", "ด"]) + sumOT()) * 720))}
                 </td>
                 <td className="border hidden">{sumDuty(["บ"])}</td>
                 <td className="border hidden">{sumDuty(["ด"])}</td>
                 <td className="border hidden">{sumOT()}</td>
                 <td className="border">{sumOT()}</td>
                 <td className="border">
-                  {((sumDuty(["ช", "บ", "ด"]) + sumOT()) * 290).toLocaleString('TH-th')}
+                  {((sumDuty(["ช", "บ", "ด"]) + sumOT()) * 720).toLocaleString('TH-th')}
                 </td>
                 <td className="border">&nbsp;</td>
                 <td className="border">&nbsp;</td>
