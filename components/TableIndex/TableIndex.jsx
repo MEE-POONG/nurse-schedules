@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import DropDownDate from "../DropDownDate/DropDownDate";
 import { TableSelectMonth } from "../TableSelectMonth/TableSelectMonth";
 import { TableSelectMonthAF } from "../TableSelectMonth/TableSelectMonthAF";
+import { TableSelectMonthOT } from "../TableSelectMonth/TableSelectMonthOT";
 
 export default function TableIndex() {
   const { dateStore } = useSelector((state) => ({ ...state }))
@@ -19,6 +20,7 @@ export default function TableIndex() {
       </div>
       <TableSelectMonth daysInMonth={daysInMonth} arrayDayInMonth={arrayDayInMonth} monthEN={monthEN} yearEN={yearEN} monthTH={monthTH} yearTH={yearTH} monthValue={monthValue} yearValue={yearValue} />
       <TableSelectMonthAF daysInMonth={daysInMonth} arrayDayInMonth={arrayDayInMonth} monthEN={monthEN} yearEN={yearEN} monthTH={monthTH} yearTH={yearTH} monthValue={monthValue} yearValue={yearValue} />
+      <TableSelectMonthOT daysInMonth={daysInMonth} arrayDayInMonth={arrayDayInMonth} monthEN={monthEN} yearEN={yearEN} monthTH={monthTH} yearTH={yearTH} monthValue={monthValue} yearValue={yearValue} />
     </>
   );
 }
