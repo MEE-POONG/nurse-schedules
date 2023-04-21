@@ -139,59 +139,59 @@ export const TableSelectMonthOnCall = ({
               </tr>
               <tr className="border text-white">
                 <td
-                  className="border bg-green-600 min-w-[50px]"
+                  className="border border-black bg-green-600 min-w-[50px]"
                   colSpan={1}
                   rowSpan={2}
                 >
                   ลำดับ
                 </td>
                 <td
-                  className="border bg-green-600 min-w-[200px] sticky -left-5"
+                  className="border border-black bg-green-600 min-w-[200px] sticky -left-5"
                   colSpan={1}
                   rowSpan={2}
                 >
                   ชื่อ - สกุล
                 </td>
                 <td
-                  className="border bg-green-600 min-w-[110px]"
+                  className="border border-black bg-green-600 min-w-[110px]"
                   colSpan={1}
                   rowSpan={2}
                 >
                   ตำแหน่ง
                 </td>
                 <td
-                  className="border bg-green-600 min-w-[50px]"
+                  className="border border-black bg-green-600 min-w-[50px]"
                   colSpan={1}
                   rowSpan={2}
                 >
                   งานที่<br />ปฏิบัติ
                 </td>
                 <td
-                  className="border bg-orange-600"
+                  className="border border-black bg-orange-600"
                   colSpan={daysInMonth}
                   rowSpan={1}
                 >
                   วันที่ปฏิบัติงาน
                 </td>
-                <td className="border bg-green-600" colSpan={2} rowSpan={1}>
+                <td className="border border-black bg-green-600" colSpan={2} rowSpan={1}>
                   สรุป
                 </td>
                 <td
-                  className="border bg-green-600 min-w-[30px]"
+                  className="border border-black bg-green-600 min-w-[30px]"
                   colSpan={1}
                   rowSpan={1}
                 >
                   โอ { }
                 </td>
                 <td
-                  className="border bg-green-600 min-w-[50px]"
+                  className="border border-black bg-green-600 min-w-[50px]"
                   colSpan={1}
                   rowSpan={1}
                 >
                   วันทำ
                 </td>
                 <td
-                  className="border bg-green-600 min-w-[50px]"
+                  className="border border-black bg-green-600 min-w-[50px]"
                   colSpan={1}
                   rowSpan={1}
                 >
@@ -213,19 +213,19 @@ export const TableSelectMonthOnCall = ({
                     {day + 1}
                   </td>
                 ))}
-                <td className="border bg-cyan-600 text-white min-w-[30px]">
+                <td className="border border-black bg-cyan-600 text-white min-w-[30px]">
                   บ
                 </td>
-                <td className="border bg-cyan-600 text-white min-w-[30px]">
+                <td className="border border-black bg-cyan-600 text-white min-w-[30px]">
                   ด
                 </td>
-                <td className="border bg-green-600 text-white min-w-[30px]">
+                <td className="border border-black bg-green-600 text-white min-w-[30px]">
                   ที
                 </td>
-                <td className="border bg-green-600 text-white min-w-[30px]">
+                <td className="border border-black bg-green-600 text-white min-w-[30px]">
                   การ
                 </td>
-                <td className="border bg-green-600 text-white min-w-[30px]">
+                <td className="border border-black bg-green-600 text-white min-w-[30px]">
                   ทำงาน
                 </td>
               </tr>
