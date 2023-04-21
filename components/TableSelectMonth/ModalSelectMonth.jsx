@@ -81,20 +81,20 @@ export default function ModalSelectMonth({
           }`}
         onClick={() => setShowModal(true)}
       >
-      {dutyOfDay.map(({ Shif, isOT }, index) => {
-        if (!isOT) {
-          return <span className={`${  ['ลาพัก', 'ลาป่วย'].includes(Shif?.name) ? ' text-[0.7rem] ' : Shif?.name === 'R' ? ' circle-red text-[12px]  w-[12px] h-[12px] inline-block leading-[12px]' : ' text-lg '}`} key={index}>{Shif?.name}</span>;
-        } else {
-          return (
-            <span
-            className={`${Shif?.class} text-lg ${Shif?.class ? " text-sm w-[16px] h-[16px] inline-block leading-[16px]" : " text-red-500 underline decoration-red-500 decoration-1"}`  }
-            key={index}
-            >
-              {Shif?.name}
-            </span>
-          );
-        }
-      })}
+        {dutyOfDay.map(({ Shif, isOT }, index) => {
+          if (!isOT) {
+            return <span className={`${Shif?.name === 'ลาพัก' ? ' text-[0.7rem] ' : Shif?.name === 'ลาป่วย' ? ' text-[0.7rem] ' : Shif?.name === 'R' ? ' circle-red text-[12px]  w-[12px] h-[12px] inline-block leading-[12px]' : ' text-lg '}`} key={index}>{Shif?.name}</span>;
+          } else {
+            return (
+              <span
+                className={`${Shif?.class} text-lg ${Shif?.class ? " text-sm w-[16px] h-[16px] inline-block leading-[16px]" : " text-red-500 underline decoration-red-500 decoration-1"}`}
+                key={index}
+              >
+                {Shif?.name}
+              </span>
+            );
+          }
+        })}
       </td>
       <Transition appear show={showModal} as={Fragment}>
         <Dialog
@@ -158,7 +158,7 @@ export default function ModalSelectMonth({
                           {Shif?.map((shif, index) => (
                             <div
                               key={index}
-                              className={`space-y-2 mt-2 rounded-lg shadow ${shif.name === 'ลาพัก' ? 'col-span-2 ' : 'col-span-1'}`}
+                              className={`space-y-2 mt-2 rounded-lg shadow ${shif.name === 'ลาพัก' ? 'col-span-2 ' : shif.name === 'ลาป่วย' ? 'col-span-2 ': 'col-span-1'}`}
                             >
                               <label
                                 className={`${ruleDuty(shif.name) === true ? 'bg-gray-200' : 'bg-white'} p-3 justify-between flex w-full pr-8 border-gray-400 rounded-md text-lg focus:border-green-700 focus:ring-green-700`}
