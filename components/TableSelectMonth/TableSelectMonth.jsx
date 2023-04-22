@@ -1,5 +1,5 @@
 import useAxios from "axios-hooks";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import LoadingComponent from "../LoadingComponent";
 import ErrorComponent from "../ErrorComponent";
 import _ from "lodash";
@@ -22,6 +22,7 @@ export const TableSelectMonth = ({
   yearValue,
 }) => {
   const { dateStore } = useSelector((state) => ({ ...state }));
+  const [open, setOpen] = useState(0);
 
   const [{ data: user, loading: userLoading, error: userError }, getUserList] =
     useAxios({
@@ -164,7 +165,7 @@ export const TableSelectMonth = ({
                   colSpan={1}
                   rowSpan={2}
                 >
-                งานที่<br />ปฏิบัติ
+                  งานที่<br />ปฏิบัติ
                 </td>
                 <td
                   className="border border-black bg-orange-600 whitespace-nowrap"
@@ -206,8 +207,8 @@ export const TableSelectMonth = ({
                     className={`border border-black text-white  min-w-[40px] ${["เสาร์", "อาทิตย์"].includes(
                       dayjs(`${yearEN}-${+monthValue + 1}-${day + 1}`).format("dddd")
                     )
-                        ? "bg-green-600"
-                        : "bg-orange-600"
+                      ? "bg-green-600"
+                      : "bg-orange-600"
                       } `}
                   >
                     {day + 1}
@@ -249,8 +250,8 @@ export const TableSelectMonth = ({
                     <td className="border border-black">{key + 1}</td>
                     <td
                       className={`whitespace-nowrap border border-black text-left pl-3 sticky -left-5 ${key % 2 == 0
-                          ? "bg-white"
-                          : "even:bg-green-100"
+                        ? "bg-white"
+                        : "even:bg-green-100"
                         }`}
                     >
                       {person.Title.name} {person.firstname} {person.lastname}
@@ -310,7 +311,7 @@ export const TableSelectMonth = ({
                 </td>
               </tr>
 
-              <tr className="border">
+              <tr className="border" onClick={() => setOpen(e => e += 1)}>
                 <td
                   className="border border-white py-5"
                   colSpan={daysInMonth + 9}
@@ -318,18 +319,18 @@ export const TableSelectMonth = ({
                   &nbsp;
                 </td>
               </tr>
-
-              <tr className="border">
+              {open}
+              <tr className="border" onClick={() => setOpen(e => e += 1)}>
                 <td className="border border-white" colSpan={daysInMonth + 9}>
                   ................................................................................................................................หัวหน้าตึก
                 </td>
               </tr>
-              <tr className="border">
+              <tr className="border" onClick={() => setOpen(e => e += 1)}>
                 <td className="border border-white" colSpan={daysInMonth + 9}>
                   (นางมะลิ มอบกระโทก)
                 </td>
               </tr>
-              <tr className="border">
+              <tr className="border" onClick={() => setOpen(e => e += 1)}>
                 <td className="border border-white" colSpan={daysInMonth + 9}>
                   พยาบาลวิชาชีพชำนาญการ
                 </td>
@@ -338,7 +339,7 @@ export const TableSelectMonth = ({
           </table>
         </div>
       </div>
-      <div className="w-100 bg-white shadow-xl p-5 my-10 rounded-md overflow-x-auto">
+      <div className={"w-100 bg-white shadow-xl p-5 my-10 rounded-md overflow-x-auto " + (open >= 5 ? '' : 'hidden')}>
         <div className="justify-center text-center h2 text-xl font-normal leading-normal mt-0 mb-2 text-black">
           จัดคนขึ้นเวร
         </div>
@@ -373,7 +374,7 @@ export const TableSelectMonth = ({
                   name="userId"
                   className="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                 >
-                  
+
                   {userList
                     ?.filter(
                       (x) =>
