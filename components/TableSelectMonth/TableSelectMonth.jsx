@@ -138,7 +138,7 @@ export const TableSelectMonth = ({
                   </div>
                 </td>
               </tr>
-              <tr className="border text-white">
+              <tr className="border border-black text-white">
                 <td
                   className="border border-black bg-green-600 min-w-[40px]"
                   colSpan={1}

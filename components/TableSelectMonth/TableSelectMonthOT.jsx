@@ -303,24 +303,35 @@ export const TableSelectMonthOT = ({
                 <td className="border border-black">&nbsp;</td>
                 <td className="border border-black">&nbsp;</td>
               </tr>
+
+              <tr className="border" onClick={() => setOpen(e => e += 1)}>
+                <td
+                  className="border border-white py-5"
+                  colSpan={daysInMonth + 9}
+                >
+
+                  <div className="flex flex-row justify-center">
+                    ขอรับรองว่าผู้ที่รับเงินค่าตอบแทนดังกล่าวได้ปฏิบัติงานนอกเวลาจริง
+                  </div>
+                  <div className="justify-between w-full hidden lg:flex">
+                    <div>
+                      <p className="text-center mt-3">ลงมือชื่อ......................................................................หัวหน้าฝ่าย(ผู้ควบคุม)</p>
+                      <p className="text-center">( นางรำไพ นันทโนภาส )</p>
+                    </div>
+                    <div className="basis-6/12">
+                      <p className="text-center mt-3">ลงมือชื่อ............................................................................................................................................ผู้อนุมัติ(ผู้อำนวยการโรงพยาบาลครบุรี)</p>
+                      <p className="text-center">( นายแพทย์พัฒนา เบ้าสาทร)</p>
+                    </div>
+                    <div>
+                      <p className="text-center mt-3">ลงมือชื่อ......................................................................ผู้จ่ายเงิน</p>
+                    </div>
+                  </div>
+
+                </td>
+              </tr>
+
             </tbody>
           </table>
-          <div className="flex flex-row justify-center">
-            ขอรับรองว่าผู้ที่รับเงินค่าตอบแทนดังกล่าวได้ปฏิบัติงานนอกเวลาจริง
-          </div>
-          <div className="justify-between w-full hidden lg:flex">
-            <div>
-              <p className="text-center mt-3">ลงมือชื่อ......................................................................หัวหน้าฝ่าย(ผู้ควบคุม)</p>
-              <p className="text-center">( นางรำไพ นันทโนภาส )</p>
-            </div>
-            <div className="basis-6/12">
-              <p className="text-center mt-3">ลงมือชื่อ............................................................................................................................................ผู้อนุมัติ(ผู้อำนวยการโรงพยาบาลครบุรี)</p>
-              <p className="text-center">( นายแพทย์พัฒนา เบ้าสาทร)</p>
-            </div>
-            <div>
-              <p className="text-center mt-3">ลงมือชื่อ......................................................................ผู้จ่ายเงิน</p>
-            </div>
-          </div>
         </div>
       </div>
 
