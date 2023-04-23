@@ -109,7 +109,7 @@ export const TableSelectMonthOnCall = ({
           <></>
         )}
         <div ref={componentRef} className="shift-table text-lg">
-          <div className="justify-between w-11/12 hidden lg:flex">
+          {/* <div className="justify-between w-11/12 hidden lg:flex">
             <div>
               <p className="text-center">เสนอผู้อำนวยการโรงพยาบาลครบุรี เพื่อโปรดพิจารณา</p>
               <p className="text-center mt-3">...........................................</p>
@@ -125,7 +125,7 @@ export const TableSelectMonthOnCall = ({
               <p className="text-center">( นายพัฒนา เบ้าสาทร)</p>
               <p className="text-lg text-center">ผู้อำนวยการโรงพยาบาลครบุรี</p>
             </div>
-          </div>
+          </div> */}
           <table className="border-collapse border text-center border-spacing-2 mx-auto text-lg whitespace-nowrap">
             <tbody>
               <tr className="bg-white">
@@ -203,7 +203,7 @@ export const TableSelectMonthOnCall = ({
                 {arrayDayInMonth.map((day, index) => (
                   <td
                     key={index}
-                    className={`border text-white  min-w-[40px] ${["เสาร์", "อาทิตย์"].includes(
+                    className={`border border-black text-white  min-w-[40px] ${["เสาร์", "อาทิตย์"].includes(
                       dayjs(`${yearEN}-${+monthValue + 1}-${day + 1}`).format("dddd")
                     )
                         ? "bg-green-600"
@@ -246,18 +246,18 @@ export const TableSelectMonthOnCall = ({
                 console.log('isOT', person?.OnCallDuty?.filter(({ isOT }) => isOT));
                 return (
                   <tr key={key} className="border odd:bg-green-100">
-                    <td className="border">{key + 1}</td>
+                    <td className="border border-black">{key + 1}</td>
                     <td
-                      className={`border text-left pl-3 sticky -left-5 ${key % 2 == 0
-                          ? "bg-white border-r-2"
+                      className={`border border-black text-left pl-3 sticky -left-5 ${key % 2 == 0
+                          ? "bg-white"
                           : "even:bg-green-100"
                         }`}
                     >
                       {person.Title.name}
                       {person.firstname} {person.lastname}
                     </td>
-                    <td className="border">{person.Position.name}</td>
-                    <td className="border">
+                    <td className="border border-black">{person.Position.name}</td>
+                    <td className="border border-black">
                       {
                         person.UserDuty?.Location
                           ?.name
@@ -282,31 +282,31 @@ export const TableSelectMonthOnCall = ({
                         yearTH={yearTH}
                       />
                     ))}
-                    <td className="border">{afternoonShift}</td>
-                    <td className="border">{nightShift}</td>
-                    <td className="border">{ot}</td>
-                    <td className="border">{workingDay}</td>
-                    <td className="border">{workingDay + ot}</td>
+                    <td className="border border-black">{afternoonShift}</td>
+                    <td className="border border-black">{nightShift}</td>
+                    <td className="border border-black">{ot}</td>
+                    <td className="border border-black">{workingDay}</td>
+                    <td className="border border-black">{workingDay + ot}</td>
                   </tr>
                 );
               })}
 
               <tr className="border">
-                <td className="border">&nbsp;</td>
-                <td className="border">&nbsp;</td>
-                <td className="border">&nbsp;</td>
-                <td className="border">&nbsp;</td>
-                <td className="border" colSpan={daysInMonth - 3}>
+                <td className="border border-black">&nbsp;</td>
+                <td className="border border-black">&nbsp;</td>
+                <td className="border border-black">&nbsp;</td>
+                <td className="border border-black">&nbsp;</td>
+                <td className="border border-black" colSpan={daysInMonth - 3}>
                   &nbsp;
                 </td>
-                <td className="border" colSpan={3} rowSpan={1}>
+                <td className="border border-black" colSpan={3} rowSpan={1}>
                   รวม
                 </td>
-                <td className="border">{sumDuty(["บ"])}</td>
-                <td className="border">{sumDuty(["ด"])}</td>
-                <td className="border">{sumOT()}</td>
-                <td className="border">{sumDuty(["ช", "บ", "ด"])}</td>
-                <td className="border">
+                <td className="border border-black">{sumDuty(["บ"])}</td>
+                <td className="border border-black">{sumDuty(["ด"])}</td>
+                <td className="border border-black">{sumOT()}</td>
+                <td className="border border-black">{sumDuty(["ช", "บ", "ด"])}</td>
+                <td className="border border-black">
                   {sumDuty(["ช", "บ", "ด"]) + sumOT()}
                 </td>
               </tr>
@@ -320,21 +320,37 @@ export const TableSelectMonthOnCall = ({
                 </td>
               </tr>
 
-              <tr className="border">
-                <td className="border border-white" colSpan={daysInMonth + 9}>
-                  ................................................................................................................................หัวหน้าตึก
+
+              <tr className="border" onClick={() => setOpen(e => e += 1)}>
+                <td
+                  className="border border-white py-5"
+                  colSpan={daysInMonth + 9}
+                >
+
+                  <div className="justify-between w-full hidden lg:flex">
+                    <div>
+                      {/* <p className="text-center mt-3">เสนอผู้อำนวยการโรงพยาบาลครบุรี เพื่อโปรดพิจารณา</p> */}
+                      <p className="text-center mt-3">............................................................................................................................................</p>
+                      <p className="text-center">( นางรำไพ นันทโนภาส )</p>
+                      <p className="text-center">หัวหน้ากลุ่มงานการพยาบาล</p>
+                    </div>
+                    <div>
+                      {/* <p className="text-center mt-3"> &nbsp; </p> */}
+                      <p className="text-center mt-3">............................................................................................................................................</p>
+                      <p className="text-center">( นางมะลิ มอบกระโทก )</p>
+                      <p className="text-center">หัวหน้าตึก</p>
+                    </div>
+                    <div className="text-center">
+                      {/* <p className="text-center mt-3">ความคิดเห็นผู้อำนวยการ</p> */}
+                      <p className="text-center mt-3">............................................................................................................................................</p>
+                      <p className="text-center">( นายแพทย์พัฒนา เบ้าสาทร)</p>
+                      <p className="text-center">ผู้อำนวยการโรงพยาบาลครบุรี</p>
+                    </div>
+                  </div>
+
                 </td>
               </tr>
-              <tr className="border">
-                <td className="border border-white" colSpan={daysInMonth + 9}>
-                  (นางมะลิ มอบกระโทก)
-                </td>
-              </tr>
-              <tr className="border">
-                <td className="border border-white" colSpan={daysInMonth + 9}>
-                  พยาบาลวิชาชีพชำนาญการ
-                </td>
-              </tr>
+              
             </tbody>
           </table>
         </div>

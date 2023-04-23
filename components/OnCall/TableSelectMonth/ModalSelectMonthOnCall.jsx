@@ -73,7 +73,7 @@ export default function ModalSelectMonthOnCall({
   return (
     <>
       <td
-        className={`border hover:bg-green-300 cursor-pointer text-lg whitespace-nowrap ${["เสาร์", "อาทิตย์"].includes(
+        className={`border border-black hover:bg-green-300 cursor-pointer text-lg whitespace-nowrap ${["เสาร์", "อาทิตย์"].includes(
           dayjs(`${yearEN}-${monthEN}-${day}`).format("dddd")
         )
             ? "bg-lime-100"

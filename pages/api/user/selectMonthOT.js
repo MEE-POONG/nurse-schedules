@@ -43,6 +43,26 @@ export default async function handler(req, res) {
             Title: true,
           },
           where: {
+            OR: [
+              {
+                AND: [
+                  { firstname: { not: 'วิภาวี' } },
+                  { lastname: { not: 'จิตรไธสงค์' } }
+                ]
+              },
+              {
+                AND: [
+                  { firstname: { not: 'ประภัสสร' } },
+                  { lastname: { not: 'งิมขุนทด' } }
+                ]
+              },
+              {
+                AND: [
+                  { firstname: { not: 'อุไรวรรณ' } },
+                  { lastname: { not: 'นอกกระโทก' } }
+                ]
+              }
+            ],
             UserDuty: {
               some: {
                 AND: {

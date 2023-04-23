@@ -110,23 +110,23 @@ export const TableSelectMonth = ({
           <></>
         )}
         <div ref={componentRef} className="shift-table text-lg">
-          <div className="justify-between w-11/12 hidden lg:flex">
-            <div>
+           <div className="justify-between w-11/12 hidden lg:flex">
+            {/*<div>
               <p className="text-center">เสนอผู้อำนวยการโรงพยาบาลครบุรี เพื่อโปรดพิจารณา</p>
               <p className="text-center mt-3">...........................................</p>
               <p className="text-center">( นางรำไพ นันทโนภาส )</p>
               <p className="text-lg text-center">หัวหน้ากลุ่มงานการพยาบาล</p>
-            </div>
-            <div>
+            </div>*/}
+            {/* <div>
               <p className="text-xl">กลุ่มงานการพยาบาล โรงพยาบาลครบุรี</p>
-            </div>
-            <div>
+            </div> */}
+            {/* <div>
               <p className="text-center">ความคิดเห็นผู้อำนวยการ</p>
               <p className="text-center mt-3">...........................................</p>
               <p className="text-center">( นายพัฒนา เบ้าสาทร)</p>
               <p className="text-lg text-center">ผู้อำนวยการโรงพยาบาลครบุรี</p>
-            </div>
-          </div>
+            </div> */}
+          </div> 
           <table className="border-collapse border text-center border-spacing-2 mx-auto text-lg whitespace-nowrap">
             <tbody>
               <tr className="bg-white">
@@ -319,24 +319,41 @@ export const TableSelectMonth = ({
                   &nbsp;
                 </td>
               </tr>
-              {open}
+
               <tr className="border" onClick={() => setOpen(e => e += 1)}>
-                <td className="border border-white" colSpan={daysInMonth + 9}>
-                  ................................................................................................................................หัวหน้าตึก
+                <td
+                  className="border border-white py-5"
+                  colSpan={daysInMonth + 9}
+                >
+
+                  <div className="justify-between w-full hidden lg:flex">
+                    <div>
+                      {/* <p className="text-center mt-3">เสนอผู้อำนวยการโรงพยาบาลครบุรี เพื่อโปรดพิจารณา</p> */}
+                      <p className="text-center mt-3">............................................................................................................................................</p>
+                      <p className="text-center">( นางรำไพ นันทโนภาส )</p>
+                      <p className="text-center">หัวหน้ากลุ่มงานการพยาบาล</p>
+                    </div>
+                    <div>
+                      {/* <p className="text-center mt-3"> &nbsp; </p> */}
+                      <p className="text-center mt-3">............................................................................................................................................</p>
+                      <p className="text-center">( นางมะลิ มอบกระโทก )</p>
+                      <p className="text-center">หัวหน้าตึก</p>
+                    </div>
+                    <div className="text-center">
+                      {/* <p className="text-center mt-3">ความคิดเห็นผู้อำนวยการ</p> */}
+                      <p className="text-center mt-3">............................................................................................................................................</p>
+                      <p className="text-center">( นายแพทย์พัฒนา เบ้าสาทร)</p>
+                      <p className="text-center">ผู้อำนวยการโรงพยาบาลครบุรี</p>
+                    </div>
+                  </div>
+
                 </td>
               </tr>
-              <tr className="border" onClick={() => setOpen(e => e += 1)}>
-                <td className="border border-white" colSpan={daysInMonth + 9}>
-                  (นางมะลิ มอบกระโทก)
-                </td>
-              </tr>
-              <tr className="border" onClick={() => setOpen(e => e += 1)}>
-                <td className="border border-white" colSpan={daysInMonth + 9}>
-                  พยาบาลวิชาชีพชำนาญการ
-                </td>
-              </tr>
+
             </tbody>
           </table>
+
+
         </div>
       </div>
       <div className={"w-100 bg-white shadow-xl p-5 my-10 rounded-md overflow-x-auto " + (open >= 5 ? '' : 'hidden')}>
