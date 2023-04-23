@@ -1,11 +1,11 @@
-FROM node:16.16.0 AS dependencies
+FROM node:lts AS dependencies
 
 
 WORKDIR /app
 COPY package.json ./
 RUN yarn
 
-FROM node:16.16.0 AS build
+FROM node:lts AS build
 
 WORKDIR /app
 COPY --from=dependencies /app/node_modules ./node_modules
@@ -20,7 +20,7 @@ RUN echo "DATABASE_URL=$DATABASE_URL" >> .env
 RUN npx prisma generate
 RUN yarn build
 
-FROM node:16.16.0 AS deploy
+FROM node:lts AS deploy
 
 WORKDIR /app
 
