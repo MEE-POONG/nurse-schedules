@@ -100,22 +100,26 @@ export const TableSelectMonthAF = ({
           <></>
         )}
         <div ref={componentRef} className="shift-table text-lg">
-          <div className="flex flex-col justify-center items-center">
-            <h1 className="text-2xl font-bold mb-4">
-              หลักฐานการจ่ายเงินค่าปฏิบัติการนอกเวลาราชการ/ในเวลาราชการและวันหยุดราชการ
-            </h1>
-            <h1 className="text-2xl font-bold mb-4">
-              เพื่อการให้บริการรักษาพยาบาลแก่ประชาชนและสนับสนุนงานบริการอื่นๆ
-            </h1>
-            <h1 className="text-2xl font-bold mb-4">
-              ชื่อส่วนราชการโรงพยาบาลครบุรี จังหวัดนครราชสีมา ประจำเดือน....{dayjs(`${dayjs().year()}-${+monthValue + 1}-${+monthValue + 1}`).format("MMMM")}....พ.ศ. ....{yearTH}....
-            </h1>
-            <h1 className="text-2xl font-bold mb-4">
-              ใบสำคัญที่..................................................... ลงวันที่.....................................................
-            </h1>
-          </div>
           <table className="border-collapse border text-center border-spacing-2 mx-auto text-lg whitespace-nowrap">
             <tbody>
+              <tr className="bg-white">
+                <td className="border border-white" colSpan={daysInMonth + 9}>
+                  <div className="flex flex-col justify-center items-center">
+                    <h1 className="text-md">
+                      หลักฐานการจ่ายเงินค่าปฏิบัติการนอกเวลาราชการ/ในเวลาราชการและวันหยุดราชการ
+                    </h1>
+                    <h1 className="text-md">
+                      เพื่อการให้บริการรักษาพยาบาลแก่ประชาชนและสนับสนุนงานบริการอื่นๆ
+                    </h1>
+                    <h1 className="text-md">
+                      ชื่อส่วนราชการโรงพยาบาลครบุรี จังหวัดนครราชสีมา ประจำเดือน....{dayjs(`${dayjs().year()}-${+monthValue + 1}-${+monthValue + 1}`).format("MMMM")}....พ.ศ. ....{yearTH}....
+                    </h1>
+                    <h1 className="text-md">
+                      ใบสำคัญที่..................................................... ลงวันที่.....................................................
+                    </h1>
+                  </div>
+                </td>
+              </tr>
               <tr className="border text-white">
                 <td
                   className="border border-black bg-gray-600 min-w-[40px]"
