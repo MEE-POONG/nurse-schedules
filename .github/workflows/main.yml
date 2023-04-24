@@ -28,14 +28,14 @@ jobs:
       #       run: docker build -t chunwarayut/${{ steps.string.outputs.lowercase }}:latest .
 
       - name: Push to Docker Hub RN
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           push: true
           tags: chunwarayut/${{ steps.string.outputs.lowercase }}:latest
           build-args: DATABASE_URL=${{ secrets.DATABASE_URL_RN }}
 
       - name: Push to Docker Hub PN
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           push: true
           tags: chunwarayut/pasuk-pn-tarangwen:latest
