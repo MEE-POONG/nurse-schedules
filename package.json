@@ -30,6 +30,7 @@
     "react-icons": "^4.7.1",
     "react-redux": "^8.0.5",
     "react-to-print": "^2.14.11",
+    "react-toastify": "^9.1.2",
     "thai-baht-text": "^1.0.8"
   },
   "devDependencies": {
