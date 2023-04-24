@@ -37,6 +37,12 @@ export default function DefaultNavbar() {
               >
                 สรุปยอด ON - CALL
               </Link>
+              <Link
+                href="/payment"
+                className="text-gray-800 text-sm font-semibold hover:text-green-700 mr-4"
+              >
+                ช่องทางการสนับสนุน
+              </Link>
             </div>
 
             <div className="hidden sm:flex sm:items-center">
@@ -77,6 +83,14 @@ export default function DefaultNavbar() {
               >
                 สรุปยอด ON - CALL
               </Link>
+
+              <Link
+                href="/payment"
+                className="text-gray-800 text-sm font-semibold hover:text-green-700 mb-1 flex justify-center"
+              >
+                ช่องทางการสนับสนุน
+              </Link>
+
               <div className="flex justify-center items-center border-t-2 pt-2">
                 <Link
                   href="/register"
