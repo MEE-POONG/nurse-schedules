@@ -12,7 +12,7 @@ COPY --from=dependencies /app/node_modules ./node_modules
 COPY . .
 
 ARG DATABASE_URL
-ENV DATABASE_URL=$DATABASE_URL
+ENV DATABASE_URL=mongodb://nurse-schedules-user-dev:IB98uQsN0164p3c7@128.199.79.240:27017,167.71.218.166:27017,167.71.220.110:27017/nurse-schedules-db-dev?authSource=admin&replicaSet=me_mongodb
 
 RUN echo "DATABASE_URL=$DATABASE_URL"
 RUN echo "DATABASE_URL=$DATABASE_URL" >> .env

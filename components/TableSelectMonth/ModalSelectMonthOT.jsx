@@ -2,7 +2,7 @@ import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useEffect, useRef, useState } from "react";
 import dayjs from "dayjs";
 
-export default function ModalSelectMonth({
+export default function ModalSelectMonthOT({
   userId,
   Duty,
   day,
@@ -87,7 +87,7 @@ export default function ModalSelectMonth({
           } else {
             return (
               <span
-                className={`${Shif?.class} text-lg ${Shif?.class ? " text-sm w-[16px] h-[16px] inline-block leading-[16px]" : " text-red-500 underline decoration-red-500 decoration-1"}`}
+                className={`circle-red text-lg ${Shif?.class ? " text-sm w-[16px] h-[16px] inline-block leading-[16px]" : " text-red-500 underline decoration-red-500 decoration-1"}`}
                 key={index}
               >
                 {Shif?.name}
@@ -201,7 +201,7 @@ export default function ModalSelectMonth({
                                   />
                                   <label
                                     htmlFor={"shift" + index}
-                                    className={`ml-2 text-lg font-medium text-gray-700 ${shif.class} ${shif.class ? " text-sm w-[20px] h-[20px] block " : ""}`}
+                                    className={`ml-2 text-lg font-medium text-gray-700 circle-red ${shif.class ? " text-sm w-[20px] h-[20px] block " : ""}`}
                                   >
                                     {shif.name}
                                   </label>
