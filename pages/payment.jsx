@@ -13,8 +13,8 @@ export default function Home() {
 
     return (
         <>
-            <div className="my-5 items-center justify-center">
-                <div onClick={notify} className="text-center mt-10 items-center justify-center" Style="text-align: -webkit-center;">
+            <div className="my-5 items-center justify-center " Style="text-align: -webkit-center;">
+                <div onClick={notify} className="text-center mt-10 items-center justify-center w-[700px] backdrop-blur-3xl backdrop-saturate-200 rounded-2xl bg-white/30 p-10" Style="text-align: -webkit-center;">
                     <h1 className="mb-5 text-black text-bold">สนับสนุนได้ที่นี่เลย</h1>
                     <h2 className="mb-5 text-black text-bold">เพื่อเป็นกำลังใจให้ทีมงาน</h2>
                     <h2 className="mb-5 text-black text-bold">และเพื่อให้เว็บไซต์นี้ดำเนินการต่อไปได้</h2>
