@@ -284,7 +284,7 @@ export const TableSelectMonthR = ({
                     <td className="border border-black hidden">{nightShift}</td>
                     <td className="border border-black hidden">{ot}</td>
                     <td className="border border-black">{workingDay || ''}</td>
-                    <td className="border border-black text-right">{((workingDay + ot) * 720) ? ((workingDay + ot) * 720).toLocaleString('TH-th') : ''}</td>
+                    <td className="border border-black text-right">{ ((workingDay + ot) * 720).toLocaleString('TH-th')}</td>
                     <td className="border border-black"></td>
                     <td className="border border-black"></td>
                   </tr>

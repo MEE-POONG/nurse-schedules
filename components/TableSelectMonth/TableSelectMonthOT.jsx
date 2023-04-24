@@ -123,7 +123,7 @@ export const TableSelectMonthOT = ({
                   </div>
                 </td>
               </tr>
-              
+
               <tr className="border border-black text-white">
                 <td
                   className="border border-black bg-gray-600 min-w-[40px]"
@@ -286,7 +286,7 @@ export const TableSelectMonthOT = ({
                     <td className="border border-black hidden">{nightShift}</td>
                     <td className="border border-black hidden">{ot}</td>
                     <td className="border border-black">{ot || ''}</td>
-                    <td className="border border-black text-right">{((workingDay + ot) * 720) ? ((workingDay + ot) * 720).toLocaleString('TH-th') : ''}</td>
+                    <td className="border border-black text-right">{((workingDay + ot) * 720).toLocaleString('TH-th')}</td>
                     <td className="border border-black"></td>
                     <td className="border border-black"></td>
                   </tr>
