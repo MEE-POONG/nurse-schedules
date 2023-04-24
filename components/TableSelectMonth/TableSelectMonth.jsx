@@ -132,9 +132,9 @@ export const TableSelectMonth = ({
               <tr className="bg-white">
                 <td className="border border-white" colSpan={daysInMonth + 9}>
                   <div className="text-center text-lg">
-                    ตารางเวรประจำเดือน.........................{dayjs(`${dayjs().year()}-${+monthValue + 1}-${+monthValue + 1}`).format("MMMM")}
-                    .........................พ.ศ...............{yearTH}
-                    ................
+                    ตารางการปฎิบัติงานเวลาราชการ นอกเวลาราชการและวันหยุดราชการเพื่อให้บริการรักษาพยาบาลและสนับสนุนงานบริการอื่นๆ <br />
+                    ส่วนราชการ โรงพยาบาลครบุรี จังหวัดนครราชสีมา ประจำเดือน......................... {dayjs(`${dayjs().year()}-${+monthValue + 1}-${+monthValue + 1}`).format("MMMM")}.........................พ.ศ..........{yearTH}..........<br />
+                    คำสั่งโรงพยาบาลครบุรี ที่..................../....................ลงวันที่....................เดือน........................................พ.ศ....................
                   </div>
                 </td>
               </tr>
@@ -311,12 +311,13 @@ export const TableSelectMonth = ({
                 </td>
               </tr>
 
+
               <tr className="border" onClick={() => setOpen(e => e += 1)}>
                 <td
-                  className="border border-white py-5"
+                  className="border border-white"
                   colSpan={daysInMonth + 9}
                 >
-                  &nbsp;
+                  หมายเหตุ &nbsp;&nbsp;&nbsp;&nbsp; เวรเช้า (ช) = 08.300 - 16.30 น. &nbsp;&nbsp;&nbsp;&nbsp; เวรบ่าย (บ) = 16.30 - 00.30 น. &nbsp;&nbsp;&nbsp;&nbsp; เวรดึก (ด) = 00.30 - 08.30 น. &nbsp;&nbsp;&nbsp;&nbsp; O = เวรโอที
                 </td>
               </tr>
 
@@ -329,21 +330,18 @@ export const TableSelectMonth = ({
                   <div className="justify-between w-full hidden lg:flex">
                     <div>
                       {/* <p className="text-center mt-3">เสนอผู้อำนวยการโรงพยาบาลครบุรี เพื่อโปรดพิจารณา</p> */}
-                      <p className="text-center mt-3">............................................................................................................................................</p>
-                      <p className="text-center">( นางรำไพ นันทโนภาส )</p>
-                      <p className="text-center">หัวหน้ากลุ่มงานการพยาบาล</p>
+                      <p className="text-center mt-3">ลงชื่อ......................................................ผู้อำนวยการโรงพยาบาลครบุรี(ผู้อนุมัติอยู่เวร)</p>
+                      <p className="text-left pl-14">( นายพัฒนา เบ้าสาทร )</p>
                     </div>
                     <div>
                       {/* <p className="text-center mt-3"> &nbsp; </p> */}
-                      <p className="text-center mt-3">............................................................................................................................................</p>
-                      <p className="text-center">( นางมะลิ มอบกระโทก )</p>
-                      <p className="text-center">หัวหน้าตึก</p>
+                      <p className="text-center mt-3">ลงชื่อ......................................................หัวหน้ากลุ่มงานการพยาบาล(ผู้ควบคุม)</p>
+                      <p className="text-left pl-14">( นางรำไพ นันทโนภาส )</p>
                     </div>
                     <div className="text-center">
                       {/* <p className="text-center mt-3">ความคิดเห็นผู้อำนวยการ</p> */}
-                      <p className="text-center mt-3">............................................................................................................................................</p>
-                      <p className="text-center">( นายแพทย์พัฒนา เบ้าสาทร)</p>
-                      <p className="text-center">ผู้อำนวยการโรงพยาบาลครบุรี</p>
+                      <p className="text-center mt-3">ลงชื่อ......................................................หัวหน้าหน่วยงาน</p>
+                      <p className="text-left pl-16">( นางมะลิ มอบกระโทก )</p>
                     </div>
                   </div>
 
