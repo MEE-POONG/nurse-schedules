@@ -427,17 +427,17 @@ export const TableSelectMonthR = ({
   );
 
   function sumDuty(array) {
-    return _.sumBy(user, function (o) {
+    return _.sumBy(user?.filter(e => e.Position.name !== 'พนักงานเปล'), function (o) {
       return o.Duty?.filter(({ Shif, isOT }) => array.includes(Shif?.name) && !isOT)?.length;
     });
   }
 
   function sumOT() {
-    console.log(user);
-    return _.sumBy(user, function (o) {
+    return _.sumBy(user?.filter(e => e.Position.name !== 'พนักงานเปล'), function (o) {
       return o.Duty?.filter(({ isOT }) => isOT)?.length;
     });
   }
+
 
   function sumDutyPay(array) {
     return _.sumBy(user?.filter(e => e.Position.name === 'พนักงานเปล'), function (o) {
@@ -450,5 +450,4 @@ export const TableSelectMonthR = ({
       return o.Duty?.filter(({ isOT }) => isOT)?.length;
     });
   }
-
 };

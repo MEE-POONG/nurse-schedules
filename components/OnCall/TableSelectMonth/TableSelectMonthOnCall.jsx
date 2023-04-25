@@ -206,8 +206,8 @@ export const TableSelectMonthOnCall = ({
                     className={`border border-black text-black  min-w-[40px] ${["เสาร์", "อาทิตย์"].includes(
                       dayjs(`${yearEN}-${+monthValue + 1}-${day + 1}`).format("dddd")
                     )
-                        ? "bg-white"
-                        : "bg-white"
+                      ? "bg-white"
+                      : "bg-white"
                       } `}
                   >
                     {day + 1}
@@ -231,7 +231,7 @@ export const TableSelectMonthOnCall = ({
               </tr>
 
               {/* ข้อมูลการขึ้นเวร */}
-              {user?.map((person, key) => {
+              {user?.filter(e => e.Position.name !== 'พนักงานเปล')?.map((person, key) => {
                 const afternoonShift = person?.OnCallDuty?.filter(
                   ({ Shif, isOT }) => Shif?.name == "บ" && !isOT
                 )?.length;
@@ -249,8 +249,8 @@ export const TableSelectMonthOnCall = ({
                     <td className="border border-black">{key + 1}</td>
                     <td
                       className={`border border-black text-left pl-3 sticky -left-5 ${key % 2 == 0
-                          ? "bg-white"
-                          : "even:bg-white"
+                        ? "bg-white"
+                        : "even:bg-white"
                         }`}
                     >
                       {person.Title.name}
@@ -310,6 +310,90 @@ export const TableSelectMonthOnCall = ({
                   {sumDuty(["ช", "บ", "ด"]) + sumOT()}
                 </td>
               </tr>
+
+
+              {/* ข้อมูลการขึ้นเวร */}
+              {user?.filter(e => e.Position.name === 'พนักงานเปล')?.map((person, key) => {
+                const afternoonShift = person?.OnCallDuty?.filter(
+                  ({ Shif, isOT }) => Shif?.name == "บ" && !isOT
+                )?.length;
+                const nightShift = person?.OnCallDuty?.filter(
+                  ({ Shif, isOT }) => Shif?.name == "ด" && !isOT
+                )?.length;
+                const workingDay = person?.OnCallDuty?.filter(
+                  ({ Shif, isOT }) =>
+                    ["ช", "บ", "ด"].includes(Shif?.name) && !isOT
+                )?.length;
+                const ot = person?.OnCallDuty?.filter(({ isOT }) => isOT)?.length;
+                console.log('isOT', person?.OnCallDuty?.filter(({ isOT }) => isOT));
+                return (
+                  <tr key={key} className="border odd:bg-white">
+                    <td className="border border-black">{key + 1}</td>
+                    <td
+                      className={`border border-black text-left pl-3 sticky -left-5 ${key % 2 == 0
+                        ? "bg-white"
+                        : "even:bg-white"
+                        }`}
+                    >
+                      {person.Title.name}
+                      {person.firstname} {person.lastname}
+                    </td>
+                    <td className="border border-black">{person.Position.name}</td>
+                    <td className="border border-black">
+                      {
+                        person.UserDuty?.Location
+                          ?.name
+                      }
+                    </td>
+                    {/* แสดงรายละเอียดของตาราง กะ */}
+                    {arrayDayInMonth?.map((day, index) => (
+                      <ModalSelectMonthOnCall
+                        key={index}
+                        userId={person.id}
+                        OnCallDuty={person.OnCallDuty}
+                        day={day + 1}
+                        name={person.firstname + " " + person.lastname}
+                        Shif={shif}
+                        getUserList={getUserList}
+                        executeDuty={executeDuty}
+                        deleteDuty={deleteDuty}
+                        userLoading={userLoading}
+                        monthEN={+monthValue + 1}
+                        monthTH={monthTH}
+                        yearEN={yearEN}
+                        yearTH={yearTH}
+                      />
+                    ))}
+                    <td className="border border-black">{afternoonShift}</td>
+                    <td className="border border-black">{nightShift}</td>
+                    <td className="border border-black">{ot}</td>
+                    <td className="border border-black">{workingDay}</td>
+                    <td className="border border-black">{workingDay + ot}</td>
+                  </tr>
+                );
+              })}
+
+              {user?.filter(e => e.Position.name === 'พนักงานเปล') ? <tr className="border">
+                <td className="border border-black">&nbsp;</td>
+                <td className="border border-black">&nbsp;</td>
+                <td className="border border-black">&nbsp;</td>
+                <td className="border border-black">&nbsp;</td>
+                <td className="border border-black" colSpan={daysInMonth - 3}>
+                  &nbsp;
+                </td>
+                <td className="border border-black" colSpan={3} rowSpan={1}>
+                  รวม
+                </td>
+                <td className="border border-black">{sumDutyPay(["บ"])}</td>
+                <td className="border border-black">{sumDutyPay(["ด"])}</td>
+                <td className="border border-black">{sumOTPay()}</td>
+                <td className="border border-black">{sumDutyPay(["ช", "บ", "ด"])}</td>
+                <td className="border border-black">
+                  {sumOTPay()}
+                </td>
+              </tr> : ''}
+
+
 
 
               <tr className="border" onClick={() => setOpen(e => e += 1)}>
@@ -463,14 +547,26 @@ export const TableSelectMonthOnCall = ({
   );
 
   function sumDuty(array) {
-    return _.sumBy(user, function (o) {
+    return _.sumBy(user?.filter(e => e.Position.name !== 'พนักงานเปล'), function (o) {
       return o.OnCallDuty?.filter(({ Shif, isOT }) => array.includes(Shif?.name) && !isOT)?.length;
     });
   }
 
   function sumOT() {
-    console.log(user);
-    return _.sumBy(user, function (o) {
+    return _.sumBy(user?.filter(e => e.Position.name !== 'พนักงานเปล'), function (o) {
+      return o.OnCallDuty?.filter(({ isOT }) => isOT)?.length;
+    });
+  }
+
+
+  function sumDutyPay(array) {
+    return _.sumBy(user?.filter(e => e.Position.name === 'พนักงานเปล'), function (o) {
+      return o.OnCallDuty?.filter(({ Shif, isOT }) => array.includes(Shif?.name) && !isOT)?.length;
+    });
+  }
+
+  function sumOTPay() {
+    return _.sumBy(user?.filter(e => e.Position.name === 'พนักงานเปล'), function (o) {
       return o.OnCallDuty?.filter(({ isOT }) => isOT)?.length;
     });
   }
