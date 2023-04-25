@@ -133,7 +133,7 @@ export const TableSelectMonthOT = ({
                   ลำดับ
                 </td>
                 <td
-                  className="border border-black bg-white min-w-[200px] sticky -left-5"
+                  className="border border-black bg-white min-w-[200px]"
                   colSpan={1}
                   rowSpan={2}
                 >
@@ -249,12 +249,12 @@ export const TableSelectMonthOT = ({
                 const ot = person?.Duty?.filter(({ isOT }) => isOT)?.length;
 
                 return (
-                  <tr key={key} className="border  odd:bg-white">
+                  <tr key={key} className="border bg-white">
                     <td className="border border-black">{key + 1}</td>
                     <td
-                      className={`whitespace-nowrap border border-black text-left pl-3 sticky -left-5 ${key % 2 !== 0
+                      className={`whitespace-nowrap border border-black text-left pl-3 ${key % 2 !== 0
                         ? "bg-white"
-                        : "even:bg-white"
+                        : "bg-white"
                         }`}
                     >
                       {person.Title.name} {person.firstname} {person.lastname}
