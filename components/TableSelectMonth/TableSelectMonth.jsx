@@ -91,7 +91,7 @@ export const TableSelectMonth = ({
       <div className="flex justify-center items-center pb-10">
         <button
           onClick={handlePrint}
-          className="bg-gray-600 hover:bg-gray-800 text-white font-bold mt-6 -mb-10 py-2 px-4 rounded-xl inline-flex items-center"
+          className="bg-white hover:bg-white text-black font-bold mt-6 -mb-10 py-2 px-4 rounded-xl inline-flex items-center"
         >
           <BsPrinterFill className="my-auto" />
           <span className="mx-2">ออกรายงาน</span>
@@ -130,7 +130,7 @@ export const TableSelectMonth = ({
           <table className="border-collapse border text-center border-spacing-2 mx-auto text-lg whitespace-nowrap">
             <tbody>
               <tr className="bg-white">
-                <td className="border border-white" colSpan={daysInMonth + 9}>
+                <td className="border border-white border-b-black" colSpan={daysInMonth + 9}>
                   <div className="text-center text-lg">
                     ตารางการปฎิบัติงานเวลาราชการ นอกเวลาราชการและวันหยุดราชการเพื่อให้บริการรักษาพยาบาลและสนับสนุนงานบริการอื่นๆ <br />
                     ส่วนราชการ โรงพยาบาลครบุรี จังหวัดนครราชสีมา ประจำเดือน......................... {dayjs(`${dayjs().year()}-${+monthValue + 1}-${+monthValue + 1}`).format("MMMM")}.........................พ.ศ..........{yearTH}..........<br />
@@ -138,61 +138,61 @@ export const TableSelectMonth = ({
                   </div>
                 </td>
               </tr>
-              <tr className="border border-black text-white">
+              <tr className="border border-black text-black">
                 <td
-                  className="border border-black bg-gray-600 min-w-[40px]"
+                  className="border border-black bg-white min-w-[40px]"
                   colSpan={1}
                   rowSpan={2}
                 >
                   ลำดับ
                 </td>
                 <td
-                  className="border border-black bg-gray-600 min-w-[200px] sticky -left-5"
+                  className="border border-black bg-white min-w-[200px] sticky -left-5"
                   colSpan={1}
                   rowSpan={2}
                 >
                   ชื่อ - สกุล
                 </td>
                 <td
-                  className="border border-black bg-gray-600 min-w-[110px]"
+                  className="border border-black bg-white min-w-[110px]"
                   colSpan={1}
                   rowSpan={2}
                 >
                   ตำแหน่ง
                 </td>
                 <td
-                  className="border border-black bg-gray-600 min-w-[50px]"
+                  className="border border-black bg-white min-w-[50px]"
                   colSpan={1}
                   rowSpan={2}
                 >
                   งานที่<br />ปฏิบัติ
                 </td>
                 <td
-                  className="border border-black bg-gray-600 whitespace-nowrap"
+                  className="border border-black bg-white whitespace-nowrap"
                   colSpan={daysInMonth}
                   rowSpan={1}
                 >
                   วันที่ปฏิบัติงาน
                 </td>
-                <td className="border border-black bg-gray-600" colSpan={2} rowSpan={1}>
+                <td className="border border-black bg-white" colSpan={2} rowSpan={1}>
                   สรุป
                 </td>
                 <td
-                  className="border border-black bg-gray-600 min-w-[30px] whitespace-nowrap"
+                  className="border border-black bg-white min-w-[30px] whitespace-nowrap"
                   colSpan={1}
                   rowSpan={1}
                 >
                   โอ { }
                 </td>
                 <td
-                  className="border border-black bg-gray-600 min-w-[50px] whitespace-nowrap"
+                  className="border border-black bg-white min-w-[50px] whitespace-nowrap"
                   colSpan={1}
                   rowSpan={1}
                 >
                   วันทำ
                 </td>
                 <td
-                  className="border border-black bg-gray-600 min-w-[50px] whitespace-nowrap"
+                  className="border border-black bg-white min-w-[50px] whitespace-nowrap"
                   colSpan={1}
                   rowSpan={1}
                 >
@@ -204,29 +204,29 @@ export const TableSelectMonth = ({
                 {arrayDayInMonth.map((day, index) => (
                   <td
                     key={index}
-                    className={`border border-black text-white  min-w-[40px] ${["เสาร์", "อาทิตย์"].includes(
+                    className={`border border-black text-black  min-w-[40px] ${["เสาร์", "อาทิตย์"].includes(
                       dayjs(`${yearEN}-${+monthValue + 1}-${day + 1}`).format("dddd")
                     )
-                      ? "bg-gray-600"
-                      : "bg-gray-600"
+                      ? "bg-white"
+                      : "bg-white"
                       } `}
                   >
                     {day + 1}
                   </td>
                 ))}
-                <td className="border border-black bg-gray-600 text-white min-w-[30px]">
+                <td className="border border-black bg-white text-black min-w-[30px]">
                   บ
                 </td>
-                <td className="border border-black bg-gray-600 text-white min-w-[30px]">
+                <td className="border border-black bg-white text-black min-w-[30px]">
                   ด
                 </td>
-                <td className="border border-black bg-gray-600 text-white min-w-[30px]">
+                <td className="border border-black bg-white text-black min-w-[30px]">
                   ที
                 </td>
-                <td className="border border-black bg-gray-600 text-white min-w-[30px]">
+                <td className="border border-black bg-white text-black min-w-[30px]">
                   การ
                 </td>
-                <td className="border border-black bg-gray-600 text-white min-w-[30px]">
+                <td className="border border-black bg-white text-black min-w-[30px]">
                   ทำงาน
                 </td>
               </tr>
@@ -246,12 +246,12 @@ export const TableSelectMonth = ({
                 const ot = person?.Duty?.filter(({ isOT }) => isOT)?.length;
 
                 return (
-                  <tr key={key} className="border odd:bg-gray-100">
+                  <tr key={key} className="border odd:bg-white">
                     <td className="border border-black">{key + 1}</td>
                     <td
                       className={`whitespace-nowrap border border-black text-left pl-3 sticky -left-5 ${key % 2 == 0
                         ? "bg-white"
-                        : "even:bg-gray-100"
+                        : "even:bg-white"
                         }`}
                     >
                       {person.Title.name} {person.firstname} {person.lastname}
@@ -387,7 +387,7 @@ export const TableSelectMonth = ({
                 <select
                   id="userId"
                   name="userId"
-                  className="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                  className="block appearance-none w-full bg-white border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                 >
 
                   {userList
@@ -427,7 +427,7 @@ export const TableSelectMonth = ({
                 <select
                   id="locationId"
                   name="locationId"
-                  className="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                  className="block appearance-none w-full bg-white border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
                 >
                   {location?.map(({ id, name }) => (
                     <option key={id} value={id}>
@@ -455,7 +455,7 @@ export const TableSelectMonth = ({
                 บันทึก
               </label>
               <div className="relative">
-                <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                <button className="bg-blue-500 hover:bg-blue-700 text-black font-bold py-2 px-4 rounded">
                   บันทึก
                 </button>
               </div>
