@@ -101,11 +101,11 @@ export const TableSelectMonthOT = ({
           <></>
         )}
         <div ref={componentRef} className="shift-table text-lg">
-          
+
           <table className="border-collapse border border-black text-center border-spacing-2 mx-auto text-lg whitespace-nowrap">
             <tbody>
 
-            <tr className="bg-white">
+              <tr className="bg-white">
                 <td className="border border-white border-b-black" colSpan={daysInMonth + 9}>
                   <div className="flex flex-col justify-center items-center">
                     <h1 className="text-md">
@@ -235,7 +235,7 @@ export const TableSelectMonthOT = ({
               </tr>
 
               {/* ข้อมูลการขึ้นเวร */}
-              {user?.map((person, key) => {
+              {user?.filter(e => e.Position.name !== 'พนักงานเปล')?.map((person, key) => {
                 const afternoonShift = person?.Duty?.filter(
                   ({ Shif, isOT }) => Shif?.name == "บ" && !isOT
                 )?.length;
@@ -312,6 +312,86 @@ export const TableSelectMonthOT = ({
                 <td className="border border-black">&nbsp;</td>
               </tr>
 
+              {/* ข้อมูลการขึ้นเวร */}
+              {user?.filter(e => e.Position.name === 'พนักงานเปล')?.map((person, key) => {
+                const afternoonShift = person?.Duty?.filter(
+                  ({ Shif, isOT }) => Shif?.name == "บ" && !isOT
+                )?.length;
+                const nightShift = person?.Duty?.filter(
+                  ({ Shif, isOT }) => Shif?.name == "ด" && !isOT
+                )?.length;
+                const workingDay = person?.Duty?.filter(
+                  ({ Shif, isOT }) =>
+                    ["ช", "บ", "ด"].includes(Shif?.name) && !isOT
+                )?.length;
+                const ot = person?.Duty?.filter(({ isOT }) => isOT)?.length;
+
+                return (
+                  <tr key={key} className="border bg-white">
+                    <td className="border border-black">{key + 1}</td>
+                    <td
+                      className={`whitespace-nowrap border border-black text-left pl-3 ${key % 2 !== 0
+                        ? "bg-white"
+                        : "bg-white"
+                        }`}
+                    >
+                      {person.Title.name} {person.firstname} {person.lastname}
+                    </td>
+                    <td className="border border-black whitespace-nowrap">{person.Position.name}</td>
+                    <td className="border border-black whitespace-nowrap">
+                      720
+                    </td>
+                    {/* แสดงรายละเอียดของตาราง กะ */}
+                    {arrayDayInMonth?.map((day, index) => (
+                      <ModalSelectMonthOT
+                        key={index}
+                        userId={person.id}
+                        Duty={person.Duty}
+                        day={day + 1}
+                        name={person.firstname + " " + person.lastname}
+                        Shif={shif}
+                        getUserList={getUserList}
+                        executeDuty={executeDuty}
+                        deleteDuty={deleteDuty}
+                        userLoading={userLoading}
+                        monthEN={+monthValue + 1}
+                        monthTH={monthTH}
+                        yearEN={yearEN}
+                        yearTH={yearTH}
+                      />
+                    ))}
+                    <td className="border border-black hidden">{afternoonShift}</td>
+                    <td className="border border-black hidden">{nightShift}</td>
+                    <td className="border border-black hidden">{ot}</td>
+                    <td className="border border-black">{ot || ''}</td>
+                    <td className="border border-black text-right">{((workingDay + ot) * 720).toLocaleString('TH-th')}</td>
+                    <td className="border border-black"></td>
+                    <td className="border border-black"></td>
+                  </tr>
+                );
+              })}
+
+
+              {user?.filter(e => e.Position.name == 'พนักงานเปล')?.length && <tr className="border">
+                <td className="border border-black">&nbsp;</td>
+                <td className="border border-black">&nbsp;</td>
+                <td className="border border-black">&nbsp;</td>
+                <td className="border border-black">&nbsp;</td>
+                <td className="border border-black" colSpan={daysInMonth}>
+                  รวมจ่ายเงินทั้งสิ้น = {THBText(((sumDutyPay(["ช", "บ", "ด"]) + sumOTPay()) * 720)) || 'ศูนย์บาทถ้วน'}
+                </td>
+                <td className="border border-black hidden">{sumDutyPay(["บ"])}</td>
+                <td className="border border-black hidden">{sumDutyPay(["ด"])}</td>
+                <td className="border border-black hidden">{sumOTPay()}</td>
+                <td className="border border-black">{sumOTPay()}</td>
+                <td className="border border-black text-right">
+                  {((sumDutyPay(["ช", "บ", "ด"]) + sumOTPay()) * 720).toLocaleString('TH-th')}
+                </td>
+                <td className="border border-black">&nbsp;</td>
+                <td className="border border-black">&nbsp;</td>
+              </tr>}
+
+
               <tr className="border" onClick={() => setOpen(e => e += 1)}>
                 <td
                   className="border border-white py-5"
@@ -355,6 +435,18 @@ export const TableSelectMonthOT = ({
   function sumOT() {
     console.log(user);
     return _.sumBy(user, function (o) {
+      return o.Duty?.filter(({ isOT }) => isOT)?.length;
+    });
+  }
+
+  function sumDutyPay(array) {
+    return _.sumBy(user?.filter(e => e.Position.name === 'พนักงานเปล'), function (o) {
+      return o.Duty?.filter(({ Shif, isOT }) => array.includes(Shif?.name) && !isOT)?.length;
+    });
+  }
+
+  function sumOTPay() {
+    return _.sumBy(user?.filter(e => e.Position.name === 'พนักงานเปล'), function (o) {
       return o.Duty?.filter(({ isOT }) => isOT)?.length;
     });
   }

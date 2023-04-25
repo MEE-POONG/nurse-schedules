@@ -73,10 +73,10 @@ export default function ModalSelectMonthOnCall({
   return (
     <>
       <td
-        className={`border border-black hover:bg-green-300 cursor-pointer text-lg whitespace-nowrap ${["เสาร์", "อาทิตย์"].includes(
+        className={`border border-black hover:bg-white cursor-pointer text-lg whitespace-nowrap ${["เสาร์", "อาทิตย์"].includes(
           dayjs(`${yearEN}-${monthEN}-${day}`).format("dddd")
         )
-            ? "bg-lime-100"
+            ? "bg-white"
             : ""
           }`}
         onClick={() => setShowModal(true)}
@@ -161,7 +161,7 @@ export default function ModalSelectMonthOnCall({
                               className={`space-y-2 mt-2 rounded-lg shadow ${shif.name === 'ลาพัก' ? 'col-span-2 ' : 'col-span-1'}`}
                             >
                               <label
-                                className={`${ruleDuty(shif.name) === true ? 'bg-gray-200' : 'bg-white'} p-3 justify-between flex w-full pr-8 border-gray-400 rounded-md text-lg focus:border-green-700 focus:ring-green-700`}
+                                className={`${ruleDuty(shif.name) === true ? 'bg-white' : 'bg-white'} p-3 justify-between flex w-full pr-8 border-gray-400 rounded-md text-lg focus:border-green-700 focus:ring-green-700`}
                               >
                                 <div className="flex items-center mr-4">
                                   <input
@@ -169,7 +169,7 @@ export default function ModalSelectMonthOnCall({
                                     name={"shift" + index}
                                     type="checkbox"
                                     value={shif.name}
-                                    className="w-4 h-4 bg-gray-100 border-gray-300 accent-green-700 cursor-pointer disabled:cursor-auto"
+                                    className="w-4 h-4 bg-white border-gray-300 accent-green-700 cursor-pointer disabled:cursor-auto"
                                     defaultChecked={dutyOfDay?.find(
                                       (checkDuty) => checkDuty.shifId === shif.id
                                     )}
@@ -216,7 +216,7 @@ export default function ModalSelectMonthOnCall({
                   <div className="mt-4">
                     <button
                       type="button"
-                      className="inline-flex justify-center rounded-md border border-transparent bg-green-100 px-4 py-2 text-lg font-medium text-green-800 hover:bg-green-700 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-green focus-visible:ring-offset-2"
+                      className="inline-flex justify-center rounded-md border border-transparent bg-white px-4 py-2 text-lg font-medium text-green-800 hover:bg-white hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-green focus-visible:ring-offset-2"
                       onClick={async () => {
                         let shiftData = dutyOfDay.map((duty) => {
                           return {
