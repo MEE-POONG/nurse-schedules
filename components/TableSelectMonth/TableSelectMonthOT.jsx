@@ -372,7 +372,7 @@ export const TableSelectMonthOT = ({
               })}
 
 
-              {user?.filter(e => e.Position.name == 'พนักงานเปล')?.length && <tr className="border">
+              {user?.filter(e => e.Position.name == 'พนักงานเปล')?.length ? <tr className="border">
                 <td className="border border-black">&nbsp;</td>
                 <td className="border border-black">&nbsp;</td>
                 <td className="border border-black">&nbsp;</td>
@@ -389,7 +389,7 @@ export const TableSelectMonthOT = ({
                 </td>
                 <td className="border border-black">&nbsp;</td>
                 <td className="border border-black">&nbsp;</td>
-              </tr>}
+              </tr> : ''}
 
 
               <tr className="border" onClick={() => setOpen(e => e += 1)}>

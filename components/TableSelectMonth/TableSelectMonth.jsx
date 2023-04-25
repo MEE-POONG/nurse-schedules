@@ -371,7 +371,7 @@ export const TableSelectMonth = ({
                   </tr>
                 );
               })}
-              {user?.filter(e => e.Position.name === 'พนักงานเปล').length && <tr className="border">
+              {user?.filter(e => e.Position.name === 'พนักงานเปล').length ? <tr className="border">
                 <td className="border border-black">&nbsp;</td>
                 <td className="border border-black">&nbsp;</td>
                 <td className="border border-black">&nbsp;</td>
@@ -389,7 +389,7 @@ export const TableSelectMonth = ({
                 <td className="border border-black">
                   {sumDutyPay(["ช", "บ", "ด"]) + sumOTPay()}
                 </td>
-              </tr>}
+              </tr> : ''}
 
 
               <tr className="border" onClick={() => setOpen(e => e += 1)}>

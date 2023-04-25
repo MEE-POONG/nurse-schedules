@@ -366,7 +366,7 @@ export const TableSelectMonthAF = ({
                   </tr>
                 );
               })}
-              {user?.filter(e => e.Position.name === 'พนักงานเปล').length &&
+              {user?.filter(e => e.Position.name === 'พนักงานเปล').length ?
                 <tr className="border">
                   <td className="border border-black">&nbsp;</td>
                   <td className="border border-black">&nbsp;</td>
@@ -384,7 +384,7 @@ export const TableSelectMonthAF = ({
                   </td>
                   <td className="border border-black">&nbsp;</td>
                   <td className="border border-black">&nbsp;</td>
-                </tr>}
+                </tr> : ''}
 
 
 
