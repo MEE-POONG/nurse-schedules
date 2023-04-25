@@ -10,6 +10,7 @@ import { BsPrinterFill } from "react-icons/bs";
 import { useReactToPrint } from "react-to-print";
 import printStyle from "@/utils/printStyle";
 import THBText from 'thai-baht-text'
+import ModalSelectMonthR from "./ModalSelectMonthR";
 var isoWeek = require("dayjs/plugin/isoWeek");
 dayjs.extend(isoWeek);
 export const TableSelectMonthR = ({
@@ -263,7 +264,7 @@ export const TableSelectMonthR = ({
                     </td>
                     {/* แสดงรายละเอียดของตาราง กะ */}
                     {arrayDayInMonth?.map((day, index) => (
-                      <ModalSelectMonth
+                      <ModalSelectMonthR
                         key={index}
                         userId={person.id}
                         Duty={person.Duty}
@@ -321,12 +322,12 @@ export const TableSelectMonthR = ({
                   </div>
                   <div className="justify-between w-full hidden lg:flex">
                     <div>
-                      <p className="text-center mt-3">ลงมือชื่อ......................................................................หัวหน้าฝ่าย(ผู้ควบคุม)</p>
-                      <p className="text-center">( นางรำไพ นันทโนภาส )</p>
+                      <p className="text-center mt-3">ลงมือชื่อ......................................................................หัวหน้ากลุ่มงานการพยาบาล(ผู้ควบคุม)</p>
+                      <p className="text-left pl-24">( นางรำไพ นันทโนภาส )</p>
                     </div>
                     <div className="basis-6/12">
-                      <p className="text-center mt-3">ลงมือชื่อ............................................................................................................................................ผู้อนุมัติ(ผู้อำนวยการโรงพยาบาลครบุรี)</p>
-                      <p className="text-center">( นายแพทย์พัฒนา เบ้าสาทร)</p>
+                      <p className="text-center mt-3">ลงมือชื่อ......................................................................อนุมัติ(ผู้อำนวยการโรงพยาบาลครบุรี)</p>
+                      <p className="text-left pl-52">( นายแพทย์พัฒนา เบ้าสาทร)</p>
                     </div>
                     <div>
                       <p className="text-center mt-3">ลงมือชื่อ......................................................................ผู้จ่ายเงิน</p>

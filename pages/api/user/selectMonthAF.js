@@ -56,10 +56,11 @@ export default async function handler(req, res) {
             }
           },
         });
+        console.log(data);
         data = data?.map(e => {
           return {
             ...e,
-            Duty: e.Duty.filter(d => ['บ', 'ด'].includes(d.Shif.name) && d.Shif.isOT === false),
+            Duty: e.Duty.filter(d => ['บ', 'ด'].includes(d.Shif.name) && !d.Shif.isOT),
             UserDuty: e.UserDuty[0]
           }
         }).sort((a, b) => ('' + a.UserDuty.id).localeCompare(b.UserDuty.id))

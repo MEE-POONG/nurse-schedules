@@ -257,7 +257,7 @@ export const TableSelectMonthAF = ({
                     </td>
                     <td className="border border-black whitespace-nowrap">{person.Position.name}</td>
                     <td className="border border-black whitespace-nowrap">
-                      290
+                      360
                     </td>
                     {/* แสดงรายละเอียดของตาราง กะ */}
                     {arrayDayInMonth?.map((day, index) => (
@@ -282,7 +282,7 @@ export const TableSelectMonthAF = ({
                     <td className="border border-black hidden">{nightShift}</td>
                     <td className="border border-black hidden">{ot}</td>
                     <td className="border border-black">{workingDay || ''}</td>
-                    <td className="border border-black text-right">{((workingDay + ot) * 290).toLocaleString('TH-th')}</td>
+                    <td className="border border-black text-right">{((workingDay + ot) * 360).toLocaleString('TH-th')}</td>
                     <td className="border border-black"></td>
                     <td className="border border-black"></td>
                   </tr>
@@ -295,14 +295,14 @@ export const TableSelectMonthAF = ({
                 <td className="border border-black">&nbsp;</td>
                 <td className="border border-black">&nbsp;</td>
                 <td className="border border-black" colSpan={daysInMonth}>
-                  รวมจ่ายเงินทั้งสิ้น = {THBText(((sumDuty(["ช", "บ", "ด"]) + sumOT()) * 290))}
+                  รวมจ่ายเงินทั้งสิ้น = {THBText(((sumDuty(["ช", "บ", "ด"]) + sumOT()) * 360))}
                 </td>
                 <td className="border border-black hidden">{sumDuty(["บ"])}</td>
                 <td className="border border-black hidden">{sumDuty(["ด"])}</td>
                 <td className="border border-black hidden">{sumOT()}</td>
                 <td className="border border-black">{sumDuty(["ช", "บ", "ด"])}</td>
                 <td className="border border-black">
-                  {((sumDuty(["ช", "บ", "ด"]) + sumOT()) * 290).toLocaleString('TH-th')}
+                  {((sumDuty(["ช", "บ", "ด"]) + sumOT()) * 360).toLocaleString('TH-th')}
                 </td>
                 <td className="border border-black">&nbsp;</td>
                 <td className="border border-black">&nbsp;</td>
@@ -319,12 +319,12 @@ export const TableSelectMonthAF = ({
                   </div>
                   <div className="justify-between w-full hidden lg:flex">
                     <div>
-                      <p className="text-center mt-3">ลงมือชื่อ......................................................................หัวหน้าฝ่าย(ผู้ควบคุม)</p>
-                      <p className="text-center">( นางรำไพ นันทโนภาส )</p>
+                      <p className="text-center mt-3">ลงมือชื่อ......................................................................หัวหน้ากลุ่มงานการพยาบาล(ผู้ควบคุม)</p>
+                      <p className="text-left pl-24">( นางรำไพ นันทโนภาส )</p>
                     </div>
                     <div className="basis-6/12">
-                      <p className="text-center mt-3">ลงมือชื่อ............................................................................................................................................ผู้อนุมัติ(ผู้อำนวยการโรงพยาบาลครบุรี)</p>
-                      <p className="text-center">( นายแพทย์พัฒนา เบ้าสาทร)</p>
+                      <p className="text-center mt-3">ลงมือชื่อ......................................................................อนุมัติ(ผู้อำนวยการโรงพยาบาลครบุรี)</p>
+                      <p className="text-left pl-52">( นายแพทย์พัฒนา เบ้าสาทร)</p>
                     </div>
                     <div>
                       <p className="text-center mt-3">ลงมือชื่อ......................................................................ผู้จ่ายเงิน</p>

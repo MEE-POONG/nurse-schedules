@@ -87,7 +87,7 @@ export default function ModalSelectMonthOT({
           } else {
             return (
               <span
-                className={`circle-red text-lg ${Shif?.class ? " text-sm w-[16px] h-[16px] inline-block leading-[16px]" : " text-red-500 underline decoration-red-500 decoration-1"}`}
+                className={`circle-red text-black text-lg ${Shif?.class ? " text-sm w-[16px] h-[16px] inline-block leading-[16px]" : " text-red-500 underline decoration-red-500 decoration-1"}`}
                 key={index}
               >
                 {Shif?.name}
