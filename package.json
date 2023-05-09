@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "NODE_OPTIONS='-r next-logger' next start -p 6040",
-    "lint": "next lint"
+    "lint": "next lint",
+    "build-push-rn": "docker build --platform linux/amd64 -t chunwarayut/nurse-schedules:latest . && docker push chunwarayut/nurse-schedules:latest",
+    "build-push-pn": "docker build --platform linux/amd64 -t chunwarayut/pasuk-pn-tarangwen:latest . && docker push chunwarayut/pasuk-pn-tarangwen:latest"
   },
   "dependencies": {
     "@headlessui/react": "^1.7.8",
