@@ -132,8 +132,10 @@ export const TableSelectMonthRed = ({
             <tbody>
               <tr className="bg-white">
                 <td className="border border-white border-b-black" colSpan={daysInMonth + 9}>
+                  <div className="text-center text-2xl">
+                    ตารางการปฎิบัติงานเวลาราชการ นอกเวลาราชการและวันหยุดราชการเพื่อให้บริการรักษาพยาบาลและสนับสนุนงานบริการอื่นๆ
+                  </div>
                   <div className="text-center text-lg">
-                    ตารางการปฎิบัติงานเวลาราชการ นอกเวลาราชการและวันหยุดราชการเพื่อให้บริการรักษาพยาบาลและสนับสนุนงานบริการอื่นๆ <br />
                     ส่วนราชการ โรงพยาบาลครบุรี จังหวัดนครราชสีมา ประจำเดือน......................... {dayjs(`${dayjs().year()}-${+monthValue + 1}-${+monthValue + 1}`).format("MMMM")}.........................พ.ศ..........{yearTH}..........<br />
                     คำสั่งโรงพยาบาลครบุรี ที่..................../....................ลงวันที่....................เดือน........................................พ.ศ....................
                   </div>
@@ -175,29 +177,33 @@ export const TableSelectMonthRed = ({
                 >
                   วันที่ปฏิบัติงาน
                 </td>
-                <td className="border border-black bg-white" colSpan={2} rowSpan={1}>
+                {/* <td className="border border-black bg-white" colSpan={2} rowSpan={1}>
                   สรุป
-                </td>
-                <td
+                </td> */}
+                {/* <td
                   className="border border-black bg-white min-w-[30px] whitespace-nowrap"
                   colSpan={1}
                   rowSpan={1}
                 >
                   โอ { }
-                </td>
-                <td
+                </td> */}
+                {/* <td
                   className="border border-black bg-white min-w-[50px] whitespace-nowrap"
                   colSpan={1}
                   rowSpan={1}
                 >
                   วันทำ
-                </td>
+                </td> */}
                 <td
                   className="border border-black bg-white min-w-[50px] whitespace-nowrap"
                   colSpan={1}
-                  rowSpan={1}
+                  rowSpan={2}
                 >
                   รวมวัน
+                </td>
+
+                <td className="border border-black bg-white" colSpan={2} rowSpan={2}>
+                  หมายเหตุ
                 </td>
               </tr>
               <tr className="border">
@@ -215,21 +221,18 @@ export const TableSelectMonthRed = ({
                     {day + 1}
                   </td>
                 ))}
-                <td className="border border-black bg-white text-black min-w-[30px]">
+                {/* <td className="border border-black bg-white text-black min-w-[30px]">
                   บ
-                </td>
-                <td className="border border-black bg-white text-black min-w-[30px]">
+                </td> */}
+                {/* <td className="border border-black bg-white text-black min-w-[30px]">
                   ด
-                </td>
-                <td className="border border-black bg-white text-black min-w-[30px]">
+                </td> */}
+                {/* <td className="border border-black bg-white text-black min-w-[30px]">
                   ที
-                </td>
-                <td className="border border-black bg-white text-black min-w-[30px]">
+                </td> */}
+                {/* <td className="border border-black bg-white text-black min-w-[30px]">
                   การ
-                </td>
-                <td className="border border-black bg-white text-black min-w-[30px]">
-                  ทำงาน
-                </td>
+                </td> */}
               </tr>
 
               {/* ข้อมูลการขึ้นเวร */}
@@ -283,11 +286,12 @@ export const TableSelectMonthRed = ({
                         yearTH={yearTH}
                       />
                     ))}
-                    <td className="border border-black">{afternoonShift}</td>
-                    <td className="border border-black">{nightShift}</td>
-                    <td className="border border-black">{ot}</td>
-                    <td className="border border-black">{workingDay}</td>
+                    {/* <td className="border border-black">{afternoonShift}</td> */}
+                    {/* <td className="border border-black">{nightShift}</td> */}
+                    {/* <td className="border border-black">{ot}</td> */}
+                    {/* <td className="border border-black">{workingDay}</td> */}
                     <td className="border border-black">{workingDay + ot}</td>
+                    <td className="border border-black"></td>
                   </tr>
                 );
               })}
@@ -303,12 +307,15 @@ export const TableSelectMonthRed = ({
                 <td className="border border-black" colSpan={3} rowSpan={1}>
                   รวม
                 </td>
-                <td className="border border-black">{sumDuty(["บ"])}</td>
-                <td className="border border-black">{sumDuty(["ด"])}</td>
-                <td className="border border-black">{sumOT()}</td>
-                <td className="border border-black">{sumDuty(["ช", "บ", "ด"])}</td>
+                {/* <td className="border border-black">{sumDuty(["บ"])}</td> */}
+                {/* <td className="border border-black">{sumDuty(["ด"])}</td> */}
+                {/* <td className="border border-black">{sumOT()}</td> */}
+                {/* <td className="border border-black">{sumDuty(["ช", "บ", "ด"])}</td> */}
                 <td className="border border-black">
                   {sumDuty(["ช", "บ", "ด"]) + sumOT()}
+                </td>
+                <td className="border border-black">
+
                 </td>
               </tr>
 
@@ -364,11 +371,12 @@ export const TableSelectMonthRed = ({
                         yearTH={yearTH}
                       />
                     ))}
-                    <td className="border border-black">{afternoonShift}</td>
-                    <td className="border border-black">{nightShift}</td>
-                    <td className="border border-black">{ot}</td>
-                    <td className="border border-black">{workingDay}</td>
+                    {/* <td className="border border-black">{afternoonShift}</td> */}
+                    {/* <td className="border border-black">{nightShift}</td> */}
+                    {/* <td className="border border-black">{ot}</td> */}
+                    {/* <td className="border border-black">{workingDay}</td> */}
                     <td className="border border-black">{workingDay + ot}</td>
+                    <td className="border border-black"></td>
                   </tr>
                 );
               })}
@@ -383,12 +391,15 @@ export const TableSelectMonthRed = ({
                 <td className="border border-black" colSpan={3} rowSpan={1}>
                   รวม
                 </td>
-                <td className="border border-black">{sumDutyPay(["บ"])}</td>
-                <td className="border border-black">{sumDutyPay(["ด"])}</td>
-                <td className="border border-black">{sumOTPay()}</td>
-                <td className="border border-black">{sumDutyPay(["ช", "บ", "ด"])}</td>
+                {/* <td className="border border-black">{sumDutyPay(["บ"])}</td> */}
+                {/* <td className="border border-black">{sumDutyPay(["ด"])}</td> */}
+                {/* <td className="border border-black">{sumOTPay()}</td> */}
+                {/* <td className="border border-black">{sumDutyPay(["ช", "บ", "ด"])}</td> */}
                 <td className="border border-black">
                   {sumDutyPay(["ช", "บ", "ด"]) + sumOTPay()}
+                </td>
+                <td className="border border-black">
+
                 </td>
               </tr> : ''}
 

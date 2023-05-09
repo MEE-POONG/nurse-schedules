@@ -7,6 +7,8 @@ import { TableSelectMonthAF } from "../TableSelectMonth/TableSelectMonthAF";
 import { TableSelectMonthOT } from "../TableSelectMonth/TableSelectMonthOT";
 import { TableSelectMonthR } from "../TableSelectMonth/TableSelectMonthR";
 import { TableSelectMonthRed } from "../TableSelectMonth/TableSelectMonthRed";
+import { TableSelectMonthAFC } from "../TableSelectMonth/TableSelectMonthAFC";
+import { TableSelectMonthRF } from "../TableSelectMonth/TableSelectMonthRF";
 
 export default function TableIndex() {
   const { dateStore } = useSelector((state) => ({ ...state }))
@@ -23,8 +25,10 @@ export default function TableIndex() {
       <TableSelectMonth daysInMonth={daysInMonth} arrayDayInMonth={arrayDayInMonth} monthEN={monthEN} yearEN={yearEN} monthTH={monthTH} yearTH={yearTH} monthValue={monthValue} yearValue={yearValue} />
       <TableSelectMonthRed daysInMonth={daysInMonth} arrayDayInMonth={arrayDayInMonth} monthEN={monthEN} yearEN={yearEN} monthTH={monthTH} yearTH={yearTH} monthValue={monthValue} yearValue={yearValue} />
       <TableSelectMonthAF daysInMonth={daysInMonth} arrayDayInMonth={arrayDayInMonth} monthEN={monthEN} yearEN={yearEN} monthTH={monthTH} yearTH={yearTH} monthValue={monthValue} yearValue={yearValue} />
+      <TableSelectMonthAFC daysInMonth={daysInMonth} arrayDayInMonth={arrayDayInMonth} monthEN={monthEN} yearEN={yearEN} monthTH={monthTH} yearTH={yearTH} monthValue={monthValue} yearValue={yearValue} />
       <TableSelectMonthOT daysInMonth={daysInMonth} arrayDayInMonth={arrayDayInMonth} monthEN={monthEN} yearEN={yearEN} monthTH={monthTH} yearTH={yearTH} monthValue={monthValue} yearValue={yearValue} />
       <TableSelectMonthR daysInMonth={daysInMonth} arrayDayInMonth={arrayDayInMonth} monthEN={monthEN} yearEN={yearEN} monthTH={monthTH} yearTH={yearTH} monthValue={monthValue} yearValue={yearValue} />
+      <TableSelectMonthRF daysInMonth={daysInMonth} arrayDayInMonth={arrayDayInMonth} monthEN={monthEN} yearEN={yearEN} monthTH={monthTH} yearTH={yearTH} monthValue={monthValue} yearValue={yearValue} />
     </>
   );
 }
