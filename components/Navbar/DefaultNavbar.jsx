@@ -4,7 +4,7 @@ import { authProvider } from "src/authProvider";
 import { useRouter } from "next/router";
 
 export default function DefaultNavbar() {
-const router = useRouter();
+  const router = useRouter();
   const [isNavCollapsed, setIsNavCollapsed] = useState(true);
   const handleNavCollapse = () => setIsNavCollapsed(!isNavCollapsed);
   return (
@@ -48,9 +48,16 @@ const router = useRouter();
             </div>
 
             <div className="hidden sm:flex sm:items-center">
+              <Link
+                href="/profile"
+                className="text-gray-800 text-sm font-semibold border px-4 py-2 rounded-lg hover:text-green-700 hover:border-green-700"
+              >
+                แก้ไขข้อมูล
+              </Link>
+              
               {authProvider.getIdentity().isAdmin ? <Link
                 href="/register"
-                className="text-gray-800 text-sm font-semibold border px-4 py-2 rounded-lg hover:text-green-700 hover:border-green-700"
+                className="ml-2 text-gray-800 text-sm font-semibold border px-4 py-2 rounded-lg hover:text-green-700 hover:border-green-700"
               >
                 ลงทะเบียน
               </Link> : ''}
