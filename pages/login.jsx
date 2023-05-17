@@ -45,6 +45,7 @@ function SignIn() {
                     const auth = await authProvider.login({ username: username, password: password });
                     if (auth.success === false) {
                       alert(auth.message);
+                      setLoading(false);
                       return;
                     }
                     x.target.username.value = "";
