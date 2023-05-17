@@ -28,26 +28,35 @@ export const TableSelectMonthAF = ({
     useAxios({
       url: `/api/user/selectMonthAF?month=${monthValue}&year=${yearValue}`,
       method: "GET",
+    },
+    {
+      autoCancel: false,
     });
 
   const [{ data: shif, loading: shifLoading, error: shifError }] = useAxios({
     url: "/api/shif",
+  },
+  {
+    autoCancel: false,
   });
 
   const [{ data: location, loading: locationLoading, error: locationError }] =
     useAxios({
       url: "/api/location",
+    },
+    {
+      autoCancel: false,
     });
 
   const [{ loading: dutyLoading, error: dutyError }, executeDuty] = useAxios(
     { url: "/api/duty", method: "POST" },
-    { manual: true }
+    { manual: true, autoCancel: false }
   );
   const [{ loading: dutyUserLoading, error: dutyUserError }, executeUserDuty] =
-    useAxios({ url: "/api/user-duty", method: "POST" }, { manual: true });
+    useAxios({ url: "/api/user-duty", method: "POST" }, { manual: true, autoCancel: false });
 
   const [{ loading: dutyDeleteLoading, error: dutyDeleteError }, deleteDuty] =
-    useAxios({ url: "/api/duty", method: "DELETE" }, { manual: true });
+    useAxios({ url: "/api/duty", method: "DELETE" }, { manual: true, autoCancel: false });
 
   useEffect(() => {
     if (userLoading === false) {
@@ -89,7 +98,7 @@ export const TableSelectMonthAF = ({
         </button>
       </div>
       <div className="w-100 bg-white shadow-xl p-5 my-10 rounded-md overflow-x-auto">
-        {userLoading ||
+        {/* {userLoading ||
           shifLoading ||
           dutyLoading ||
           dutyDeleteLoading ||
@@ -98,7 +107,7 @@ export const TableSelectMonthAF = ({
           <LoadingComponent />
         ) : (
           <></>
-        )}
+        )} */}
         <div ref={componentRef} className="shift-table text-lg">
           <table className="border-collapse border text-center border-spacing-2 mx-auto text-lg whitespace-nowrap">
             <tbody>

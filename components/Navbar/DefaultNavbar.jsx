@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import Link from 'next/link'
+import { authProvider } from "src/authProvider";
+import { useRouter } from "next/router";
 
 export default function DefaultNavbar() {
-
+const router = useRouter();
   const [isNavCollapsed, setIsNavCollapsed] = useState(true);
   const handleNavCollapse = () => setIsNavCollapsed(!isNavCollapsed);
   return (
@@ -46,11 +48,20 @@ export default function DefaultNavbar() {
             </div>
 
             <div className="hidden sm:flex sm:items-center">
-              <Link
+              {authProvider.getIdentity().isAdmin ? <Link
                 href="/register"
                 className="text-gray-800 text-sm font-semibold border px-4 py-2 rounded-lg hover:text-green-700 hover:border-green-700"
               >
                 ลงทะเบียน
+              </Link> : ''}
+              <Link
+                href="#logout"
+                onClick={async () => {
+                  (await authProvider.logout()).success && router.push("/login");
+                }}
+                className="ml-2 text-gray-800 text-sm font-semibold border px-4 py-2 rounded-lg hover:text-green-700 hover:border-green-700"
+              >
+                ออกจากระบบ
               </Link>
             </div>
 
@@ -97,6 +108,15 @@ export default function DefaultNavbar() {
                   className="text-gray-800 text-sm font-semibold border px-4 py-1 rounded-lg hover:text-green-700 hover:border-green-700"
                 >
                   ลงทะเบียน
+                </Link>
+                <Link
+                  href="#logout"
+                  onClick={async () => {
+                    (await authProvider.logout()).success && router.push('/login');
+                  }}
+                  className="text-gray-800 text-sm font-semibold border px-4 py-1 rounded-lg hover:text-green-700 hover:border-green-700"
+                >
+                  ออกจากระบบ
                 </Link>
               </div>
             </div>

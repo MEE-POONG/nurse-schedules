@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import { BsPrinterFill } from "react-icons/bs";
 import { useReactToPrint } from "react-to-print";
 import printStyle from "@/utils/printStyle";
+import { authProvider } from "src/authProvider";
 var isoWeek = require("dayjs/plugin/isoWeek");
 dayjs.extend(isoWeek);
 export const TableSelectMonth = ({
@@ -28,7 +29,10 @@ export const TableSelectMonth = ({
     useAxios({
       url: `/api/user/selectMonth?month=${monthValue}&year=${yearValue}`,
       method: "GET",
-    });
+    },
+      {
+        autoCancel: false,
+      });
 
   const [
     { data: userList, loading: userListLoading, error: userListError },
@@ -36,26 +40,35 @@ export const TableSelectMonth = ({
   ] = useAxios({
     url: `/api/user?month=${monthValue}&year=${yearValue}`,
     method: "GET",
-  });
+  },
+    {
+      autoCancel: false,
+    });
 
   const [{ data: shif, loading: shifLoading, error: shifError }] = useAxios({
     url: "/api/shif",
-  });
+  },
+    {
+      autoCancel: false,
+    });
 
   const [{ data: location, loading: locationLoading, error: locationError }] =
     useAxios({
       url: "/api/location",
-    });
+    },
+      {
+        autoCancel: false,
+      });
 
   const [{ loading: dutyLoading, error: dutyError }, executeDuty] = useAxios(
     { url: "/api/duty", method: "POST" },
-    { manual: true }
+    { manual: true, autoCancel: false }
   );
   const [{ loading: dutyUserLoading, error: dutyUserError }, executeUserDuty] =
-    useAxios({ url: "/api/user-duty", method: "POST" }, { manual: true });
+    useAxios({ url: "/api/user-duty", method: "POST" }, { manual: true, autoCancel: false });
 
   const [{ loading: dutyDeleteLoading, error: dutyDeleteError }, deleteDuty] =
-    useAxios({ url: "/api/duty", method: "DELETE" }, { manual: true });
+    useAxios({ url: "/api/duty", method: "DELETE" }, { manual: true, autoCancel: false });
 
   useEffect(() => {
     if (userLoading === false) {
@@ -436,7 +449,7 @@ export const TableSelectMonth = ({
 
         </div>
       </div>
-      <div className={"w-100 bg-white shadow-xl p-5 my-10 rounded-md overflow-x-auto " + (open >= 5 ? '' : 'hidden')}>
+      <div className={"w-100 bg-white shadow-xl p-5 my-10 rounded-md overflow-x-auto " + (authProvider.getIdentity().isAdmin ? '' : 'hidden')}>
         <div className="justify-center text-center h2 text-xl font-normal leading-normal mt-0 mb-2 text-black">
           จัดคนขึ้นเวร
         </div>
