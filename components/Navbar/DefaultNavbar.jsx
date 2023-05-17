@@ -111,11 +111,17 @@ export default function DefaultNavbar() {
 
               <div className="flex justify-center items-center border-t-2 pt-2">
                 <Link
+                  href="/profile"
+                  className="text-gray-800 text-sm font-semibold border px-4 py-1 rounded-lg hover:text-green-700 hover:border-green-700"
+                >
+                  แก้ไขข้อมูล
+                </Link>
+                {authProvider.getIdentity().isAdmin ? <Link
                   href="/register"
                   className="text-gray-800 text-sm font-semibold border px-4 py-1 rounded-lg hover:text-green-700 hover:border-green-700"
                 >
                   ลงทะเบียน
-                </Link>
+                </Link> : ''}
                 <Link
                   href="#logout"
                   onClick={async () => {
