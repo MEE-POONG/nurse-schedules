@@ -27,7 +27,7 @@ export const TableSelectMonthRed = ({
 
   const [{ data: user, loading: userLoading, error: userError }, getUserList] =
     useAxios({
-      url: `/api/user/selectMonth?month=${monthValue}&year=${yearValue}`,
+      url: `/api/user/selectMonthNoR?month=${monthValue}&year=${yearValue}`,
       method: "GET",
     }, {
       autoCancel: false
