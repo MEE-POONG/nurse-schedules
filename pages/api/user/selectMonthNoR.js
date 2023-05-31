@@ -43,6 +43,7 @@ export default async function handler(req, res) {
             Title: true,
           },
           where: {
+            isPartTime: false,
             UserDuty: {
               some: {
                 AND: {

@@ -68,22 +68,24 @@ model Shif {
 }
 
 model User {
-  id         String       @id @default(auto()) @map("_id") @db.ObjectId
-  firstname  String?
-  lastname   String?
-  username   String?
-  password   String?
-  isPartTime Boolean?
-  isAdmin    Boolean?
-  Duty       Duty[]
-  Location   Location?    @relation(fields: [locationId], references: [id])
-  Position   Position?    @relation(fields: [positionId], references: [id])
-  Title      Title?       @relation(fields: [titleId], references: [id])
-  locationId String?      @db.ObjectId
-  positionId String       @db.ObjectId
-  titleId    String       @db.ObjectId
-  UserDuty   UserDuty[]
-  OnCallDuty OnCallDuty[]
+  id                    String       @id @default(auto()) @map("_id") @db.ObjectId
+  firstname             String?
+  lastname              String?
+  username              String?
+  password              String?
+  normal_compensation   Int?
+  overtime_compensation Int?
+  isPartTime            Boolean?
+  isAdmin               Boolean?
+  Duty                  Duty[]
+  Location              Location?    @relation(fields: [locationId], references: [id])
+  Position              Position?    @relation(fields: [positionId], references: [id])
+  Title                 Title?       @relation(fields: [titleId], references: [id])
+  locationId            String?      @db.ObjectId
+  positionId            String       @db.ObjectId
+  titleId               String       @db.ObjectId
+  UserDuty              UserDuty[]
+  OnCallDuty            OnCallDuty[]
 }
 
 model Title {

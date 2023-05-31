@@ -11,11 +11,11 @@ WORKDIR /app
 COPY --from=dependencies /app/node_modules ./node_modules
 COPY . .
 
-ARG DATABASE_URL
-ENV DATABASE_URL=$DATABASE_URL
+# ARG DATABASE_URL
+# ENV DATABASE_URL="mongodb://pasuk-pn-tarangwen-user:IB98uQsN0164p3c7@128.199.79.240:27017,167.71.218.166:27017,167.71.220.110:27017/pasuk-pn-tarangwen-db?authSource=admin&replicaSet=me_mongodb"
 
-RUN echo "DATABASE_URL=$DATABASE_URL"
-RUN echo "DATABASE_URL=$DATABASE_URL" >> .env
+# RUN echo "DATABASE_URL=$DATABASE_URL"
+# RUN echo "DATABASE_URL=$DATABASE_URL" >> .env
 
 RUN npx prisma generate
 RUN yarn build
