@@ -245,7 +245,7 @@ export const TableSelectMonthRF = ({
               </tr>
 
               {/* ข้อมูลการขึ้นเวร */}
-              {user?.filter(e => e.Position.name !== 'พนักงานเปล')?.map((person, key) => {
+              {user?.map((person, key) => {
                 const afternoonShift = person?.Duty?.filter(
                   ({ Shif, isOT }) => Shif?.name == "บ" && !isOT
                 )?.length;
@@ -327,91 +327,6 @@ export const TableSelectMonthRF = ({
 
                 </td>
               </tr>
-
-
-              {/* ข้อมูลการขึ้นเวรเปล */}
-              {user?.filter(e => e.Position.name === 'พนักงานเปล')?.map((person, key) => {
-                const afternoonShift = person?.Duty?.filter(
-                  ({ Shif, isOT }) => Shif?.name == "บ" && !isOT
-                )?.length;
-                const nightShift = person?.Duty?.filter(
-                  ({ Shif, isOT }) => Shif?.name == "ด" && !isOT
-                )?.length;
-                const workingDay = person?.Duty?.filter(
-                  ({ Shif, isOT }) =>
-                    ["R"].includes(Shif?.name) && !isOT
-                )?.length;
-                const ot = person?.Duty?.filter(({ isOT }) => isOT)?.length;
-
-                return (
-                  <tr key={key} className="border bg-white">
-                    <td className="border border-black">{key + 1}</td>
-                    <td
-                      className={`whitespace-nowrap border border-black text-left pl-3 ${key % 2 == 0
-                        ? "bg-white"
-                        : "bg-white"
-                        }`}
-                    >
-                      {person.Title.name} {person.firstname} {person.lastname}
-                    </td>
-                    <td className="border border-black whitespace-nowrap">{person.Position.name}</td>
-                    <td className="border border-black whitespace-nowrap">
-                      {
-                        person.UserDuty?.Location
-                          ?.name
-                      }
-                    </td>
-                    {/* แสดงรายละเอียดของตาราง กะ */}
-                    {arrayDayInMonth?.map((day, index) => (
-                      <ModalSelectMonthRed
-                        key={index}
-                        userId={person.id}
-                        Duty={person.Duty}
-                        day={day + 1}
-                        name={person.firstname + " " + person.lastname}
-                        Shif={shif}
-                        getUserList={getUserList}
-                        executeDuty={executeDuty}
-                        deleteDuty={deleteDuty}
-                        userLoading={userLoading}
-                        monthEN={+monthValue + 1}
-                        monthTH={monthTH}
-                        yearEN={yearEN}
-                        yearTH={yearTH}
-                      />
-                    ))}
-                    {/* <td className="border border-black">{afternoonShift}</td> */}
-                    {/* <td className="border border-black">{nightShift}</td> */}
-                    {/* <td className="border border-black">{ot}</td> */}
-                    {/* <td className="border border-black">{workingDay}</td> */}
-                    <td className="border border-black">{workingDay + ot}</td>
-                    <td className="border border-black"></td>
-                  </tr>
-                );
-              })}
-              {user?.filter(e => e.Position.name === 'พนักงานเปล').length ? <tr className="border">
-                <td className="border border-black">&nbsp;</td>
-                <td className="border border-black">&nbsp;</td>
-                <td className="border border-black">&nbsp;</td>
-                <td className="border border-black">&nbsp;</td>
-                <td className="border border-black" colSpan={daysInMonth - 3}>
-                  &nbsp;
-                </td>
-                <td className="border border-black" colSpan={3} rowSpan={1}>
-                  รวม
-                </td>
-                {/* <td className="border border-black">{sumDutyPay(["บ"])}</td> */}
-                {/* <td className="border border-black">{sumDutyPay(["ด"])}</td> */}
-                {/* <td className="border border-black">{sumOTPay()}</td> */}
-                {/* <td className="border border-black">{sumDutyPay(["R"])}</td> */}
-                <td className="border border-black">
-                  {sumDutyPay(["R"]) + sumOTPay()}
-                </td>
-                <td className="border border-black">
-
-                </td>
-              </tr> : ''}
-
 
               <tr className="border" onClick={() => setOpen(e => e += 1)}>
                 <td
@@ -568,13 +483,13 @@ export const TableSelectMonthRF = ({
   );
 
   function sumDuty(array) {
-    return _.sumBy(user?.filter(e => e.Position.name !== 'พนักงานเปล'), function (o) {
+    return _.sumBy(user, function (o) {
       return o.Duty?.filter(({ Shif, isOT }) => array.includes(Shif?.name) && !isOT)?.length;
     });
   }
 
   function sumOT() {
-    return _.sumBy(user?.filter(e => e.Position.name !== 'พนักงานเปล'), function (o) {
+    return _.sumBy(user, function (o) {
       return o.Duty?.filter(({ isOT }) => isOT)?.length;
     });
   }
