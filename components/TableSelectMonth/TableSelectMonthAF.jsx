@@ -444,13 +444,13 @@ export const TableSelectMonthAF = ({
 
 
   function sumDutyPay(array) {
-    return sumDuty(array) + _.sumBy(user, function (o) {
+    return _.sumBy(user, function (o) {
       return o.Duty?.filter(({ Shif, isOT }) => array.includes(Shif?.name) && !isOT)?.length * o.normal_compensation;
     });
   }
 
   function sumOTPay() {
-    return sumOT() + _.sumBy(user, function (o) {
+    return _.sumBy(user, function (o) {
       return o.Duty?.filter(({ isOT }) => isOT)?.length * o.normal_compensation;
     });
   }
