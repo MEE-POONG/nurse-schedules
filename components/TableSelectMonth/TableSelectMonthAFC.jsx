@@ -132,7 +132,7 @@ export const TableSelectMonthAFC = ({
             {/* <div>
               <p className="text-center">ความคิดเห็นผู้อำนวยการ</p>
               <p className="text-center mt-3">...........................................</p>
-              <p className="text-center">( นายพัฒนา เบ้าสาทร)</p>
+              <p className="text-center">( นายเรืองศักดิ์  ใจโพธิ์)</p>
               <p className="text-lg text-center">ผู้อำนวยการโรงพยาบาลครบุรี</p>
             </div> */}
           </div>
@@ -347,7 +347,7 @@ export const TableSelectMonthAFC = ({
                     <div>
                       {/* <p className="text-center mt-3">เสนอผู้อำนวยการโรงพยาบาลครบุรี เพื่อโปรดพิจารณา</p> */}
                       <p className="text-center mt-3">ลงชื่อ......................................................ผู้อำนวยการโรงพยาบาลครบุรี(ผู้อนุมัติอยู่เวร)</p>
-                      <p className="text-left pl-14">( นายพัฒนา เบ้าสาทร )</p>
+                      <p className="text-left pl-14">( นายเรืองศักดิ์  ใจโพธิ์ )</p>
                     </div>
                     <div>
                       {/* <p className="text-center mt-3"> &nbsp; </p> */}
