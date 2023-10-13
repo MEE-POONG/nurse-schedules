@@ -123,7 +123,7 @@ export const TableSelectMonthOnCall = ({
               <p className="text-center">ความคิดเห็นผู้อำนวยการ</p>
               <p className="text-center mt-3">...........................................</p>
               <p className="text-center">( นายเรืองศักดิ์  ใจโพธิ์)</p>
-              <p className="text-lg text-center">ผู้อำนวยการโรงพยาบาลครบุรี</p>
+              <p className="text-lg text-center">นายแพทย์ชำนาญการ รักษาการในตำแหน่งผู้อำนวยการโรงพยาบาลครบุรี</p>
             </div>
           </div> */}
           <table className="border-collapse border text-center border-spacing-2 mx-auto text-lg whitespace-nowrap">
@@ -416,7 +416,7 @@ export const TableSelectMonthOnCall = ({
                   <div className="justify-between w-full hidden lg:flex">
                     <div>
                       {/* <p className="text-center mt-3">เสนอผู้อำนวยการโรงพยาบาลครบุรี เพื่อโปรดพิจารณา</p> */}
-                      <p className="text-center mt-3">ลงชื่อ......................................................ผู้อำนวยการโรงพยาบาลครบุรี(ผู้อนุมัติอยู่เวร)</p>
+                      <p className="text-center mt-3">ลงชื่อ......................................................นายแพทย์ชำนาญการ รักษาการในตำแหน่งผู้อำนวยการโรงพยาบาลครบุรี(ผู้อนุมัติอยู่เวร)</p>
                       <p className="text-left pl-14">( นายเรืองศักดิ์  ใจโพธิ์ )</p>
                     </div>
                     <div>
