@@ -345,14 +345,16 @@ export const TableSelectMonthRF = ({
 
                   <div className="justify-between w-full hidden lg:flex">
                     <div>
-                      {/* <p className="text-center mt-3">เสนอนายแพทย์ชำนาญการ รักษาการในตำแหน่งผู้อำนวยการโรงพยาบาลครบุรี เพื่อโปรดพิจารณา</p> */}
-                      <p className="text-center mt-3">ลงชื่อ......................................................นายแพทย์ชำนาญการ รักษาการในตำแหน่งผู้อำนวยการโรงพยาบาลครบุรี(ผู้อนุมัติอยู่เวร)</p>
-                      <p className="text-left pl-14">( นายเรืองศักดิ์  ใจโพธิ์ )</p>
+                      <p className="text-center mt-3">ลงมือชื่อ......................................................................(ผู้ควบคุม)</p>
+                      <p className="text-left pl-24">( นางรำไพ นันทโนภาส )</p>
+                      <p className="text-left pl-16">พยาบาลวิชาชีพชำนาญการพิเศษ</p>
+                      <p className="text-left pl-20">หัวหน้ากลุ่มงานการพยาบาล</p>
                     </div>
-                    <div>
-                      {/* <p className="text-center mt-3"> &nbsp; </p> */}
-                      <p className="text-center mt-3">ลงชื่อ......................................................หัวหน้ากลุ่มงานการพยาบาล(ผู้ควบคุม)</p>
-                      <p className="text-left pl-14">( นางรำไพ นันทโนภาส )</p>
+                    <div className="basis-6/12">
+                      <p className="text-center mt-3">ลงมือชื่อ......................................................................(ผู้อนุมัติ)</p>
+                      <p className="text-left pl-96">( นายเรืองศักดิ์  ใจโพธิ์ )</p>
+                      <p className="text-left pl-80">นายแพทย์ชำนาญการ รักษาการในตำแหน่ง</p>
+                      <p className="text-left pl-[23rem]">ผู้อำนวยการโรงพยาบาลครบุรี</p>
                     </div>
                     <div className="text-center">
                       {/* <p className="text-center mt-3">ความคิดเห็นผู้อำนวยการ</p> */}
