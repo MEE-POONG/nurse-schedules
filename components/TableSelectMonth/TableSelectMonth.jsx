@@ -424,16 +424,16 @@ export const TableSelectMonth = ({
 
                   <div className="justify-between w-full hidden lg:flex">
                     <div>
-                      <p className="text-center mt-3">ลงมือชื่อ......................................................................(ผู้ควบคุม)</p>
-                      <p className="text-left pl-24">( นางรำไพ นันทโนภาส )</p>
-                      <p className="text-left pl-16">พยาบาลวิชาชีพชำนาญการพิเศษ</p>
-                      <p className="text-left pl-20">หัวหน้ากลุ่มงานการพยาบาล</p>
+                      <p className="text-center mt-3">ลงมือชื่อ......................................................................(ผู้อนุมัติอยู่เวร)</p>
+                      <p className="text-left pl-32">( นายเรืองศักดิ์  ใจโพธิ์ )</p>
+                      <p className="text-left pl-14">นายแพทย์ชำนาญการ รักษาการในตำแหน่ง</p>
+                      <p className="text-leftpl-20  ">ผู้อำนวยการโรงพยาบาลครบุรี</p>
                     </div>
                     <div className="basis-6/12">
-                      <p className="text-center mt-3">ลงมือชื่อ......................................................................(ผู้อนุมัติ)</p>
-                      <p className="text-left pl-96">( นายเรืองศักดิ์  ใจโพธิ์ )</p>
-                      <p className="text-left pl-80">นายแพทย์ชำนาญการ รักษาการในตำแหน่ง</p>
-                      <p className="text-left pl-[23rem]">ผู้อำนวยการโรงพยาบาลครบุรี</p>
+                      <p className="text-center mt-3">ลงมือชื่อ......................................................................(ผู้ควบคุม)</p>
+                      <p className="text-left pl-96">( นางรำไพ นันทโนภาส )</p>
+                      <p className="text-left pl-[22rem]">พยาบาลวิชาชีพชำนาญการพิเศษ</p>
+                      <p className="text-left pl-[23rem]">หัวหน้ากลุ่มงานการพยาบาล</p>
                     </div>
                     <div className="text-center">
                       {/* <p className="text-center mt-3">ความคิดเห็นผู้อำนวยการ</p> */}

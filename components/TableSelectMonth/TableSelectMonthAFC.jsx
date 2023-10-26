@@ -351,7 +351,7 @@ export const TableSelectMonthAFC = ({
                       <p className="text-left pl-20">หัวหน้ากลุ่มงานการพยาบาล</p>
                     </div>
                     <div className="basis-6/12">
-                      <p className="text-center mt-3">ลงมือชื่อ......................................................................(ผู้อนุมัติ)</p>
+                      <p className="text-center mt-3">ลงมือชื่อ......................................................................(ผู้อนุมัติอยู่เวร)</p>
                       <p className="text-left pl-96">( นายเรืองศักดิ์  ใจโพธิ์ )</p>
                       <p className="text-left pl-80">นายแพทย์ชำนาญการ รักษาการในตำแหน่ง</p>
                       <p className="text-left pl-[23rem]">ผู้อำนวยการโรงพยาบาลครบุรี</p>
