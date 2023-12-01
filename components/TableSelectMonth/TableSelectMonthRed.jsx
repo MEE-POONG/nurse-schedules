@@ -261,7 +261,7 @@ export const TableSelectMonthRed = ({
                   <tr key={key} className="border bg-white">
                     <td className="border border-black">{key + 1}</td>
                     <td
-                      className={`whitespace-nowrap border border-black text-left pl-3 ${key % 2 == 0
+                      className={`whitespace-nowrap border border-black sticky text-left pl-3 ${key % 2 == 0
                         ? "bg-white"
                         : "bg-white"
                         }`}
