@@ -158,7 +158,7 @@ export const TableSelectMonthRed = ({
                   ลำดับ
                 </td>
                 <td
-                  className="border border-black bg-white min-w-[200px] -left-5"
+                  className="border border-black bg-white min-w-[200px] sticky -left-5"
                   colSpan={1}
                   rowSpan={2}
                 >
