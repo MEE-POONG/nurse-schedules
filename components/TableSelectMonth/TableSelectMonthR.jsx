@@ -406,7 +406,7 @@ export const TableSelectMonthR = ({
                   <div className="flex flex-row justify-center">
                     ขอรับรองว่าผู้ที่รับเงินค่าตอบแทนดังกล่าวได้ปฏิบัติงานนอกเวลาจริง
                   </div>
-                  <div className="justify-between w-full hidden lg:flex">
+                  <div className="justify-between w-full hidden md:flex">
                     <div>
                       <p className="text-center mt-3">ลงมือชื่อ......................................................................(ผู้ควบคุม)</p>
                       <p className="text-left pl-24">( นางรำไพ นันทโนภาส )</p>

@@ -413,7 +413,7 @@ export const TableSelectMonthOnCall = ({
                   colSpan={daysInMonth + 9}
                 >
 
-                  <div className="justify-between w-full hidden lg:flex">
+                  <div className="justify-between w-full hidden md:flex">
                     <div>
                       <p className="text-center mt-3">ลงมือชื่อ......................................................................(ผู้อนุมัติอยู่เวร)</p>
                       <p className="text-left pl-32">( นายเรืองศักดิ์  ใจโพธิ์ )</p>
