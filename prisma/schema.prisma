@@ -77,6 +77,7 @@ model User {
   overtime_compensation Int?
   isPartTime            Boolean?
   isAdmin               Boolean?
+  isActive              Boolean      @default(true)
   Duty                  Duty[]
   Location              Location?    @relation(fields: [locationId], references: [id])
   Position              Position?    @relation(fields: [positionId], references: [id])
