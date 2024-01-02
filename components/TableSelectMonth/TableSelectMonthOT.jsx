@@ -202,7 +202,7 @@ export const TableSelectMonthOT = ({
                   colSpan={1}
                   rowSpan={1}
                 >
-                  ลงมือชื่อ
+                  ลงชื่อ
                 </td>
               </tr>
               <tr className="border">
@@ -409,19 +409,19 @@ export const TableSelectMonthOT = ({
                   </div>
                   <div className="justify-between w-full hidden sm:flex">
                     <div>
-                      <p className="text-center mt-3">ลงมือชื่อ......................................................................(ผู้ควบคุม)</p>
+                      <p className="text-center mt-3">ลงชื่อ......................................................................(ผู้ควบคุม)</p>
                       <p className="text-left pl-24">( นางรำไพ นันทโนภาส )</p>
                       <p className="text-left pl-16">พยาบาลวิชาชีพชำนาญการพิเศษ</p>
                       <p className="text-left pl-20">หัวหน้ากลุ่มงานการพยาบาล</p>
                     </div>
                     <div className="basis-6/12">
-                      <p className="text-center mt-3">ลงมือชื่อ......................................................................(ผู้อนุมัติ)</p>
+                      <p className="text-center mt-3">ลงชื่อ......................................................................(ผู้อนุมัติ)</p>
                       <p className="text-left pl-96">( นายเรืองศักดิ์  ใจโพธิ์ )</p>
                       <p className="text-left pl-80">นายแพทย์ชำนาญการ รักษาการในตำแหน่ง</p>
                       <p className="text-left pl-[23rem]">ผู้อำนวยการโรงพยาบาลครบุรี</p>
                     </div>
                     <div>
-                      <p className="text-center mt-3">ลงมือชื่อ......................................................................ผู้จ่ายเงิน</p>
+                      <p className="text-center mt-3">ลงชื่อ......................................................................ผู้จ่ายเงิน</p>
                     </div>
                   </div>
 

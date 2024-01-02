@@ -424,13 +424,13 @@ export const TableSelectMonth = ({
 
                   <div className="justify-between w-full hidden sm:flex">
                     <div>
-                      <p className="text-center mt-3">ลงมือชื่อ......................................................................(ผู้อนุมัติอยู่เวร)</p>
+                      <p className="text-center mt-3">ลงชื่อ......................................................................(ผู้อนุมัติอยู่เวร)</p>
                       <p className="text-left pl-32">( นายเรืองศักดิ์  ใจโพธิ์ )</p>
                       <p className="text-left pl-14">นายแพทย์ชำนาญการ รักษาการในตำแหน่ง</p>
                       <p className="text-leftpl-20  ">ผู้อำนวยการโรงพยาบาลครบุรี</p>
                     </div>
                     <div className="basis-6/12">
-                      <p className="text-center mt-3">ลงมือชื่อ......................................................................(ผู้ควบคุม)</p>
+                      <p className="text-center mt-3">ลงชื่อ......................................................................(ผู้ควบคุม)</p>
                       <p className="text-left pl-96">( นางรำไพ นันทโนภาส )</p>
                       <p className="text-left pl-[22rem]">พยาบาลวิชาชีพชำนาญการพิเศษ</p>
                       <p className="text-left pl-[23rem]">หัวหน้ากลุ่มงานการพยาบาล</p>
