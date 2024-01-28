@@ -12,8 +12,11 @@
     "build-push-pn": "docker build --platform linux/amd64 -t chunwarayut/pasuk-pn-tarangwen:latest . && docker push chunwarayut/pasuk-pn-tarangwen:latest"
   },
   "dependencies": {
+    "@fullcalendar/core": "^6.1.10",
+    "@fullcalendar/daygrid": "^6.1.10",
+    "@fullcalendar/react": "^6.1.10",
     "@headlessui/react": "^1.7.8",
-    "@prisma/client": "^4.9.0",
+    "@prisma/client": "5.8.1",
     "@reduxjs/toolkit": "^1.9.2",
     "@tailwindcss/forms": "^0.5.3",
     "@tailwindcss/typography": "^0.5.9",
@@ -40,7 +43,7 @@
   "devDependencies": {
     "autoprefixer": "^10.4.13",
     "postcss": "^8.4.21",
-    "prisma": "^4.9.0",
+    "prisma": "5.8.1",
     "tailwindcss": "^3.2.4",
     "yarn-upgrade-all": "^0.7.2"
   },
