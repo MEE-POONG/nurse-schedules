@@ -1,55 +1,47 @@
 @import url("https://fonts.googleapis.com/css2?family=Bai+Jamjuree&display=swap");
-
 * {
-  font-family: "Bai Jamjuree", sans-serif;
+    font-family: "Bai Jamjuree", sans-serif;
 }
 
 body {
-  background: #c9ffbf; /* fallback for old browsers */
-  background: -webkit-linear-gradient(
-    to right,
-    #ffafbd,
-    #c9ffbf
-  ); /* Chrome 10-25, Safari 5.1-6 */
-  background: linear-gradient(
-    to right,
-    #ffafbd,
-    #c9ffbf
-  ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background: #c9ffbf;
+    /* fallback for old browsers */
+    background: -webkit-linear-gradient( to right, #ffafbd, #c9ffbf);
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient( to right, #ffafbd, #c9ffbf);
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
+
 .circle-dark {
-  
-  box-sizing: initial;
-  
-  background: #fff;
-  border: 0.1em solid #666;
-  color: #666;
-  text-align: center;
-  border-radius: 50%;    
-  
+    box-sizing: initial;
+    background: #fff;
+    border: 0.1em solid #666;
+    color: #666;
+    text-align: center;
+    border-radius: 50%;
 }
 
 .circle-red {
-  
-  box-sizing: initial;
-  
-  background: #fff;
-  border: 0.1em solid #ef4444;
-  color: #ef4444;
-  text-align: center;
-  border-radius: 50%;    
-  
+    box-sizing: initial;
+    background: #fff;
+    border: 0.1em solid #ef4444;
+    color: #ef4444;
+    text-align: center;
+    border-radius: 50%;
 }
+
 .circle-blue {
-  
-  box-sizing: initial;
-  
-  background: #fff;
-  border: 0.1em solid #0ea5e9;
-  color: #0ea5e9;
-  text-align: center;
-  border-radius: 50%;    
-  
+    box-sizing: initial;
+    background: #fff;
+    border: 0.1em solid #0ea5e9;
+    color: #0ea5e9;
+    text-align: center;
+    border-radius: 50%;
+}
+
+.fc-daygrid-day-events {
+    display: flex;
+    flex-wrap: wrap;
 }
 
 @tailwind base;

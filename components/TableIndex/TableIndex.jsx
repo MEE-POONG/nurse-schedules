@@ -53,7 +53,7 @@ export default function TableIndex() {
 
       {loading ? <LoadingComponent /> : <></>}
 
-      <div className="w-100 bg-white shadow-xl p-5 my-10 rounded-md overflow-x-auto">
+      <div className="w-100 bg-[#d5a5a5] shadow-xl p-5 my-10 rounded-md overflow-x-auto">
         <FullCalendar
           plugins={[dayGridPlugin]}
           initialView="dayGridMonth"
@@ -72,30 +72,32 @@ export default function TableIndex() {
             ?.Duty?.map((e) => {
               return {
                 date: dayjs(e.datetime).format("YYYY-MM-DD"),
-                title: e.Shif?.name,
-                textColor: e.Shif?.class ? "#FFFFFF" : "#000000",
-                backgroundColor:
+                title: " - " + e.Shif?.name + " - ",
+                textColor:
                   e.Shif?.name === "R"
-                    ? "#FFB0B0"
+                    ? "#CC0000"
+                    : e.Shif?.name === "x"
+                    ? "#CC0000"
+                    : e.Shif?.name === "R"
+                    ? "#CC0000"
                     : e.Shif?.class === "circle-dark"
                     ? "#0F0F0F"
                     : e.Shif?.class === "circle-red"
-                    ? "#FFB0B0"
+                    ? "#CC0000"
                     : e.Shif?.class === "circle-blue"
-                    ? "#2E4374"
-                    : "#FFFFFF",
+                    ? "#0000ff"
+                    : "#000000",
                 borderColor:
                   e.Shif?.name === "R"
+                    ? "#CC0000"
+                    : e.Shif?.class === "circle-dark"
                     ? "#0F0F0F"
-                    : e.Shif?.name === "x"
-                    ? "#0F0F0F"
-                    : e.Shif?.name === "ช"
-                    ? "#0F0F0F"
-                    : e.Shif?.name === "บ"
-                    ? "#0F0F0F"
-                    : e.Shif?.name === "ด"
-                    ? "#0F0F0F"
-                    : "#0F0F0F",
+                    : e.Shif?.class === "circle-red"
+                    ? "#CC0000"
+                    : e.Shif?.class === "circle-blue"
+                    ? "#0000ff"
+                    : "#FFFFFF",
+                backgroundColor: "#FFFFFF",
               };
             })}
         />
