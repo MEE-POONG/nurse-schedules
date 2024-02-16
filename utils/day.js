@@ -8,7 +8,7 @@ import "dayjs/locale/th";
 export default function dayFunction(inputM, inputY) {
   const inputMonth = inputM === '' ? dayjs().month() : +inputM + 1;
   const inputYear = inputY === '' ? dayjs().year() : inputY;
-  const daysInMonth = dayjs(`${inputMonth}`).daysInMonth();
+  const daysInMonth = dayjs(`${inputYear}-${inputMonth}-01`).daysInMonth();
   const arrayDayInMonth = Array.from(Array(daysInMonth).keys());
   const monthEN = dayjs(`${inputMonth}`).format("M");
   const yearEN = dayjs(`${inputYear}`).format("YYYY");
