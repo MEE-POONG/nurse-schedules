@@ -74,7 +74,7 @@ export default async function handler(req, res) {
             ("" + a.UserDuty.locationId).localeCompare(b.UserDuty.locationId)
           );
 
-        if (data.length < 28) {
+        if (data.length < 16) {
           for (let i = 0; i < 28 - data.length; i++) {
             data.push({
               id: 0,
