@@ -45,14 +45,14 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: chunwarayut/pasuk-pn-tarangwen:latest
+          tags: chunwarayut/icu-rn-tarangwen:latest
           build-args: DATABASE_URL=${{ secrets.DATABASE_URL_RN_ICU }}
 
       - name: Push to Docker Hub PN ICU
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: chunwarayut/pasuk-pn-tarangwen:latest
+          tags: chunwarayut/icu-pn-tarangwen:latest
           build-args: DATABASE_URL=${{ secrets.DATABASE_URL_PN_ICU }}
 
       - name: SSH Command
