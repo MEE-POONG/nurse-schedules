@@ -56,6 +56,12 @@ export const TableSelectMonthOnCall = ({
   const [{ loading: dutyDeleteLoading, error: dutyDeleteError }, deleteDuty] =
     useAxios({ url: "/api/on-call", method: "DELETE" }, { manual: true });
 
+
+  const [{ data: configuration, loading: configurationLoading, error: configurationError }] = useAxios({
+    url: "/api/configuration",
+  });
+
+
   useEffect(() => {
     if (userLoading === false) {
       const getUsers = async () => {
@@ -80,7 +86,8 @@ export const TableSelectMonthOnCall = ({
     dutyDeleteError ||
     locationError ||
     userListError ||
-    dutyUserError
+    dutyUserError ||
+    configurationError
   )
     return <ErrorComponent />;
 
@@ -103,6 +110,7 @@ export const TableSelectMonthOnCall = ({
           dutyDeleteLoading ||
           locationLoading ||
           userListLoading ||
+          configurationLoading ||
           dutyUserLoading ? (
           <LoadingComponent />
         ) : (
@@ -233,7 +241,7 @@ export const TableSelectMonthOnCall = ({
               </tr>
 
               {/* ข้อมูลการขึ้นเวร */}
-              {user?.filter(e => e.Position.name !== 'พนักงานเปล')?.map((person, key) => {
+              {user?.filter(e => e?.Position?.name !== 'พนักงานเปล')?.map((person, key) => {
                 const afternoonShift = person?.OnCallDuty?.filter(
                   ({ Shif, isOT }) => Shif?.name == "บ" && !isOT
                 )?.length;
@@ -255,10 +263,10 @@ export const TableSelectMonthOnCall = ({
                         : "even:bg-white"
                         }`}
                     >
-                      {person.Title.name}
-                      {person.firstname} {person.lastname}
+                      {person?.Title?.name}
+                      {person?.firstname} {person?.lastname}
                     </td>
-                    <td className="border border-black">{person.Position.name}</td>
+                    <td className="border border-black">{person?.Position?.name}</td>
                     <td className="border border-black">
                       {
                         person.UserDuty?.Location
@@ -269,10 +277,10 @@ export const TableSelectMonthOnCall = ({
                     {arrayDayInMonth?.map((day, index) => (
                       <ModalSelectMonthOnCall
                         key={index}
-                        userId={person.id}
-                        OnCallDuty={person.OnCallDuty}
+                        userId={person?.id}
+                        OnCallDuty={person?.OnCallDuty}
                         day={day + 1}
-                        name={person.firstname + " " + person.lastname}
+                        name={person?.firstname + " " + person?.lastname}
                         Shif={shif}
                         getUserList={getUserList}
                         executeDuty={executeDuty}
@@ -288,7 +296,7 @@ export const TableSelectMonthOnCall = ({
                     <td className="border border-black">{nightShift}</td>
                     <td className="border border-black">{ot}</td>
                     <td className="border border-black">{workingDay}</td>
-                    <td className="border border-black">{workingDay + ot}</td>
+                    <td className="border border-black">{(workingDay || 0) + (ot || 0)}</td>
                   </tr>
                 );
               })}
@@ -315,7 +323,7 @@ export const TableSelectMonthOnCall = ({
 
 
               {/* ข้อมูลการขึ้นเวร */}
-              {user?.filter(e => e.Position.name === 'พนักงานเปล')?.map((person, key) => {
+              {user?.filter(e => e?.Position?.name === 'พนักงานเปล')?.map((person, key) => {
                 const afternoonShift = person?.OnCallDuty?.filter(
                   ({ Shif, isOT }) => Shif?.name == "บ" && !isOT
                 )?.length;
@@ -375,7 +383,7 @@ export const TableSelectMonthOnCall = ({
                 );
               })}
 
-              {user?.filter(e => e.Position.name === 'พนักงานเปล') ? <tr className="border">
+              {user?.filter(e => e?.Position?.name === 'พนักงานเปล') ? <tr className="border">
                 <td className="border border-black">&nbsp;</td>
                 <td className="border border-black">&nbsp;</td>
                 <td className="border border-black">&nbsp;</td>
@@ -429,7 +437,7 @@ export const TableSelectMonthOnCall = ({
                     <div className="text-center">
                       {/* <p className="text-center mt-3">ความคิดเห็นผู้อำนวยการ</p> */}
                       <p className="text-center mt-3">ลงชื่อ......................................................หัวหน้าหน่วยงาน</p>
-                      <p className="text-left pl-16">( นางมะลิ มอบกระโทก )</p>
+                      <p className="text-left pl-16">( {configuration?.depatimentor} )</p>
                     </div>
                   </div>
 
@@ -551,26 +559,26 @@ export const TableSelectMonthOnCall = ({
   );
 
   function sumDuty(array) {
-    return _.sumBy(user?.filter(e => e.Position.name !== 'พนักงานเปล'), function (o) {
+    return _.sumBy(user?.filter(e => e?.Position?.name !== 'พนักงานเปล'), function (o) {
       return o.OnCallDuty?.filter(({ Shif, isOT }) => array.includes(Shif?.name) && !isOT)?.length;
     });
   }
 
   function sumOT() {
-    return _.sumBy(user?.filter(e => e.Position.name !== 'พนักงานเปล'), function (o) {
+    return _.sumBy(user?.filter(e => e?.Position?.name !== 'พนักงานเปล'), function (o) {
       return o.OnCallDuty?.filter(({ isOT }) => isOT)?.length;
     });
   }
 
 
   function sumDutyPay(array) {
-    return _.sumBy(user?.filter(e => e.Position.name === 'พนักงานเปล'), function (o) {
+    return _.sumBy(user?.filter(e => e?.Position?.name === 'พนักงานเปล'), function (o) {
       return o.OnCallDuty?.filter(({ Shif, isOT }) => array.includes(Shif?.name) && !isOT)?.length;
     });
   }
 
   function sumOTPay() {
-    return _.sumBy(user?.filter(e => e.Position.name === 'พนักงานเปล'), function (o) {
+    return _.sumBy(user?.filter(e => e?.Position?.name === 'พนักงานเปล'), function (o) {
       return o.OnCallDuty?.filter(({ isOT }) => isOT)?.length;
     });
   }

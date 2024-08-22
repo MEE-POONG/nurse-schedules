@@ -149,25 +149,26 @@ async function main() {
 
   console.log("seeded transaction successfully");
 
-  const location = await prisma.location.findMany()
-  const position = await prisma.position.findMany()
-  const title = await prisma.title.findMany()
+//   const location = await prisma.location.findMany()
+//   const position = await prisma.position.findMany()
+//   const title = await prisma.title.findMany()
 
-  await prisma.user.createMany({
-    data: [
-      {
-        firstname: "ผู้ดูแลระบบ",
-        lastname: "นะครับ",
-        locationId: location.find((item) => item.name === "ICU").id,
-        positionId: position.find(
-          (item) => item.name === "พยาบาลวิชาชีพ"
-        ).id,
-        titleId: title.find((item) => item.name === "นาย").id,
-        username: "admin",
-        password: "admin",
-      },
-    ],
-  });
+//   await prisma.user.createMany({
+//     data: [
+//       {
+//         firstname: "ผู้ดูแลระบบ",
+//         lastname: "นะครับ",
+//         locationId: location.find((item) => item.name === "ICU").id,
+//         positionId: position.find(
+//           (item) => item.name === "พยาบาลวิชาชีพ"
+//         ).id,
+//         titleId: title.find((item) => item.name === "นาย").id,
+//         username: "admin",
+//         password: "admin",
+//       },
+//     ],
+//   });
+
   // await prisma.user.createMany({
   //     data: [
   //         {
@@ -285,6 +286,21 @@ async function main() {
   //     ]
   // })
 
+
+//   await prisma.configuration.createMany({
+//     data: [
+//       {
+//         departmentor: "นางมะลิ มอบกระโทก"
+//       },
+//     ],
+//   });
+  await prisma.configuration.createMany({
+    data: [
+      {
+        departmentor: "นางรพิรัตน์ คงรักษาเกียรติ"
+      },
+    ],
+  });
   console.log("seeded data");
 }
 main()

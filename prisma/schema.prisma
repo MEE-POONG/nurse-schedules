@@ -94,3 +94,10 @@ model Title {
   name String @unique
   User User[]
 }
+
+model Configuration {
+  id           String  @id @default(auto()) @map("_id") @db.ObjectId
+  departmentor String?
+  leader       String?
+  director     String?
+}

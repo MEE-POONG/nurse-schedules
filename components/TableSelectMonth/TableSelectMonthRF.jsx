@@ -67,6 +67,13 @@ export const TableSelectMonthRF = ({
   const [{ loading: dutyDeleteLoading, error: dutyDeleteError }, deleteDuty] =
     useAxios({ url: "/api/duty", method: "DELETE" }, { manual: true, autoCancel: false });
 
+
+    const [{ data: configuration, loading: configurationLoading, error: configurationError }] = useAxios({
+      url: "/api/configuration",
+    });
+
+
+
   useEffect(() => {
     if (userLoading === false) {
       const getUsers = async () => {
@@ -91,6 +98,7 @@ export const TableSelectMonthRF = ({
     dutyDeleteError ||
     locationError ||
     userListError ||
+    configurationError ||
     dutyUserError
   )
     return <ErrorComponent />;
@@ -267,9 +275,9 @@ export const TableSelectMonthRF = ({
                         : "bg-white"
                         }`}
                     >
-                      {person.Title.name} {person.firstname} {person.lastname}
+                      {person?.Title?.name} {person?.firstname} {person?.lastname}
                     </td>
-                    <td className="border border-black whitespace-nowrap">{person.Position.name}</td>
+                    <td className="border border-black whitespace-nowrap">{person?.Position?.name}</td>
                     <td className="border border-black whitespace-nowrap">
                       {
                         person.UserDuty?.Location
@@ -280,10 +288,10 @@ export const TableSelectMonthRF = ({
                     {arrayDayInMonth?.map((day, index) => (
                       <ModalSelectMonthR
                         key={index}
-                        userId={person.id}
-                        Duty={person.Duty}
+                        userId={person?.id}
+                        Duty={person?.Duty}
                         day={day + 1}
-                        name={person.firstname + " " + person.lastname}
+                        name={person?.firstname + " " + person?.lastname}
                         Shif={shif}
                         getUserList={getUserList}
                         executeDuty={executeDuty}
@@ -359,7 +367,7 @@ export const TableSelectMonthRF = ({
                     <div className="text-center">
                       {/* <p className="text-center mt-3">ความคิดเห็นผู้อำนวยการ</p> */}
                       <p className="text-center mt-3">ลงชื่อ......................................................หัวหน้าหน่วยงาน</p>
-                      <p className="text-left pl-16">( นางมะลิ มอบกระโทก )</p>
+                      <p className="text-left pl-16">( {configuration?.departmentor} )</p>
                     </div>
                   </div>
 

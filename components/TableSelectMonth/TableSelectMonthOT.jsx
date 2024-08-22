@@ -263,20 +263,23 @@ export const TableSelectMonthOT = ({
                         : "bg-white"
                         }`}
                     >
-                      {person.Title.name} {person.firstname} {person.lastname}
+                      {person?.Title?.name} {person?.firstname} {person?.lastname}
                     </td>
-                    <td className="border border-black whitespace-nowrap">{person.Position.name}</td>
+                    <td className="border border-black whitespace-nowrap">{person?.Position?.name}</td>
                     <td className="border border-black whitespace-nowrap">
-                      {person.overtime_compensation}
+                      {
+                        person.UserDuty?.Location
+                          ?.name
+                      }
                     </td>
                     {/* แสดงรายละเอียดของตาราง กะ */}
                     {arrayDayInMonth?.map((day, index) => (
                       <ModalSelectMonthOT
                         key={index}
-                        userId={person.id}
-                        Duty={person.Duty}
+                        userId={person?.id}
+                        Duty={person?.Duty}
                         day={day + 1}
-                        name={person.firstname + " " + person.lastname}
+                        name={person?.firstname + " " + person?.lastname}
                         Shif={shif}
                         getUserList={getUserList}
                         executeDuty={executeDuty}

@@ -70,6 +70,10 @@ export const TableSelectMonth = ({
   const [{ loading: dutyDeleteLoading, error: dutyDeleteError }, deleteDuty] =
     useAxios({ url: "/api/duty", method: "DELETE" }, { manual: true, autoCancel: false });
 
+    const [{ data: configuration, loading: configurationLoading, error: configurationError }] = useAxios({
+      url: "/api/configuration",
+    });
+
   useEffect(() => {
     if (userLoading === false) {
       const getUsers = async () => {
@@ -94,6 +98,7 @@ export const TableSelectMonth = ({
     dutyDeleteError ||
     locationError ||
     userListError ||
+    configurationError ||
     dutyUserError
   )
     return <ErrorComponent />;
@@ -117,6 +122,7 @@ export const TableSelectMonth = ({
           dutyDeleteLoading ||
           locationLoading ||
           userListLoading ||
+          configurationLoading ||
           dutyUserLoading ? (
           <LoadingComponent />
         ) : (
@@ -247,7 +253,7 @@ export const TableSelectMonth = ({
               </tr>
 
               {/* ข้อมูลการขึ้นเวร */}
-              {user?.filter(e => e.Position.name !== 'พนักงานเปล')?.map((person, key) => {
+              {user?.filter(e => e.Position?.name !== 'พนักงานเปล')?.map((person, key) => {
                 const afternoonShift = person?.Duty?.filter(
                   ({ Shif, isOT }) => Shif?.name == "บ" && !isOT
                 )?.length;
@@ -269,9 +275,9 @@ export const TableSelectMonth = ({
                         : "bg-white"
                         }`}
                     >
-                      {person.Title.name} {person.firstname} {person.lastname}
+                      {person?.Title?.name} {person?.firstname} {person?.lastname}
                     </td>
-                    <td className="border border-black whitespace-nowrap">{person.Position.name}</td>
+                    <td className="border border-black whitespace-nowrap">{person?.Position?.name}</td>
                     <td className="border border-black whitespace-nowrap">
                       {
                         person.UserDuty?.Location
@@ -282,10 +288,10 @@ export const TableSelectMonth = ({
                     {arrayDayInMonth?.map((day, index) => (
                       <ModalSelectMonth
                         key={index}
-                        userId={person.id}
-                        Duty={person.Duty}
+                        userId={person?.id}
+                        Duty={person?.Duty}
                         day={day + 1}
-                        name={person.firstname + " " + person.lastname}
+                        name={person?.firstname + " " + person?.lastname}
                         Shif={shif}
                         getUserList={getUserList}
                         executeDuty={executeDuty}
@@ -328,7 +334,7 @@ export const TableSelectMonth = ({
 
 
               {/* ข้อมูลการขึ้นเวรเปล */}
-              {user?.filter(e => e.Position.name === 'พนักงานเปล')?.map((person, key) => {
+              {user?.filter(e => e?.Position?.name === 'พนักงานเปล')?.map((person, key) => {
                 const afternoonShift = person?.Duty?.filter(
                   ({ Shif, isOT }) => Shif?.name == "บ" && !isOT
                 )?.length;
@@ -386,7 +392,7 @@ export const TableSelectMonth = ({
                   </tr>
                 );
               })}
-              {user?.filter(e => e.Position.name === 'พนักงานเปล').length ? <tr className="border">
+              {user?.filter(e => e?.Position?.name === 'พนักงานเปล').length ? <tr className="border">
                 <td className="border border-black">&nbsp;</td>
                 <td className="border border-black">&nbsp;</td>
                 <td className="border border-black">&nbsp;</td>
@@ -438,7 +444,7 @@ export const TableSelectMonth = ({
                     <div className="text-center">
                       {/* <p className="text-center mt-3">ความคิดเห็นผู้อำนวยการ</p> */}
                       <p className="text-center mt-3">ลงชื่อ......................................................หัวหน้าหน่วยงาน</p>
-                      <p className="text-left pl-16">( นางมะลิ มอบกระโทก )</p>
+                      <p className="text-left pl-16">( {configuration?.departmentor} )</p>
                     </div>
                   </div>
 
@@ -564,26 +570,26 @@ export const TableSelectMonth = ({
   );
 
   function sumDuty(array) {
-    return _.sumBy(user?.filter(e => e.Position.name !== 'พนักงานเปล'), function (o) {
+    return _.sumBy(user?.filter(e => e?.Position?.name !== 'พนักงานเปล'), function (o) {
       return o.Duty?.filter(({ Shif, isOT }) => array.includes(Shif?.name) && !isOT)?.length;
     });
   }
 
   function sumOT() {
-    return _.sumBy(user?.filter(e => e.Position.name !== 'พนักงานเปล'), function (o) {
+    return _.sumBy(user?.filter(e => e?.Position?.name !== 'พนักงานเปล'), function (o) {
       return o.Duty?.filter(({ isOT }) => isOT)?.length;
     });
   }
 
 
   function sumDutyPay(array) {
-    return _.sumBy(user?.filter(e => e.Position.name === 'พนักงานเปล'), function (o) {
+    return _.sumBy(user?.filter(e => e?.Position?.name === 'พนักงานเปล'), function (o) {
       return o.Duty?.filter(({ Shif, isOT }) => array.includes(Shif?.name) && !isOT)?.length;
     });
   }
 
   function sumOTPay() {
-    return _.sumBy(user?.filter(e => e.Position.name === 'พนักงานเปล'), function (o) {
+    return _.sumBy(user?.filter(e => e?.Position?.name === 'พนักงานเปล'), function (o) {
       return o.Duty?.filter(({ isOT }) => isOT)?.length;
     });
   }

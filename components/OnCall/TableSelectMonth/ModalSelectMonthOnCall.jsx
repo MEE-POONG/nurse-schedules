@@ -81,7 +81,7 @@ export default function ModalSelectMonthOnCall({
           }`}
         onClick={() => setShowModal(true)}
       >
-        {dutyOfDay.map(({ Shif, isOT }, index) => {
+        {dutyOfDay?.map(({ Shif, isOT }, index) => {
           if (!isOT) {
             return <span className={`${Shif?.name === 'ลาพัก' ? ' text-[0.7rem] ' : Shif?.name === 'R' ? ' circle-red text-[12px]  w-[12px] h-[12px] inline-block leading-[12px]' : ' text-lg '}`} key={index}>{Shif?.name}</span>;
           } else {
