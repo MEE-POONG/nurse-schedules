@@ -73,22 +73,24 @@ export default async function handler(req, res) {
             ("" + a.UserDuty.locationId).localeCompare(b.UserDuty.locationId)
           );
 
-        if (data.length < 16) {
-          for (let i = 0; i < 28 - data.length; i++) {
-            data.push({
-              id: 0,
-              normal_compensation: 0,
-              overtime_compensation: 0,
-              UserDuty: {
+        if (data[0].UserDuty.Location.name === "ICU") {
+          if (data.length < 16) {
+            for (let i = 0; i < 28 - data.length; i++) {
+              data.push({
                 id: 0,
-                locationId: 0,
-                datetime: "",
-                location: {
-                  name: "",
+                normal_compensation: 0,
+                overtime_compensation: 0,
+                UserDuty: {
+                  id: 0,
+                  locationId: 0,
+                  datetime: "",
+                  location: {
+                    name: "",
+                  },
                 },
-              },
-              Duty: [],
-            });
+                Duty: [],
+              });
+            }
           }
         }
 
