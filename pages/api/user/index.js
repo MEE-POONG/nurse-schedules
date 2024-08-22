@@ -27,6 +27,8 @@ export default async function handler(req, res) {
             lastname: req.body.lastname,
             positionId: req.body.positionId,
             titleId: req.body.titleId,
+            username: req.body.firstname,
+            password: req.body.lastname,
           },
         });
 

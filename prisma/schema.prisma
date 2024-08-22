@@ -73,10 +73,10 @@ model User {
   lastname              String?
   username              String?
   password              String?
-  normal_compensation   Int?
-  overtime_compensation Int?
-  isPartTime            Boolean?
-  isAdmin               Boolean?
+  normal_compensation   Int?         @default(360)
+  overtime_compensation Int?         @default(720)
+  isPartTime            Boolean?     @default(false)
+  isAdmin               Boolean?     @default(true)
   isActive              Boolean      @default(true)
   Duty                  Duty[]
   Location              Location?    @relation(fields: [locationId], references: [id])

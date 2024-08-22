@@ -41,6 +41,20 @@ jobs:
           tags: chunwarayut/pasuk-pn-tarangwen:latest
           build-args: DATABASE_URL=${{ secrets.DATABASE_URL_PN }}
 
+      - name: Push to Docker Hub RN ICU
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          tags: chunwarayut/pasuk-pn-tarangwen:latest
+          build-args: DATABASE_URL=${{ secrets.DATABASE_URL_RN_ICU }}
+
+      - name: Push to Docker Hub PN ICU
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          tags: chunwarayut/pasuk-pn-tarangwen:latest
+          build-args: DATABASE_URL=${{ secrets.DATABASE_URL_PN_ICU }}
+
       - name: SSH Command
         uses: D3rHase/ssh-command-action@v0.2.2
         with:
@@ -56,3 +70,19 @@ jobs:
           user: ${{ secrets.SERVER_USER }}
           private_key: ${{ secrets.SSH_KEY }}
           command: docker pull chunwarayut/pasuk-pn-tarangwen:latest && docker stop pasuk-pn-tarangwen && docker rm pasuk-pn-tarangwen && docker run --name pasuk-pn-tarangwen --restart=always -d -p 6041:3000 chunwarayut/pasuk-pn-tarangwen
+
+      - name: SSH Command
+        uses: D3rHase/ssh-command-action@v0.2.2
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          user: ${{ secrets.SERVER_USER }}
+          private_key: ${{ secrets.SSH_KEY }}
+          command: docker pull chunwarayut/icu-rn-tarangwen:latest && docker stop icu-rn-tarangwen && docker rm icu-rn-tarangwen && docker run --name icu-rn-tarangwen --restart=always -d -p 6042:3000 chunwarayut/icu-rn-tarangwen
+
+      - name: SSH Command
+        uses: D3rHase/ssh-command-action@v0.2.2
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          user: ${{ secrets.SERVER_USER }}
+          private_key: ${{ secrets.SSH_KEY }}
+          command: docker pull chunwarayut/icu-pn-tarangwen:latest && docker stop icu-pn-tarangwen && docker rm icu-pn-tarangwen && docker run --name icu-pn-tarangwen --restart=always -d -p 6043:3000 chunwarayut/icu-pn-tarangwen

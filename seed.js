@@ -67,17 +67,17 @@ async function main() {
 
         ]
     })
-    const users = await prisma.user.createMany({
-        data: [
-            {
-                firstname: 'มะลิ',
-                lastname: 'มอบกระโทก',
-                locationId: null,
-                positionId: null,
-                titleId: null
-            },
-        ]
-    })
+    // const users = await prisma.user.createMany({
+    //     data: [
+    //         {
+    //             firstname: 'มะลิ',
+    //             lastname: 'มอบกระโทก',
+    //             locationId: null,
+    //             positionId: null,
+    //             titleId: null
+    //         },
+    //     ]
+    // })
 
     console.log({ locations, positions, shifs, titles, users })
 }
