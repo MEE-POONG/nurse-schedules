@@ -437,7 +437,7 @@ export const TableSelectMonthOnCall = ({
                     <div className="text-center">
                       {/* <p className="text-center mt-3">ความคิดเห็นผู้อำนวยการ</p> */}
                       <p className="text-center mt-3">ลงชื่อ......................................................หัวหน้าหน่วยงาน</p>
-                      <p className="text-left pl-16">( {configuration?.depatimentor} )</p>
+                      <p className="text-left pl-16">( {configuration?.departmentor} )</p>
                     </div>
                   </div>
 
