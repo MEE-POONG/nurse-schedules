@@ -56,6 +56,10 @@ export const TableSelectMonthOT = ({
   const [{ loading: dutyDeleteLoading, error: dutyDeleteError }, deleteDuty] =
     useAxios({ url: "/api/duty", method: "DELETE" }, { manual: true, autoCancel: false });
 
+    const [{ data: configuration, loading: configurationLoading, error: configurationError }] = useAxios({
+      url: "/api/configuration",
+    });
+
   useEffect(() => {
     if (userLoading === false) {
       const getUsers = async () => {
@@ -425,6 +429,7 @@ export const TableSelectMonthOT = ({
                     </div>
                     <div>
                       <p className="text-center mt-3">ลงชื่อ......................................................................ผู้จ่ายเงิน</p>
+                      <p className="text-left pl-16">( {configuration?.departmentor} )</p>
                     </div>
                   </div>
 
