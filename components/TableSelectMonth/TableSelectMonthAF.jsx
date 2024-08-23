@@ -255,7 +255,7 @@ export const TableSelectMonthAF = ({
 
                 return (
                   <tr key={key} className="border bg-white">
-                    <td className="border border-black">{key + 1}</td>
+                    <td className="border border-black">{!person?.firstname ? <p>&nbsp;</p> : key + 1}</td>
                     <td
                       className={`border border-black text-left pl-3 sticky -left-5 ${key % 2 == 0
                         ? "bg-white"
@@ -266,7 +266,7 @@ export const TableSelectMonthAF = ({
                     </td>
                     <td className="border border-black whitespace-nowrap">{person?.Position?.name}</td>
                     <td className="border border-black whitespace-nowrap">
-                      {person?.normal_compensation}
+                      {!person?.firstname ? <p>&nbsp;</p> : person?.normal_compensation}
                     </td>
                     {/* แสดงรายละเอียดของตาราง กะ */}
                     {arrayDayInMonth?.map((day, index) => (
@@ -287,11 +287,11 @@ export const TableSelectMonthAF = ({
                         yearTH={yearTH}
                       />
                     ))}
-                    <td className="border border-black hidden">{afternoonShift}</td>
-                    <td className="border border-black hidden">{nightShift}</td>
-                    <td className="border border-black hidden">{ot}</td>
-                    <td className="border border-black">{workingDay || ''}</td>
-                    <td className="border border-black text-right">{((workingDay + ot) * person.normal_compensation).toLocaleString('TH-th')}</td>
+                    <td className="border border-black hidden">{!person?.firstname ? <p>&nbsp;</p> : afternoonShift}</td>
+                    <td className="border border-black hidden">{!person?.firstname ? <p>&nbsp;</p> : nightShift}</td>
+                    <td className="border border-black hidden">{!person?.firstname ? <p>&nbsp;</p> : ot}</td>
+                    <td className="border border-black">{!person?.firstname ? <p>&nbsp;</p> : workingDay || ''}</td>
+                    <td className="border border-black text-right">{!person?.firstname ? <p>&nbsp;</p> : ((workingDay + ot) * person.normal_compensation).toLocaleString('TH-th')}</td>
                     <td className="border border-black"></td>
                     <td className="border border-black"></td>
                   </tr>

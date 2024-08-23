@@ -264,7 +264,7 @@ export const TableSelectMonthAFC = ({
 
                 return (
                   <tr key={key} className="border bg-white">
-                    <td className="border border-black">{key + 1}</td>
+                    <td className="border border-black">{!person?.firstname ? <p>&nbsp;</p> : key + 1}</td>
                     <td
                       className={`border border-black text-left pl-3 sticky -left-5 ${key % 2 == 0
                         ? "bg-white"
@@ -303,7 +303,7 @@ export const TableSelectMonthAFC = ({
                     {/* <td className="border border-black">{nightShift}</td> */}
                     {/* <td className="border border-black">{ot}</td> */}
                     {/* <td className="border border-black">{workingDay}</td> */}
-                    <td className="border border-black">{workingDay + ot}</td>
+                    <td className="border border-black">{!person?.firstname ? <p>&nbsp;</p> : workingDay + ot}</td>
                     <td className="border border-black"></td>
                   </tr>
                 );

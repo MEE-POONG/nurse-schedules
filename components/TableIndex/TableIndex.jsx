@@ -26,7 +26,7 @@ export default function TableIndex() {
   const { daysInMonth, arrayDayInMonth, monthEN, yearEN, monthTH, yearTH } =
     dayFunction(monthValue, yearValue);
 
-  const [isMe, setIsMe] = useState(true);
+  const [isMe, setIsMe] = useState(false);
   const handelCheckIsMe = () => setIsMe(true);
   const handelUnCheckIsMe = () => setIsMe(false);
 
