@@ -147,29 +147,32 @@ export const TableSelectMonthOnCall2 = ({
         >
           วันที่ปฏิบัติงาน
         </td>
-        <td className="border border-black bg-white" colSpan={2} rowSpan={1}>
-          สรุป
+        <td className="border border-black bg-white" colSpan={1} rowSpan={1}>
+
+        </td>
+        <td className="border border-black bg-white" colSpan={1} rowSpan={1}>
+
         </td>
         <td
           className="border border-black bg-white min-w-[30px]"
           colSpan={1}
           rowSpan={1}
         >
-          โอ {}
+
         </td>
         <td
           className="border border-black bg-white min-w-[50px]"
           colSpan={1}
-          rowSpan={1}
+          rowSpan={2}
         >
-          วันทำ
+          เวรจัด
         </td>
         <td
           className="border border-black bg-white min-w-[50px]"
           colSpan={1}
-          rowSpan={1}
+          rowSpan={2}
         >
-          รวมวัน
+          เวรขึ้นจริง
         </td>
       </tr>
       <tr className="border">
@@ -189,19 +192,13 @@ export const TableSelectMonthOnCall2 = ({
           </td>
         ))}
         <td className="border border-black bg-white text-black min-w-[30px]">
-          บ
+
         </td>
         <td className="border border-black bg-white text-black min-w-[30px]">
-          ด
+
         </td>
         <td className="border border-black bg-white text-black min-w-[30px]">
-          ที
-        </td>
-        <td className="border border-black bg-white text-black min-w-[30px]">
-          การ
-        </td>
-        <td className="border border-black bg-white text-black min-w-[30px]">
-          ทำงาน
+
         </td>
       </tr>
 
@@ -257,12 +254,12 @@ export const TableSelectMonthOnCall2 = ({
                   yearTH={yearTH}
                 />
               ))}
-              <td className="border border-black">{afternoonShift}</td>
-              <td className="border border-black">{nightShift}</td>
-              <td className="border border-black">{ot}</td>
+              <td className="border border-black"></td>
+              <td className="border border-black"></td>
+              <td className="border border-black"></td>
               <td className="border border-black">{workingDay}</td>
               <td className="border border-black">
-                {(workingDay || 0) + (ot || 0)}
+                {ot}
               </td>
             </tr>
           );
@@ -279,12 +276,12 @@ export const TableSelectMonthOnCall2 = ({
         <td className="border border-black" colSpan={3} rowSpan={1}>
           รวม
         </td>
-        <td className="border border-black">{sumDuty(["บ"])}</td>
-        <td className="border border-black">{sumDuty(["ด"])}</td>
-        <td className="border border-black">{sumOT()}</td>
+        <td className="border border-black"></td>
+        <td className="border border-black"></td>
+        <td className="border border-black"></td>
         <td className="border border-black">{sumDuty(["ช", "บ", "ด"])}</td>
         <td className="border border-black">
-          {sumDuty(["ช", "บ", "ด"]) + sumOT()}
+          {sumOT()}
         </td>
       </tr>
 
