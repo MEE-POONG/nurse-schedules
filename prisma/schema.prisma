@@ -32,12 +32,14 @@ model OnCallDuty {
 }
 
 model UserDuty {
-  id         String    @id @default(auto()) @map("_id") @db.ObjectId
-  datetime   DateTime  @default(now())
-  User       User?     @relation(fields: [userId], references: [id])
-  Location   Location? @relation(fields: [locationId], references: [id])
-  userId     String    @db.ObjectId
-  locationId String?   @db.ObjectId
+  id           String    @id @default(auto()) @map("_id") @db.ObjectId
+  datetime     DateTime  @default(now())
+  User         User?     @relation(fields: [userId], references: [id])
+  Location     Location? @relation(fields: [locationId], references: [id])
+  userId       String    @db.ObjectId
+  locationId   String?   @db.ObjectId
+  isTrain      Boolean?  @default(false)
+  TrainingName String?   @default("")
 }
 
 model Location {

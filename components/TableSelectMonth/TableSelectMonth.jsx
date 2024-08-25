@@ -295,7 +295,7 @@ export const TableSelectMonth = ({
 
               {/* ข้อมูลการขึ้นเวร */}
               {user
-                ?.filter((e) => e.Position?.name !== "พนักงานเปล")
+                ?.filter((e) => e.Position?.name !== "พนักงานเปล" && !e.UserDuty?.isTrain)
                 ?.map((person, key) => {
                   const afternoonShift = person?.Duty?.filter(
                     ({ Shif, isOT }) => Shif?.name == "บ" && !isOT
@@ -347,6 +347,67 @@ export const TableSelectMonth = ({
                           yearTH={yearTH}
                         />
                       ))}
+                      <td className="border border-black">
+                        {!person?.firstname ? <p>&nbsp;</p> : afternoonShift}
+                      </td>
+                      <td className="border border-black">
+                        {!person?.firstname ? <p>&nbsp;</p> : nightShift}
+                      </td>
+                      <td className="border border-black">
+                        {!person?.firstname ? <p>&nbsp;</p> : ot}
+                      </td>
+                      <td className="border border-black">
+                        {!person?.firstname ? <p>&nbsp;</p> : workingDay}
+                      </td>
+                      <td className="border border-black">
+                        {!person?.firstname ? <p>&nbsp;</p> : workingDay + ot}
+                      </td>
+                    </tr>
+                  );
+                })}
+
+                 {/* ข้อมูลการขึ้นเวรอบรม */}
+              {user
+                ?.filter((e) => e.UserDuty?.isTrain)
+                ?.map((person, key) => {
+                  const afternoonShift = person?.Duty?.filter(
+                    ({ Shif, isOT }) => Shif?.name == "บ" && !isOT
+                  )?.length;
+                  const nightShift = person?.Duty?.filter(
+                    ({ Shif, isOT }) => Shif?.name == "ด" && !isOT
+                  )?.length;
+                  const workingDay = person?.Duty?.filter(
+                    ({ Shif, isOT }) =>
+                      ["ช", "บ", "ด"].includes(Shif?.name) && !isOT
+                  )?.length;
+                  const ot = person?.Duty?.filter(({ isOT }) => isOT)?.length;
+                  const i = user?.filter((e) => e.Position?.name !== "พนักงานเปล" && !e.UserDuty?.isTrain)?.length
+
+                  return (
+                    <tr key={key} className="border bg-white">
+                      <td className="border border-black">
+                        {person?.firstname ? key + 1 + i : ""}
+                      </td>
+                      <td
+                        className={`border border-black text-left pl-3 sticky -left-5 ${
+                          key % 2 == 0 ? "bg-white" : "bg-white"
+                        }`}
+                      >
+                        {person?.Title?.name} {person?.firstname}{" "}
+                        {person?.lastname}
+                      </td>
+                      <td className="border border-black whitespace-nowrap">
+                        {person?.Position?.name}
+                      </td>
+                      <td className="border border-black whitespace-nowrap">
+                        {person.UserDuty?.Location?.name}
+                      </td>
+                      {/* แสดงรายละเอียดของตาราง กะ */}
+                      
+                      <td className="border border-black" colSpan={daysInMonth}>
+                        {person.UserDuty?.TrainingName}
+                      </td>
+
                       <td className="border border-black">
                         {!person?.firstname ? <p>&nbsp;</p> : afternoonShift}
                       </td>

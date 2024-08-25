@@ -257,7 +257,7 @@ export const TableSelectMonthOnCall2 = ({
               <td className="border border-black"></td>
               <td className="border border-black"></td>
               <td className="border border-black"></td>
-              <td className="border border-black">{workingDay}</td>
+              <td className="border border-black">{workingDay + ot}</td>
               <td className="border border-black">
                 {ot}
               </td>
@@ -279,7 +279,7 @@ export const TableSelectMonthOnCall2 = ({
         <td className="border border-black"></td>
         <td className="border border-black"></td>
         <td className="border border-black"></td>
-        <td className="border border-black">{sumDuty(["ช", "บ", "ด"])}</td>
+        <td className="border border-black">{sumDuty(["ช", "บ", "ด"]) + sumOT()}</td>
         <td className="border border-black">
           {sumOT()}
         </td>
