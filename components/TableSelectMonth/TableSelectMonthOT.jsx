@@ -429,7 +429,6 @@ export const TableSelectMonthOT = ({
                     </div>
                     <div>
                       <p className="text-center mt-3">ลงชื่อ......................................................................ผู้จ่ายเงิน</p>
-                      <p className="text-left pl-16">( {configuration?.departmentor} )</p>
                     </div>
                   </div>
 
