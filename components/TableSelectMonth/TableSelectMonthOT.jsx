@@ -271,10 +271,7 @@ export const TableSelectMonthOT = ({
                     </td>
                     <td className="border border-black whitespace-nowrap">{person?.Position?.name}</td>
                     <td className="border border-black whitespace-nowrap">
-                      {
-                        person.UserDuty?.Location
-                          ?.name
-                      }
+                      {person?.overtime_compensation}
                     </td>
                     {/* แสดงรายละเอียดของตาราง กะ */}
                     {arrayDayInMonth?.map((day, index) => (
