@@ -9,7 +9,7 @@ import { useSelector } from "react-redux";
 import { BsPrinterFill } from "react-icons/bs";
 import { useReactToPrint } from "react-to-print";
 import printStyle from "@/utils/printStyle";
-import THBText from 'thai-baht-text'
+import THBText from "thai-baht-text";
 import ModalSelectMonthR from "./ModalSelectMonthR";
 var isoWeek = require("dayjs/plugin/isoWeek");
 dayjs.extend(isoWeek);
@@ -26,39 +26,60 @@ export const TableSelectMonthR = ({
   const { dateStore } = useSelector((state) => ({ ...state }));
 
   const [{ data: user, loading: userLoading, error: userError }, getUserList] =
-    useAxios({
-      url: `/api/user/selectMonthR?month=${monthValue}&year=${yearValue}`,
-      method: "GET",
-    }, {
-      autoCancel: false
-    });
+    useAxios(
+      {
+        url: `/api/user/selectMonthR?month=${monthValue}&year=${yearValue}`,
+        method: "GET",
+      },
+      {
+        autoCancel: false,
+      }
+    );
 
-  const [{ data: shif, loading: shifLoading, error: shifError }] = useAxios({
-    url: "/api/shif",
-  }, {
-    autoCancel: false
-  });
+  const [{ data: shif, loading: shifLoading, error: shifError }] = useAxios(
+    {
+      url: "/api/shif",
+    },
+    {
+      autoCancel: false,
+    }
+  );
 
   const [{ data: location, loading: locationLoading, error: locationError }] =
-    useAxios({
-      url: "/api/location",
-    }, {
-      autoCancel: false
-    });
+    useAxios(
+      {
+        url: "/api/location",
+      },
+      {
+        autoCancel: false,
+      }
+    );
 
   const [{ loading: dutyLoading, error: dutyError }, executeDuty] = useAxios(
     { url: "/api/duty", method: "POST" },
     { manual: true, autoCancel: false }
   );
   const [{ loading: dutyUserLoading, error: dutyUserError }, executeUserDuty] =
-    useAxios({ url: "/api/user-duty", method: "POST" }, { manual: true, autoCancel: false });
+    useAxios(
+      { url: "/api/user-duty", method: "POST" },
+      { manual: true, autoCancel: false }
+    );
 
   const [{ loading: dutyDeleteLoading, error: dutyDeleteError }, deleteDuty] =
-    useAxios({ url: "/api/duty", method: "DELETE" }, { manual: true, autoCancel: false });
+    useAxios(
+      { url: "/api/duty", method: "DELETE" },
+      { manual: true, autoCancel: false }
+    );
 
-    const [{ data: configuration, loading: configurationLoading, error: configurationError }] = useAxios({
-      url: "/api/configuration",
-    });
+  const [
+    {
+      data: configuration,
+      loading: configurationLoading,
+      error: configurationError,
+    },
+  ] = useAxios({
+    url: "/api/configuration",
+  });
 
   useEffect(() => {
     if (userLoading === false) {
@@ -113,9 +134,11 @@ export const TableSelectMonthR = ({
         <div ref={componentRef} className="shift-table text-lg">
           <table className="border-collapse border text-center border-spacing-2 mx-auto text-lg whitespace-nowrap">
             <tbody>
-
               <tr className="bg-white">
-                <td className="border border-white border-b-black" colSpan={daysInMonth + 9}>
+                <td
+                  className="border border-white border-b-black"
+                  colSpan={daysInMonth + 9}
+                >
                   <div className="flex flex-col justify-center items-center">
                     <h1 className="text-md">
                       หลักฐานการจ่ายเงินค่าปฏิบัติการนอกเวลาราชการ/ในเวลาราชการและวันหยุดราชการ
@@ -124,10 +147,18 @@ export const TableSelectMonthR = ({
                       เพื่อการให้บริการรักษาพยาบาลแก่ประชาชนและสนับสนุนงานบริการอื่นๆ
                     </h1>
                     <h1 className="text-md">
-                      ชื่อส่วนราชการโรงพยาบาลครบุรี จังหวัดนครราชสีมา ประจำเดือน....{dayjs(`${dayjs().year()}-${+monthValue + 1}-${+monthValue + 1}`).format("MMMM")}....พ.ศ. ....{yearTH}....
+                      ชื่อส่วนราชการโรงพยาบาลครบุรี จังหวัดนครราชสีมา
+                      ประจำเดือน....
+                      {dayjs(
+                        `${dayjs().year()}-${+monthValue + 1}-${
+                          +monthValue + 1
+                        }`
+                      ).format("MMMM")}
+                      ....พ.ศ. ....{yearTH}....
                     </h1>
                     <h1 className="text-md">
-                      ใบสำคัญที่..................................................... ลงวันที่.....................................................
+                      ใบสำคัญที่.....................................................
+                      ลงวันที่.....................................................
                     </h1>
                   </div>
                 </td>
@@ -160,7 +191,9 @@ export const TableSelectMonthR = ({
                   colSpan={1}
                   rowSpan={2}
                 >
-                  อัตราค่า<br />ตอบแทน
+                  อัตราค่า
+                  <br />
+                  ตอบแทน
                 </td>
                 <td
                   className="border border-black bg-white whitespace-nowrap"
@@ -169,7 +202,11 @@ export const TableSelectMonthR = ({
                 >
                   วันที่ปฏิบัติงาน
                 </td>
-                <td className="border border-black bg-white hidden" colSpan={2} rowSpan={1}>
+                <td
+                  className="border border-black bg-white hidden"
+                  colSpan={2}
+                  rowSpan={1}
+                >
                   สรุป
                 </td>
                 <td
@@ -177,7 +214,7 @@ export const TableSelectMonthR = ({
                   colSpan={1}
                   rowSpan={1}
                 >
-                  โอ { }
+                  โอ {}
                 </td>
                 <td
                   className="border border-black bg-white min-w-[50px] whitespace-nowrap"
@@ -213,12 +250,15 @@ export const TableSelectMonthR = ({
                 {arrayDayInMonth.map((day, index) => (
                   <td
                     key={index}
-                    className={`border border-black text-black  min-w-[40px] ${["เสาร์", "อาทิตย์"].includes(
-                      dayjs(`${yearEN}-${+monthValue + 1}-${day + 1}`).format("dddd")
-                    )
-                      ? "bg-white"
-                      : "bg-white"
-                      } `}
+                    className={`border border-black text-black  min-w-[40px] ${
+                      ["เสาร์", "อาทิตย์"].includes(
+                        dayjs(`${yearEN}-${+monthValue + 1}-${day + 1}`).format(
+                          "dddd"
+                        )
+                      )
+                        ? "bg-white"
+                        : "bg-white"
+                    } `}
                   >
                     {day + 1}
                   </td>
@@ -251,26 +291,29 @@ export const TableSelectMonthR = ({
                 const nightShift = person?.Duty?.filter(
                   ({ Shif, isOT }) => Shif?.name == "ด" && !isOT
                 )?.length;
-                const workingDay = person?.Duty?.filter(
-                  ({ Shif, isOT }) =>
-                    ["R"].includes(Shif?.name)
+                const workingDay = person?.Duty?.filter(({ Shif, isOT }) =>
+                  ["R"].includes(Shif?.name)
                 )?.length;
                 const ot = person?.Duty?.filter(({ isOT }) => isOT)?.length;
 
                 return (
                   <tr key={key} className="border border-black bg-white">
-                    <td className="border border-black">{!person?.firstname ? <p>&nbsp;</p> : key + 1}</td>
-                    <td
-                      className={`border border-black text-left pl-3 sticky -left-5 ${key % 2 == 0
-                        ? "bg-white"
-                        : "bg-white"
-                        }`}
-                    >
-                      {person?.Title?.name} {person?.firstname} {person?.lastname}
+                    <td className="border border-black">
+                      {!person?.firstname ? <p>&nbsp;</p> : key + 1}
                     </td>
-                    <td className="border border-black whitespace-nowrap">{person?.Position?.name}</td>
+                    <td
+                      className={`border border-black text-left pl-3 sticky -left-5 ${
+                        key % 2 == 0 ? "bg-white" : "bg-white"
+                      }`}
+                    >
+                      {person?.Title?.name} {person?.firstname}{" "}
+                      {person?.lastname}
+                    </td>
                     <td className="border border-black whitespace-nowrap">
-                      {person?.overtime_compensation}
+                      {person?.Position?.name}
+                    </td>
+                    <td className="border border-black whitespace-nowrap">
+                      {person?.overtime_compensation || null}
                     </td>
                     {/* แสดงรายละเอียดของตาราง กะ */}
                     {arrayDayInMonth?.map((day, index) => (
@@ -291,11 +334,28 @@ export const TableSelectMonthR = ({
                         yearTH={yearTH}
                       />
                     ))}
-                    <td className="border border-black hidden">{!person?.firstname ? <p>&nbsp;</p> : afternoonShift}</td>
-                    <td className="border border-black hidden">{!person?.firstname ? <p>&nbsp;</p> : nightShift}</td>
-                    <td className="border border-black hidden">{!person?.firstname ? <p>&nbsp;</p> : ot}</td>
-                    <td className="border border-black">{!person?.firstname ? <p>&nbsp;</p> : workingDay || ''}</td>
-                    <td className="border border-black text-right">{!person?.firstname ? <p>&nbsp;</p> : ((workingDay + ot) * person.overtime_compensation).toLocaleString('TH-th')}</td>
+                    <td className="border border-black hidden">
+                      {!person?.firstname ? <p>&nbsp;</p> : afternoonShift}
+                    </td>
+                    <td className="border border-black hidden">
+                      {!person?.firstname ? <p>&nbsp;</p> : nightShift}
+                    </td>
+                    <td className="border border-black hidden">
+                      {!person?.firstname ? <p>&nbsp;</p> : ot}
+                    </td>
+                    <td className="border border-black">
+                      {!person?.firstname ? <p>&nbsp;</p> : workingDay || ""}
+                    </td>
+                    <td className="border border-black text-right">
+                      {!person?.firstname ? (
+                        <p>&nbsp;</p>
+                      ) : (
+                        (
+                          (workingDay + ot) *
+                          person.overtime_compensation
+                        ).toLocaleString("TH-th")
+                      )}
+                    </td>
                     <td className="border border-black"></td>
                     <td className="border border-black"></td>
                   </tr>
@@ -308,19 +368,22 @@ export const TableSelectMonthR = ({
                 <td className="border border-black">&nbsp;</td>
                 <td className="border border-black">&nbsp;</td>
                 <td className="border border-black" colSpan={daysInMonth}>
-                  รวมจ่ายเงินทั้งสิ้น = {THBText(((sumDutyPay(["ช", "บ", "ด", "R"]) + sumOTPay()))) || 'ศูนย์บาทถ้วน'}
+                  รวมจ่ายเงินทั้งสิ้น ={" "}
+                  {THBText(sumDutyPay(["ช", "บ", "ด", "R"]) + sumOTPay()) ||
+                    "ศูนย์บาทถ้วน"}
                 </td>
                 <td className="border border-black hidden">{sumDuty(["บ"])}</td>
                 <td className="border border-black hidden">{sumDuty(["ด"])}</td>
                 <td className="border border-black hidden">{sumOT()}</td>
                 <td className="border border-black">{sumDuty(["R"])}</td>
                 <td className="border border-black text-right">
-                  {((sumDutyPay(["ช", "บ", "ด", "R"]) + sumOTPay())).toLocaleString('TH-th')}
+                  {(
+                    sumDutyPay(["ช", "บ", "ด", "R"]) + sumOTPay()
+                  ).toLocaleString("TH-th")}
                 </td>
                 <td className="border border-black">&nbsp;</td>
                 <td className="border border-black">&nbsp;</td>
               </tr>
-
 
               {/* ข้อมูลการขึ้นเวร */}
               {/* {user?.filter(e => e.Position.name === 'พนักงานเปล')?.map((person, key) => {
@@ -400,49 +463,61 @@ export const TableSelectMonthR = ({
                 <td className="border border-black">&nbsp;</td>
               </tr> : ''} */}
 
-
-              <tr className="border" onClick={() => setOpen(e => e += 1)}>
+              <tr className="border" onClick={() => setOpen((e) => (e += 1))}>
                 <td
                   className="border border-white py-5"
                   colSpan={daysInMonth + 9}
                 >
-
                   <div className="flex flex-row justify-center">
                     ขอรับรองว่าผู้ที่รับเงินค่าตอบแทนดังกล่าวได้ปฏิบัติงานนอกเวลาจริง
                   </div>
                   <div className="justify-between w-full hidden sm:flex">
                     <div>
-                      <p className="text-center mt-3">ลงชื่อ......................................................................(ผู้ควบคุม)</p>
+                      <p className="text-center mt-3">
+                        ลงชื่อ......................................................................(ผู้ควบคุม)
+                      </p>
                       <p className="text-left pl-24">( นางรำไพ นันทโนภาส )</p>
-                      <p className="text-left pl-16">พยาบาลวิชาชีพชำนาญการพิเศษ</p>
-                      <p className="text-left pl-20">หัวหน้ากลุ่มงานการพยาบาล</p>
+                      <p className="text-left pl-16">
+                        พยาบาลวิชาชีพชำนาญการพิเศษ
+                      </p>
+                      <p className="text-left pl-20">
+                        หัวหน้ากลุ่มงานการพยาบาล
+                      </p>
                     </div>
                     <div className="basis-6/12">
-                      <p className="text-center mt-3">ลงชื่อ......................................................................(ผู้อนุมัติ)</p>
-                      <p className="text-left pl-96">( นายเรืองศักดิ์  ใจโพธิ์ )</p>
-                      <p className="text-left pl-80">นายแพทย์ชำนาญการ รักษาการในตำแหน่ง</p>
-                      <p className="text-left pl-[23rem]">ผู้อำนวยการโรงพยาบาลครบุรี</p>
+                      <p className="text-center mt-3">
+                        ลงชื่อ......................................................................(ผู้อนุมัติ)
+                      </p>
+                      <p className="text-left pl-96">
+                        ( นายเรืองศักดิ์ ใจโพธิ์ )
+                      </p>
+                      <p className="text-left pl-80">
+                        นายแพทย์ชำนาญการ รักษาการในตำแหน่ง
+                      </p>
+                      <p className="text-left pl-[23rem]">
+                        ผู้อำนวยการโรงพยาบาลครบุรี
+                      </p>
                     </div>
                     <div>
-                      <p className="text-center mt-3">ลงชื่อ......................................................................ผู้จ่ายเงิน</p>
+                      <p className="text-center mt-3">
+                        ลงชื่อ......................................................................ผู้จ่ายเงิน
+                      </p>
                     </div>
                   </div>
-
                 </td>
               </tr>
-
             </tbody>
           </table>
-
         </div>
       </div>
-
     </>
   );
 
   function sumDuty(array) {
     return _.sumBy(user, function (o) {
-      return o.Duty?.filter(({ Shif, isOT }) => array.includes(Shif?.name) && !isOT)?.length;
+      return o.Duty?.filter(
+        ({ Shif, isOT }) => array.includes(Shif?.name) && !isOT
+      )?.length;
     });
   }
 
@@ -452,16 +527,20 @@ export const TableSelectMonthR = ({
     });
   }
 
-
   function sumDutyPay(array) {
     return _.sumBy(user, function (o) {
-      return o.Duty?.filter(({ Shif, isOT }) => array.includes(Shif?.name) && !isOT)?.length * o.overtime_compensation;
+      return (
+        o.Duty?.filter(({ Shif, isOT }) => array.includes(Shif?.name) && !isOT)
+          ?.length * o.overtime_compensation
+      );
     });
   }
 
   function sumOTPay() {
     return _.sumBy(user, function (o) {
-      return o.Duty?.filter(({ isOT }) => isOT)?.length * o.overtime_compensation;
+      return (
+        o.Duty?.filter(({ isOT }) => isOT)?.length * o.overtime_compensation
+      );
     });
   }
 };
