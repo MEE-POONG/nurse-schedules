@@ -18,71 +18,76 @@ jobs:
 
       - name: Check out the repo
         uses: actions/checkout@v2
+
       - name: Log in to Docker Hub
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_TOKEN }}
 
-      #     - name: Build the Docker image
-      #       run: docker build -t chunwarayut/${{ steps.string.outputs.lowercase }}:latest .
-
+      # Push to Docker Hub RN
       - name: Push to Docker Hub RN
         uses: docker/build-push-action@v4
         with:
           push: true
           tags: chunwarayut/${{ steps.string.outputs.lowercase }}:latest
-          build-args: DATABASE_URL=${{ secrets.DATABASE_URL_RN }}
 
-      - name: Push to Docker Hub PN
-        uses: docker/build-push-action@v4
-        with:
-          push: true
-          tags: chunwarayut/pasuk-pn-tarangwen:latest
-          build-args: DATABASE_URL=${{ secrets.DATABASE_URL_PN }}
-
-      - name: Push to Docker Hub RN ICU
-        uses: docker/build-push-action@v4
-        with:
-          push: true
-          tags: chunwarayut/icu-rn-tarangwen:latest
-          build-args: DATABASE_URL=${{ secrets.DATABASE_URL_RN_ICU }}
-
-      - name: Push to Docker Hub PN ICU
-        uses: docker/build-push-action@v4
-        with:
-          push: true
-          tags: chunwarayut/icu-pn-tarangwen:latest
-          build-args: DATABASE_URL=${{ secrets.DATABASE_URL_PN_ICU }}
-
-      - name: SSH Command
+      # SSH Command to run RN container with environment variables
+      - name: SSH Command RN
         uses: D3rHase/ssh-command-action@v0.2.2
         with:
           host: ${{ secrets.SERVER_HOST }}
           user: ${{ secrets.SERVER_USER }}
           private_key: ${{ secrets.SSH_KEY }}
-          command: docker pull chunwarayut/${{ steps.string.outputs.lowercase }}:latest && docker stop ${{ steps.string.outputs.lowercase }} && docker rm ${{ steps.string.outputs.lowercase }} && docker run --name ${{ steps.string.outputs.lowercase }} --restart=always -d -p 6040:3000 chunwarayut/${{ steps.string.outputs.lowercase }}
+          command: |
+            docker pull chunwarayut/${{ steps.string.outputs.lowercase }}:latest && \
+            docker stop ${{ steps.string.outputs.lowercase }} && \
+            docker rm ${{ steps.string.outputs.lowercase }} && \
+            docker run --name ${{ steps.string.outputs.lowercase }} --restart=always -d -p 6040:3000 \
+            -e DATABASE_URL=${{ secrets.DATABASE_URL_RN }} \
+            chunwarayut/${{ steps.string.outputs.lowercase }}
 
-      - name: SSH Command
+      # SSH Command to run PN container with environment variables
+      - name: SSH Command PN
         uses: D3rHase/ssh-command-action@v0.2.2
         with:
           host: ${{ secrets.SERVER_HOST }}
           user: ${{ secrets.SERVER_USER }}
           private_key: ${{ secrets.SSH_KEY }}
-          command: docker pull chunwarayut/pasuk-pn-tarangwen:latest && docker stop pasuk-pn-tarangwen && docker rm pasuk-pn-tarangwen && docker run --name pasuk-pn-tarangwen --restart=always -d -p 6041:3000 chunwarayut/pasuk-pn-tarangwen
+          command: |
+            docker pull chunwarayut/${{ steps.string.outputs.lowercase }}:latest && \
+            docker stop pasuk-pn-tarangwen && \
+            docker rm pasuk-pn-tarangwen && \
+            docker run --name pasuk-pn-tarangwen --restart=always -d -p 6041:3000 \
+            -e DATABASE_URL=${{ secrets.DATABASE_URL_PN }} \
+            chunwarayut/${{ steps.string.outputs.lowercase }}
 
-      - name: SSH Command
+      # SSH Command to run RN ICU container with environment variables
+      - name: SSH Command RN ICU
         uses: D3rHase/ssh-command-action@v0.2.2
         with:
           host: ${{ secrets.SERVER_HOST }}
           user: ${{ secrets.SERVER_USER }}
           private_key: ${{ secrets.SSH_KEY }}
-          command: docker pull chunwarayut/icu-rn-tarangwen:latest && docker stop icu-rn-tarangwen && docker rm icu-rn-tarangwen && docker run --name icu-rn-tarangwen --restart=always -d -p 6042:3000 chunwarayut/icu-rn-tarangwen
+          command: |
+            docker pull chunwarayut/${{ steps.string.outputs.lowercase }}:latest && \
+            docker stop icu-rn-tarangwen && \
+            docker rm icu-rn-tarangwen && \
+            docker run --name icu-rn-tarangwen --restart=always -d -p 6042:3000 \
+            -e DATABASE_URL=${{ secrets.DATABASE_URL_RN_ICU }} \
+            chunwarayut/${{ steps.string.outputs.lowercase }}
 
-      - name: SSH Command
+      # SSH Command to run PN ICU container with environment variables
+      - name: SSH Command PN ICU
         uses: D3rHase/ssh-command-action@v0.2.2
         with:
           host: ${{ secrets.SERVER_HOST }}
           user: ${{ secrets.SERVER_USER }}
           private_key: ${{ secrets.SSH_KEY }}
-          command: docker pull chunwarayut/icu-pn-tarangwen:latest && docker stop icu-pn-tarangwen && docker rm icu-pn-tarangwen && docker run --name icu-pn-tarangwen --restart=always -d -p 6043:3000 chunwarayut/icu-pn-tarangwen
+          command: |
+            docker pull chunwarayut/${{ steps.string.outputs.lowercase }}:latest && \
+            docker stop icu-pn-tarangwen && \
+            docker rm icu-pn-tarangwen && \
+            docker run --name icu-pn-tarangwen --restart=always -d -p 6043:3000 \
+            -e DATABASE_URL=${{ secrets.DATABASE_URL_PN_ICU }} \
+            chunwarayut/${{ steps.string.outputs.lowercase }}
