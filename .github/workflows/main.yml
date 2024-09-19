@@ -32,7 +32,6 @@ jobs:
         with:
           push: true
           tags: chunwarayut/${{ steps.string.outputs.lowercase }}:latest
-          build-args: DATABASE_URL=${{ secrets.DATABASE_URL_RN }}
 
       - name: SSH Command
         uses: D3rHase/ssh-command-action@v0.2.2
@@ -40,7 +39,7 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           user: ${{ secrets.SERVER_USER }}
           private_key: ${{ secrets.SSH_KEY }}
-          command: docker pull chunwarayut/${{ steps.string.outputs.lowercase }}:latest && docker stop ${{ steps.string.outputs.lowercase }} && docker rm ${{ steps.string.outputs.lowercase }} && docker run --name ${{ steps.string.outputs.lowercase }} --restart=always -d -p 6040:3000 chunwarayut/${{ steps.string.outputs.lowercase }}
+          command: docker pull chunwarayut/${{ steps.string.outputs.lowercase }}:latest && docker stop ${{ steps.string.outputs.lowercase }} && docker rm ${{ steps.string.outputs.lowercase }} && docker run --name ${{ steps.string.outputs.lowercase }} --restart=always -d -p 6040:3000 -e DATABASE_URL=${{ secrets.DATABASE_URL_RN }} chunwarayut/${{ steps.string.outputs.lowercase }}
 
       - name: SSH Command
         uses: D3rHase/ssh-command-action@v0.2.2
@@ -48,7 +47,7 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           user: ${{ secrets.SERVER_USER }}
           private_key: ${{ secrets.SSH_KEY }}
-          command: docker pull chunwarayut/${{ steps.string.outputs.lowercase }}:latest && docker stop pasuk-pn-tarangwen && docker rm pasuk-pn-tarangwen && docker run --name pasuk-pn-tarangwen --restart=always -d -p 6041:3000 chunwarayut/${{ steps.string.outputs.lowercase }}
+          command: docker pull chunwarayut/${{ steps.string.outputs.lowercase }}:latest && docker stop pasuk-pn-tarangwen && docker rm pasuk-pn-tarangwen && docker run --name pasuk-pn-tarangwen --restart=always -d -p 6041:3000 -e DATABASE_URL=${{ secrets.DATABASE_URL_PN }} chunwarayut/${{ steps.string.outputs.lowercase }}
 
       - name: SSH Command
         uses: D3rHase/ssh-command-action@v0.2.2
@@ -56,7 +55,7 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           user: ${{ secrets.SERVER_USER }}
           private_key: ${{ secrets.SSH_KEY }}
-          command: docker pull chunwarayut/${{ steps.string.outputs.lowercase }}:latest && docker stop icu-rn-tarangwen && docker rm icu-rn-tarangwen && docker run --name icu-rn-tarangwen --restart=always -d -p 6042:3000 chunwarayut/${{ steps.string.outputs.lowercase }}
+          command: docker pull chunwarayut/${{ steps.string.outputs.lowercase }}:latest && docker stop icu-rn-tarangwen && docker rm icu-rn-tarangwen && docker run --name icu-rn-tarangwen --restart=always -d -p 6042:3000 -e DATABASE_URL=${{ secrets.DATABASE_URL_RN_ICU }} chunwarayut/${{ steps.string.outputs.lowercase }}
 
       - name: SSH Command
         uses: D3rHase/ssh-command-action@v0.2.2
@@ -64,4 +63,4 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           user: ${{ secrets.SERVER_USER }}
           private_key: ${{ secrets.SSH_KEY }}
-          command: docker pull chunwarayut/${{ steps.string.outputs.lowercase }}:latest && docker stop icu-pn-tarangwen && docker rm icu-pn-tarangwen && docker run --name icu-pn-tarangwen --restart=always -d -p 6043:3000 chunwarayut/${{ steps.string.outputs.lowercase }}
+          command: docker pull chunwarayut/${{ steps.string.outputs.lowercase }}:latest && docker stop icu-pn-tarangwen && docker rm icu-pn-tarangwen && docker run --name icu-pn-tarangwen --restart=always -d -p 6043:3000 -e DATABASE_URL=${{ secrets.DATABASE_URL_PN_ICU }} chunwarayut/${{ steps.string.outputs.lowercase }}
