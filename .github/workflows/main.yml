@@ -25,28 +25,32 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_TOKEN }}
 
-      # Push to Docker Hub RN
-      - name: Push to Docker Hub RN
+      # Push to Docker Hub using the same image for all containers
+      - name: Push to Docker Hub
         uses: docker/build-push-action@v4
         with:
           push: true
           tags: chunwarayut/${{ steps.string.outputs.lowercase }}:latest
 
-      # SSH Command to run RN container with environment variables
-      - name: SSH Command RN
+      # Consolidated SSH Command to run all containers with same image and different environment variables
+      - name: SSH Command All Containers
         uses: D3rHase/ssh-command-action@v0.2.2
         with:
           host: ${{ secrets.SERVER_HOST }}
           user: ${{ secrets.SERVER_USER }}
           private_key: ${{ secrets.SSH_KEY }}
           command: |
+            # Run RN Container
             echo "Pulling Docker image for RN"
             docker pull chunwarayut/${{ steps.string.outputs.lowercase }}:latest
+            if [ $? -eq 0 ]; then
+              echo "Docker image pulled successfully for RN"
+            else
+              echo "Failed to pull Docker image for RN" && exit 1
+            fi
 
             echo "Stopping RN container"
             docker stop ${{ steps.string.outputs.lowercase }}
-
-            echo "Removing RN container"
             docker rm ${{ steps.string.outputs.lowercase }}
 
             echo "Running RN container"
@@ -54,68 +58,32 @@ jobs:
             -e DATABASE_URL=${{ secrets.DATABASE_URL_RN }} \
             chunwarayut/${{ steps.string.outputs.lowercase }}
 
-      # SSH Command to run PN container with environment variables
-      - name: SSH Command PN
-        uses: D3rHase/ssh-command-action@v0.2.2
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          user: ${{ secrets.SERVER_USER }}
-          private_key: ${{ secrets.SSH_KEY }}
-          command: |
-            echo "Pulling Docker image for PN"
-            docker pull chunwarayut/${{ steps.string.outputs.lowercase }}:latest
-
+            # Run PN Container
             echo "Stopping PN container"
             docker stop pasuk-pn-tarangwen
-
-            echo "Removing PN container"
             docker rm pasuk-pn-tarangwen
 
-            echo "Running PN container"
+            echo "Running PN container with same image"
             docker run --name pasuk-pn-tarangwen --restart=always -d -p 6041:3000 \
             -e DATABASE_URL=${{ secrets.DATABASE_URL_PN }} \
             chunwarayut/${{ steps.string.outputs.lowercase }}
 
-      # SSH Command to run RN ICU container with environment variables
-      - name: SSH Command RN ICU
-        uses: D3rHase/ssh-command-action@v0.2.2
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          user: ${{ secrets.SERVER_USER }}
-          private_key: ${{ secrets.SSH_KEY }}
-          command: |
-            echo "Pulling Docker image for RN ICU"
-            docker pull chunwarayut/${{ steps.string.outputs.lowercase }}:latest
-
+            # Run RN ICU Container
             echo "Stopping RN ICU container"
             docker stop icu-rn-tarangwen
-
-            echo "Removing RN ICU container"
             docker rm icu-rn-tarangwen
 
-            echo "Running RN ICU container"
+            echo "Running RN ICU container with same image"
             docker run --name icu-rn-tarangwen --restart=always -d -p 6042:3000 \
             -e DATABASE_URL=${{ secrets.DATABASE_URL_RN_ICU }} \
             chunwarayut/${{ steps.string.outputs.lowercase }}
 
-      # SSH Command to run PN ICU container with environment variables
-      - name: SSH Command PN ICU
-        uses: D3rHase/ssh-command-action@v0.2.2
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          user: ${{ secrets.SERVER_USER }}
-          private_key: ${{ secrets.SSH_KEY }}
-          command: |
-            echo "Pulling Docker image for PN ICU"
-            docker pull chunwarayut/${{ steps.string.outputs.lowercase }}:latest
-
+            # Run PN ICU Container
             echo "Stopping PN ICU container"
             docker stop icu-pn-tarangwen
-
-            echo "Removing PN ICU container"
             docker rm icu-pn-tarangwen
 
-            echo "Running PN ICU container"
+            echo "Running PN ICU container with same image"
             docker run --name icu-pn-tarangwen --restart=always -d -p 6043:3000 \
             -e DATABASE_URL=${{ secrets.DATABASE_URL_PN_ICU }} \
             chunwarayut/${{ steps.string.outputs.lowercase }}
