@@ -415,7 +415,7 @@ export const TableSelectMonth = ({
                       {/* แสดงรายละเอียดของตาราง กะ */}
                       
                       <td className="border border-black" colSpan={daysInMonth - (daysInMonth - person?.Duty.filter(duty => duty.Shif.name === "อบรม").length)}>
-                        {person.UserDuty?.TrainingName} || อบรม
+                        {person.UserDuty?.TrainingName || 'อบรม'}
                       </td>
 
                       {
