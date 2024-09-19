@@ -40,9 +40,16 @@ jobs:
           user: ${{ secrets.SERVER_USER }}
           private_key: ${{ secrets.SSH_KEY }}
           command: |
-            docker pull chunwarayut/${{ steps.string.outputs.lowercase }}:latest && \
-            docker stop ${{ steps.string.outputs.lowercase }} && \
-            docker rm ${{ steps.string.outputs.lowercase }} && \
+            echo "Pulling Docker image for RN"
+            docker pull chunwarayut/${{ steps.string.outputs.lowercase }}:latest
+
+            echo "Stopping RN container"
+            docker stop ${{ steps.string.outputs.lowercase }}
+
+            echo "Removing RN container"
+            docker rm ${{ steps.string.outputs.lowercase }}
+
+            echo "Running RN container"
             docker run --name ${{ steps.string.outputs.lowercase }} --restart=always -d -p 6040:3000 \
             -e DATABASE_URL=${{ secrets.DATABASE_URL_RN }} \
             chunwarayut/${{ steps.string.outputs.lowercase }}
@@ -55,9 +62,16 @@ jobs:
           user: ${{ secrets.SERVER_USER }}
           private_key: ${{ secrets.SSH_KEY }}
           command: |
-            docker pull chunwarayut/${{ steps.string.outputs.lowercase }}:latest && \
-            docker stop pasuk-pn-tarangwen && \
-            docker rm pasuk-pn-tarangwen && \
+            echo "Pulling Docker image for PN"
+            docker pull chunwarayut/${{ steps.string.outputs.lowercase }}:latest
+
+            echo "Stopping PN container"
+            docker stop pasuk-pn-tarangwen
+
+            echo "Removing PN container"
+            docker rm pasuk-pn-tarangwen
+
+            echo "Running PN container"
             docker run --name pasuk-pn-tarangwen --restart=always -d -p 6041:3000 \
             -e DATABASE_URL=${{ secrets.DATABASE_URL_PN }} \
             chunwarayut/${{ steps.string.outputs.lowercase }}
@@ -70,9 +84,16 @@ jobs:
           user: ${{ secrets.SERVER_USER }}
           private_key: ${{ secrets.SSH_KEY }}
           command: |
-            docker pull chunwarayut/${{ steps.string.outputs.lowercase }}:latest && \
-            docker stop icu-rn-tarangwen && \
-            docker rm icu-rn-tarangwen && \
+            echo "Pulling Docker image for RN ICU"
+            docker pull chunwarayut/${{ steps.string.outputs.lowercase }}:latest
+
+            echo "Stopping RN ICU container"
+            docker stop icu-rn-tarangwen
+
+            echo "Removing RN ICU container"
+            docker rm icu-rn-tarangwen
+
+            echo "Running RN ICU container"
             docker run --name icu-rn-tarangwen --restart=always -d -p 6042:3000 \
             -e DATABASE_URL=${{ secrets.DATABASE_URL_RN_ICU }} \
             chunwarayut/${{ steps.string.outputs.lowercase }}
@@ -85,9 +106,16 @@ jobs:
           user: ${{ secrets.SERVER_USER }}
           private_key: ${{ secrets.SSH_KEY }}
           command: |
-            docker pull chunwarayut/${{ steps.string.outputs.lowercase }}:latest && \
-            docker stop icu-pn-tarangwen && \
-            docker rm icu-pn-tarangwen && \
+            echo "Pulling Docker image for PN ICU"
+            docker pull chunwarayut/${{ steps.string.outputs.lowercase }}:latest
+
+            echo "Stopping PN ICU container"
+            docker stop icu-pn-tarangwen
+
+            echo "Removing PN ICU container"
+            docker rm icu-pn-tarangwen
+
+            echo "Running PN ICU container"
             docker run --name icu-pn-tarangwen --restart=always -d -p 6043:3000 \
             -e DATABASE_URL=${{ secrets.DATABASE_URL_PN_ICU }} \
             chunwarayut/${{ steps.string.outputs.lowercase }}
