@@ -32,7 +32,11 @@ jobs:
         with:
           push: true
           tags: chunwarayut/${{ steps.string.outputs.lowercase }}:latest
-
+          
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
       - name: SSH Command
         uses: D3rHase/ssh-command-action@v0.2.2
         with:
