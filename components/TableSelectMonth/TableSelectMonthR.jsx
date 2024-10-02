@@ -476,9 +476,9 @@ export const TableSelectMonthR = ({
                       <p className="text-center mt-3">
                         ลงชื่อ......................................................................(ผู้ควบคุม)
                       </p>
-                      <p className="text-left pl-24">( นางรำไพ นันทโนภาส )</p>
+                      <p className="text-left pl-24">( นางนงลักษณ์ คนเพียร )</p>
                       <p className="text-left pl-16">
-                        พยาบาลวิชาชีพชำนาญการพิเศษ
+                        
                       </p>
                       <p className="text-left pl-20">
                         หัวหน้ากลุ่มงานการพยาบาล

@@ -157,7 +157,7 @@ export const TableSelectMonth = ({
             {/*<div>
               <p className="text-center">เสนอนายแพทย์ชำนาญการ รักษาการในตำแหน่งผู้อำนวยการโรงพยาบาลครบุรี เพื่อโปรดพิจารณา</p>
               <p className="text-center mt-3">...........................................</p>
-              <p className="text-center">( นางรำไพ นันทโนภาส )</p>
+              <p className="text-center">( นางนงลักษณ์ คนเพียร )</p>
               <p className="text-lg text-center">หัวหน้ากลุ่มงานการพยาบาล</p>
             </div>*/}
             {/* <div>
@@ -681,9 +681,9 @@ export const TableSelectMonth = ({
                       <p className="text-center mt-3">
                         ลงชื่อ......................................................................(ผู้ควบคุม)
                       </p>
-                      <p className="text-left pl-96">( นางรำไพ นันทโนภาส )</p>
+                      <p className="text-left pl-96">( นางนงลักษณ์ คนเพียร )</p>
                       <p className="text-left pl-[22rem]">
-                        พยาบาลวิชาชีพชำนาญการพิเศษ
+                        
                       </p>
                       <p className="text-left pl-[23rem]">
                         หัวหน้ากลุ่มงานการพยาบาล
