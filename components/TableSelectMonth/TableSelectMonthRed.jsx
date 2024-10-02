@@ -116,7 +116,7 @@ export const TableSelectMonthRed = ({
           <span className="mx-2">ออกรายงาน</span>
         </button>
       </div>
-      <div className="w-100 bg-white shadow-xl p-5 my-10 rounded-md overflow-x-auto">
+      <div className="w-100 bg-white shadow-xl p-5 my-10 rounded-md overflow-x-auto min-h-screen print:flex print:items-center print:justify-center">
         {/* {userLoading ||
           shifLoading ||
           dutyLoading ||
