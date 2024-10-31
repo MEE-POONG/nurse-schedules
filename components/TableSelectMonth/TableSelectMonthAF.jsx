@@ -146,66 +146,66 @@ export const TableSelectMonthAF = ({
                   colSpan={1}
                   rowSpan={2}
                 >
-                  ชื่อ - สกุล
+                  <div className="text-sm">ชื่อ - สกุล</div>
                 </td>
                 <td
                   className="border border-black bg-white min-w-[110px]"
                   colSpan={1}
                   rowSpan={2}
                 >
-                  ตำแหน่ง
+                  <div className="text-sm">ตำแหน่ง</div>
                 </td>
                 <td
                   className="border border-black bg-white min-w-[50px]"
                   colSpan={1}
                   rowSpan={2}
                 >
-                  อัตราค่า<br />ตอบแทน
+                  <div className="text-sm">อัตราค่า<br />ตอบแทน</div>
                 </td>
                 <td
                   className="bg-white border border-black whitespace-nowrap"
                   colSpan={daysInMonth}
                   rowSpan={1}
                 >
-                  วันที่ปฏิบัติงาน
+                  <div className="text-sm">วันที่ปฏิบัติงาน</div>
                 </td>
                 <td className="hidden bg-white border border-black" colSpan={2} rowSpan={1}>
-                  สรุป
+                  <div className="text-sm">สรุป</div>
                 </td>
                 <td
                   className="border border-black bg-white min-w-[30px] whitespace-nowrap hidden"
                   colSpan={1}
                   rowSpan={1}
                 >
-                  โอ { }
+                  <div className="text-sm">โอ { }</div>
                 </td>
                 <td
                   className="border border-black bg-white min-w-[50px] whitespace-nowrap"
                   colSpan={1}
                   rowSpan={2}
                 >
-                  รวม
+                  <div className="text-sm">รวม</div>
                 </td>
                 <td
                   className="border border-black bg-white min-w-[50px] whitespace-nowrap"
                   colSpan={1}
                   rowSpan={1}
                 >
-                  จำนวน
+                  <div className="text-sm">จำนวน</div>
                 </td>
                 <td
                   className="border border-black bg-white min-w-[50px] whitespace-nowrap"
                   colSpan={1}
                   rowSpan={1}
                 >
-                  ว/ด/ป
+                  <div className="text-sm">ว/ด/ป</div>
                 </td>
                 <td
                   className="border border-black bg-white min-w-[50px] whitespace-nowrap"
                   colSpan={1}
                   rowSpan={1}
                 >
-                  ลงชื่อ
+                  <div className="text-sm">ลงชื่อ</div>
                 </td>
               </tr>
               <tr className="border">
@@ -224,22 +224,22 @@ export const TableSelectMonthAF = ({
                   </td>
                 ))}
                 <td className="border border-black bg-white text-black min-w-[30px] hidden">
-                  บ
+                  <div className="text-sm">บ</div>
                 </td>
                 <td className="border border-black bg-white text-black min-w-[30px] hidden">
-                  ด
+                  <div className="text-sm">ด</div>
                 </td>
                 <td className="border border-black bg-white text-black min-w-[30px] hidden">
-                  ที
+                  <div className="text-sm">ที</div>
                 </td>
                 <td className="border border-black bg-white text-black min-w-[30px]">
-                  เงิน
+                  <div className="text-sm">เงิน</div>
                 </td>
                 <td className="border border-black bg-white text-black min-w-[30px]">
-                  ที่รับเงิน
+                  <div className="text-sm">ที่รับเงิน</div>
                 </td>
                 <td className="border border-black bg-white text-black min-w-[30px]">
-                  ผู้รับเงิน
+                  <div className="text-sm">ผู้รับเงิน</div>
                 </td>
               </tr>
 

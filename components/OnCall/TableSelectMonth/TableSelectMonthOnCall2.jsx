@@ -122,30 +122,28 @@ export const TableSelectMonthOnCall2 = ({
           colSpan={1}
           rowSpan={2}
         >
-          ชื่อ - สกุล
+          <div className="text-sm">ชื่อ - สกุล</div>
         </td>
         <td
           className="border border-black bg-white min-w-[110px]"
           colSpan={1}
           rowSpan={2}
         >
-          ตำแหน่ง
+          <div className="text-sm">ตำแหน่ง</div>
         </td>
         <td
           className="border border-black bg-white min-w-[50px]"
           colSpan={1}
           rowSpan={2}
         >
-          งานที่
-          <br />
-          ปฏิบัติ
+          <div className="text-sm">งานที่<br />ปฏิบัติ</div>
         </td>
         <td
           className="bg-white border border-black"
           colSpan={daysInMonth}
           rowSpan={1}
         >
-          วันที่ปฏิบัติงาน
+          <div className="text-sm">วันที่ปฏิบัติงาน</div>
         </td>
         <td className="bg-white border border-black" colSpan={1} rowSpan={1}>
 
@@ -165,14 +163,14 @@ export const TableSelectMonthOnCall2 = ({
           colSpan={1}
           rowSpan={2}
         >
-          เวรจัด
+          <div className="text-sm">เวรจัด</div>
         </td>
         <td
           className="border border-black bg-white min-w-[50px]"
           colSpan={1}
           rowSpan={2}
         >
-          เวรขึ้นจริง
+          <div className="text-sm">เวรขึ้นจริง</div>
         </td>
       </tr>
       <tr className="border">

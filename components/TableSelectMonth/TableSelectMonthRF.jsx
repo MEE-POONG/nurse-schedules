@@ -171,28 +171,28 @@ export const TableSelectMonthRF = ({
                   colSpan={1}
                   rowSpan={2}
                 >
-                  ชื่อ - สกุล
+                  <div className="text-sm">ชื่อ - สกุล</div>
                 </td>
                 <td
                   className="border border-black bg-white min-w-[110px]"
                   colSpan={1}
                   rowSpan={2}
                 >
-                  ตำแหน่ง
+                  <div className="text-sm">ตำแหน่ง</div>
                 </td>
                 <td
                   className="border border-black bg-white min-w-[50px]"
                   colSpan={1}
                   rowSpan={2}
                 >
-                  งานที่<br />ปฏิบัติ
+                  <div className="text-sm">งานที่<br />ปฏิบัติ</div>
                 </td>
                 <td
                   className="bg-white border border-black whitespace-nowrap"
                   colSpan={daysInMonth}
                   rowSpan={1}
                 >
-                  วันที่ปฏิบัติงาน
+                  <div className="text-sm">วันที่ปฏิบัติงาน</div>
                 </td>
                 {/* <td className="bg-white border border-black" colSpan={2} rowSpan={1}>
                   สรุป
@@ -216,11 +216,11 @@ export const TableSelectMonthRF = ({
                   colSpan={1}
                   rowSpan={2}
                 >
-                  รวมวัน
+                  <div className="text-sm">รวมวัน</div>
                 </td>
 
                 <td className="bg-white border border-black" colSpan={2} rowSpan={2}>
-                  หมายเหตุ
+                  <div className="text-sm">หมายเหตุ</div>
                 </td>
               </tr>
               <tr className="border">
