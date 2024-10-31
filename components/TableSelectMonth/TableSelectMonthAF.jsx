@@ -92,16 +92,16 @@ export const TableSelectMonthAF = ({
   return (
     <>
       <style>{printStyle()}</style>
-      <div className="flex justify-center items-center pb-10">
+      <div className="flex items-center justify-center pb-10">
         <button
           onClick={handlePrint}
-          className="bg-white hover:bg-white text-black font-bold mt-6 -mb-10 py-2 px-4 rounded-xl inline-flex items-center"
+          className="inline-flex items-center px-4 py-2 mt-6 -mb-10 font-bold text-black bg-white hover:bg-white rounded-xl"
         >
           <BsPrinterFill className="my-auto" />
           <span className="mx-2">ออกรายงาน</span>
         </button>
       </div>
-      <div className="w-100 bg-white shadow-xl p-5 my-10 rounded-md overflow-x-auto min-h-screen print:flex print:items-center print:justify-center">
+      <div className="min-h-screen p-5 my-10 overflow-x-auto bg-white rounded-md shadow-xl w-100 print:flex print:items-center print:justify-center">
         {/* {userLoading ||
           shifLoading ||
           dutyLoading ||
@@ -112,12 +112,12 @@ export const TableSelectMonthAF = ({
         ) : (
           <></>
         )} */}
-        <div ref={componentRef} className="shift-table text-lg">
-          <table className="border-collapse border text-center border-spacing-2 mx-auto text-lg whitespace-nowrap">
+        <div ref={componentRef} className="text-lg shift-table">
+          <table className="mx-auto text-lg text-center border border-collapse border-spacing-2 whitespace-nowrap">
             <tbody>
               <tr className="bg-white">
                 <td className="border border-white border-b-black" colSpan={daysInMonth + 9}>
-                  <div className="flex flex-col justify-center items-center">
+                  <div className="flex flex-col items-center justify-center">
                     <h1 className="text-md">
                       หลักฐานการจ่ายเงินค่าปฏิบัติการนอกเวลาราชการ/ในเวลาราชการและวันหยุดราชการ
                     </h1>
@@ -133,13 +133,13 @@ export const TableSelectMonthAF = ({
                   </div>
                 </td>
               </tr>
-              <tr className="border text-black">
+              <tr className="text-black border">
                 <td
                   className="border border-black bg-white min-w-[40px]"
                   colSpan={1}
                   rowSpan={2}
                 >
-                  ลำดับ
+                  <div className="text-sm">ลำดับ</div>
                 </td>
                 <td
                   className="border border-black bg-white min-w-[200px] sticky"
@@ -163,13 +163,13 @@ export const TableSelectMonthAF = ({
                   อัตราค่า<br />ตอบแทน
                 </td>
                 <td
-                  className="border border-black bg-white whitespace-nowrap"
+                  className="bg-white border border-black whitespace-nowrap"
                   colSpan={daysInMonth}
                   rowSpan={1}
                 >
                   วันที่ปฏิบัติงาน
                 </td>
-                <td className="border border-black bg-white hidden" colSpan={2} rowSpan={1}>
+                <td className="hidden bg-white border border-black" colSpan={2} rowSpan={1}>
                   สรุป
                 </td>
                 <td
@@ -220,7 +220,7 @@ export const TableSelectMonthAF = ({
                       : "bg-white"
                       } `}
                   >
-                    {day + 1}
+                    <div className="text-base">{day + 1}</div>
                   </td>
                 ))}
                 <td className="border border-black bg-white text-black min-w-[30px] hidden">
@@ -258,10 +258,10 @@ export const TableSelectMonthAF = ({
                 const ot = person?.Duty?.filter(({ isOT }) => isOT)?.length;
 
                 return (
-                  <tr key={key} className="border bg-white">
+                  <tr key={key} className="bg-white border">
                     <td className="border border-black">{!person?.firstname ? <p>&nbsp;</p> : key + 1}</td>
                     <td
-                      className={`border border-black text-left pl-3 sticky -left-5 ${key % 2 == 0
+                      className={`border border-black text-left sticky -left-5 ${key % 2 == 0
                         ? "bg-white"
                         : "bg-white"
                         }`}
@@ -291,11 +291,11 @@ export const TableSelectMonthAF = ({
                         yearTH={yearTH}
                       />
                     ))}
-                    <td className="border border-black hidden">{!person?.firstname ? <p>&nbsp;</p> : afternoonShift}</td>
-                    <td className="border border-black hidden">{!person?.firstname ? <p>&nbsp;</p> : nightShift}</td>
-                    <td className="border border-black hidden">{!person?.firstname ? <p>&nbsp;</p> : ot}</td>
+                    <td className="hidden border border-black">{!person?.firstname ? <p>&nbsp;</p> : afternoonShift}</td>
+                    <td className="hidden border border-black">{!person?.firstname ? <p>&nbsp;</p> : nightShift}</td>
+                    <td className="hidden border border-black">{!person?.firstname ? <p>&nbsp;</p> : ot}</td>
                     <td className="border border-black">{!person?.firstname ? <p>&nbsp;</p> : workingDay || ''}</td>
-                    <td className="border border-black text-right">{!person?.firstname ? <p>&nbsp;</p> : ((workingDay + ot) * person.normal_compensation).toLocaleString('TH-th')}</td>
+                    <td className="text-right border border-black">{!person?.firstname ? <p>&nbsp;</p> : ((workingDay + ot) * person.normal_compensation).toLocaleString('TH-th')}</td>
                     <td className="border border-black"></td>
                     <td className="border border-black"></td>
                   </tr>
@@ -310,9 +310,9 @@ export const TableSelectMonthAF = ({
                 <td className="border border-black" colSpan={daysInMonth}>
                   รวมจ่ายเงินทั้งสิ้น = {THBText(((sumDutyPay(["ช", "บ", "ด"]) + sumOTPay())))}
                 </td>
-                <td className="border border-black hidden">{sumDuty(["บ"])}</td>
-                <td className="border border-black hidden">{sumDuty(["ด"])}</td>
-                <td className="border border-black hidden">{sumOT()}</td>
+                <td className="hidden border border-black">{sumDuty(["บ"])}</td>
+                <td className="hidden border border-black">{sumDuty(["ด"])}</td>
+                <td className="hidden border border-black">{sumOT()}</td>
                 <td className="border border-black">{sumDuty(["ช", "บ", "ด"])}</td>
                 <td className="border border-black">
                   {((sumDutyPay(["ช", "บ", "ด"]) + sumOTPay())).toLocaleString('TH-th')}
@@ -336,7 +336,7 @@ export const TableSelectMonthAF = ({
                 const ot = person?.Duty?.filter(({ isOT }) => isOT)?.length;
 
                 return (
-                  <tr key={key} className="border bg-white">
+                  <tr key={key} className="bg-white border">
                     <td className="border border-black">{key + 1}</td>
                     <td
                       className={`whitespace-nowrap border border-black text-left pl-3 ${key % 2 !== 0
@@ -369,11 +369,11 @@ export const TableSelectMonthAF = ({
                         yearTH={yearTH}
                       />
                     ))}
-                    <td className="border border-black hidden">{afternoonShift}</td>
-                    <td className="border border-black hidden">{nightShift}</td>
-                    <td className="border border-black hidden">{ot}</td>
+                    <td className="hidden border border-black">{afternoonShift}</td>
+                    <td className="hidden border border-black">{nightShift}</td>
+                    <td className="hidden border border-black">{ot}</td>
                     <td className="border border-black">{workingDay || ''}</td>
-                    <td className="border border-black text-right">{((workingDay + ot) * 120).toLocaleString('TH-th')}</td>
+                    <td className="text-right border border-black">{((workingDay + ot) * 120).toLocaleString('TH-th')}</td>
                     <td className="border border-black"></td>
                     <td className="border border-black"></td>
                   </tr>
@@ -388,11 +388,11 @@ export const TableSelectMonthAF = ({
                   <td className="border border-black" colSpan={daysInMonth}>
                     รวมจ่ายเงินทั้งสิ้น = {THBText(((sumDutyPay(["ช", "บ", "ด"]) + sumOTPay()) * 120)) || 'ศูนย์บาทถ้วน'}
                   </td>
-                  <td className="border border-black hidden">{sumDutyPay(["บ"])}</td>
-                  <td className="border border-black hidden">{sumDutyPay(["ด"])}</td>
-                  <td className="border border-black hidden">{sumOTPay()}</td>
+                  <td className="hidden border border-black">{sumDutyPay(["บ"])}</td>
+                  <td className="hidden border border-black">{sumDutyPay(["ด"])}</td>
+                  <td className="hidden border border-black">{sumOTPay()}</td>
                   <td className="border border-black">{sumDutyPay(["ช", "บ", "ด"])}</td>
-                  <td className="border border-black text-right">
+                  <td className="text-right border border-black">
                     {((sumDutyPay(["ช", "บ", "ด"]) + sumOTPay()) * 120).toLocaleString('TH-th')}
                   </td>
                   <td className="border border-black">&nbsp;</td>
@@ -403,28 +403,28 @@ export const TableSelectMonthAF = ({
 
               <tr className="border" onClick={() => setOpen(e => e += 1)}>
                 <td
-                  className="border border-white py-5"
+                  className="py-5 border border-white"
                   colSpan={daysInMonth + 9}
                 >
 
                   <div className="flex flex-row justify-center">
                     ขอรับรองว่าผู้ที่รับเงินค่าตอบแทนดังกล่าวได้ปฏิบัติงานนอกเวลาจริง
                   </div>
-                  <div className="justify-between w-full hidden sm:flex">
+                  <div className="justify-between hidden w-full sm:flex">
                     <div>
-                      <p className="text-center mt-3">ลงชื่อ......................................................................(ผู้ควบคุม)</p>
-                      <p className="text-left pl-24">( นางนงลักษณ์ คนเพียร )</p>
-                      <p className="text-left pl-16"></p>
-                      <p className="text-left pl-20">หัวหน้ากลุ่มงานการพยาบาล</p>
+                      <p className="mt-3 text-center">ลงชื่อ......................................................................(ผู้ควบคุม)</p>
+                      <p className="pl-24 text-left">( นางนงลักษณ์ คนเพียร )</p>
+                      <p className="pl-16 text-left"></p>
+                      <p className="pl-20 text-left">หัวหน้ากลุ่มงานการพยาบาล</p>
                     </div>
                     <div className="basis-6/12">
-                      <p className="text-center mt-3">ลงชื่อ......................................................................(ผู้อนุมัติ)</p>
+                      <p className="mt-3 text-center">ลงชื่อ......................................................................(ผู้อนุมัติ)</p>
                       <p className="text-left pl-96">( นายเรืองศักดิ์  ใจโพธิ์ )</p>
                       <p className="text-left pl-80">นายแพทย์ชำนาญการ รักษาการในตำแหน่ง</p>
                       <p className="text-left pl-[23rem]">ผู้อำนวยการโรงพยาบาลครบุรี</p>
                     </div>
                     <div>
-                      <p className="text-center mt-3">ลงชื่อ......................................................................ผู้จ่ายเงิน</p>
+                      <p className="mt-3 text-center">ลงชื่อ......................................................................ผู้จ่ายเงิน</p>
                     </div>
                   </div>
 

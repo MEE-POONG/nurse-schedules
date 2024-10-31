@@ -109,13 +109,13 @@ export const TableSelectMonthOnCall2 = ({
       ) : (
         <></>
       )}
-      <tr className="border text-black">
+      <tr className="text-black border">
         <td
           className="border border-black bg-white min-w-[50px]"
           colSpan={1}
           rowSpan={2}
         >
-          ลำดับ
+          <div className="text-sm">ลำดับ</div>
         </td>
         <td
           className="border border-black bg-white min-w-[200px] sticky -left-5"
@@ -141,16 +141,16 @@ export const TableSelectMonthOnCall2 = ({
           ปฏิบัติ
         </td>
         <td
-          className="border border-black bg-white"
+          className="bg-white border border-black"
           colSpan={daysInMonth}
           rowSpan={1}
         >
           วันที่ปฏิบัติงาน
         </td>
-        <td className="border border-black bg-white" colSpan={1} rowSpan={1}>
+        <td className="bg-white border border-black" colSpan={1} rowSpan={1}>
 
         </td>
-        <td className="border border-black bg-white" colSpan={1} rowSpan={1}>
+        <td className="bg-white border border-black" colSpan={1} rowSpan={1}>
 
         </td>
         <td
@@ -188,7 +188,7 @@ export const TableSelectMonthOnCall2 = ({
                 : "bg-white"
             } `}
           >
-            {day + 1}
+                    <div className="text-base">{day + 1}</div>
           </td>
         ))}
         <td className="border border-black bg-white text-black min-w-[30px]">
@@ -224,7 +224,7 @@ export const TableSelectMonthOnCall2 = ({
             <tr key={key} className="border odd:bg-white">
               <td className="border border-black">{key + 1}</td>
               <td
-                className={`border border-black text-left pl-3 sticky -left-5 ${
+                className={`border border-black text-left sticky -left-5 ${
                   key % 2 == 0 ? "bg-white" : "even:bg-white"
                 }`}
               >
@@ -307,7 +307,7 @@ export const TableSelectMonthOnCall2 = ({
             <tr key={key} className="border odd:bg-white">
               <td className="border border-black">{key + 1}</td>
               <td
-                className={`border border-black text-left pl-3 sticky -left-5 ${
+                className={`border border-black text-left sticky -left-5 ${
                   key % 2 == 0 ? "bg-white" : "even:bg-white"
                 }`}
               >

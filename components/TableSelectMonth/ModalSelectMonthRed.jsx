@@ -83,11 +83,11 @@ export default function ModalSelectMonthRed({
       >
         {dutyOfDay.map(({ Shif, isOT }, index) => {
           if (!isOT) {
-            return <span className={`${Shif?.name === 'ลาพัก' ? ' text-[0.7rem] ' : Shif?.name === 'ลาป่วย' ? ' text-[0.7rem] ' : Shif?.name === 'ลากิจ' ? ' text-[0.7rem] ' : Shif?.name === 'R' ? ' circle-red text-[12px]  w-[12px] h-[12px] inline-block leading-[12px]' : ' text-lg '}`} key={index}>{Shif?.name}</span>;
+            return <span className={`${Shif?.name === 'ลาพัก' ? ' text-[0.7rem] ' : Shif?.name === 'ลาป่วย' ? ' text-[0.7rem] ' : Shif?.name === 'ลากิจ' ? ' text-[0.7rem] ' : Shif?.name === 'R' ? ' circle-red text-[12px]  w-[12px] h-[12px] inline-block leading-[12px]' : ' text-base '}`} key={index}>{Shif?.name}</span>;
           } else {
             return (
               <span
-                className={`text-lg ${Shif?.class ? " circle-red text-black text-sm w-[16px] h-[16px] inline-block leading-[16px]" : " text-red-500 underline decoration-red-500 decoration-1"}`}
+                className={`text-md ${Shif?.class ? " circle-red text-black text-sm w-[16px] h-[16px] inline-block leading-[16px]" : " text-red-500 underline decoration-red-500 decoration-1"}`}
                 key={index}
               >
                 {Shif?.name}
@@ -118,7 +118,7 @@ export default function ModalSelectMonthRed({
           </Transition.Child>
 
           <div className="fixed inset-0 overflow-y-auto">
-            <div className="flex min-h-full items-center justify-center p-4 text-center">
+            <div className="flex items-center justify-center min-h-full p-4 text-center">
               <Transition.Child
                 as={Fragment}
                 enter="ease-out duration-300"
@@ -128,13 +128,13 @@ export default function ModalSelectMonthRed({
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                <Dialog.Panel className="w-full max-w-md p-6 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-2xl">
                   <form className="w-full max-w-lg">
                     <div className="flex">
                       <p className="text-lg font-medium text-black">
                         ชื่อ - นามสกุล :
                       </p>
-                      <p className="text-lg font-medium text-green-700 ml-2">
+                      <p className="ml-2 text-lg font-medium text-green-700">
                         {name}
                       </p>
                     </div>
@@ -142,11 +142,11 @@ export default function ModalSelectMonthRed({
                       <p className="text-lg font-medium text-black">
                         วันที่ปฏิบัติงาน :
                       </p>
-                      <p className="text-lg font-medium text-green-700 ml-2">
+                      <p className="ml-2 text-lg font-medium text-green-700">
                         {day + " " + monthTH + " " + yearTH}
                       </p>
                     </div>
-                    <div className="flex flex-wrap -mx-3 mb-6 mt-6">
+                    <div className="flex flex-wrap mt-6 mb-6 -mx-3">
                       <div className="w-full px-3">
                         <label
                           htmlFor="shift"
@@ -169,7 +169,7 @@ export default function ModalSelectMonthRed({
                                     name={"shift" + index}
                                     type="checkbox"
                                     value={shif.name}
-                                    className="w-4 h-4 bg-white print:bg-white print:text-black border-gray-300 accent-green-700 cursor-pointer disabled:cursor-auto"
+                                    className="w-4 h-4 bg-white border-gray-300 cursor-pointer print:bg-white print:text-black accent-green-700 disabled:cursor-auto"
                                     defaultChecked={dutyOfDay?.find(
                                       (checkDuty) => checkDuty.shifId === shif.id
                                     )}
@@ -216,7 +216,7 @@ export default function ModalSelectMonthRed({
                   <div className="mt-4">
                     <button
                       type="button"
-                      className="inline-flex justify-center rounded-md border border-transparent bg-white print:bg-white print:text-black px-4 py-2 text-lg font-medium text-green-800 hover:bg-white hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-green focus-visible:ring-offset-2"
+                      className="inline-flex justify-center px-4 py-2 text-lg font-medium text-green-800 bg-white border border-transparent rounded-md print:bg-white print:text-black hover:bg-white hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-green focus-visible:ring-offset-2"
                       onClick={async () => {
                         let shiftData = dutyOfDay.map((duty) => {
                           return {

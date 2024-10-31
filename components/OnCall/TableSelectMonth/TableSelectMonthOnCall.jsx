@@ -94,16 +94,16 @@ export const TableSelectMonthOnCall = ({
   return (
     <>
       <style>{printStyle()}</style>
-      <div className="flex justify-center items-center pb-10">
+      <div className="flex items-center justify-center pb-10">
         <button
           onClick={handlePrint}
-          className="bg-white hover:bg-white text-black font-bold mt-6 -mb-10 py-2 px-4 rounded-xl inline-flex items-center"
+          className="inline-flex items-center px-4 py-2 mt-6 -mb-10 font-bold text-black bg-white hover:bg-white rounded-xl"
         >
           <BsPrinterFill className="my-auto" />
           <span className="mx-2">ออกรายงาน</span>
         </button>
       </div>
-      <div className="w-100 bg-white shadow-xl p-5 my-10 rounded-md overflow-x-auto min-h-screen print:flex print:items-center print:justify-center">
+      <div className="min-h-screen p-5 my-10 overflow-x-auto bg-white rounded-md shadow-xl w-100 print:flex print:items-center print:justify-center">
         {userLoading ||
           shifLoading ||
           dutyLoading ||
@@ -116,11 +116,11 @@ export const TableSelectMonthOnCall = ({
         ) : (
           <></>
         )}
-        <div ref={componentRef} className="shift-table text-lg">
-          {/* <div className="justify-between w-11/12 hidden lg:flex">
+        <div ref={componentRef} className="text-lg shift-table">
+          {/* <div className="justify-between hidden w-11/12 lg:flex">
             <div>
               <p className="text-center">เสนอผู้อำนวยการโรงพยาบาลครบุรี เพื่อโปรดพิจารณา</p>
-              <p className="text-center mt-3">...........................................</p>
+              <p className="mt-3 text-center">...........................................</p>
               <p className="text-center">( นางนงลักษณ์ คนเพียร )</p>
               <p className="text-lg text-center">หัวหน้ากลุ่มงานการพยาบาล</p>
             </div>
@@ -129,31 +129,31 @@ export const TableSelectMonthOnCall = ({
             </div>
             <div>
               <p className="text-center">ความคิดเห็นผู้อำนวยการ</p>
-              <p className="text-center mt-3">...........................................</p>
+              <p className="mt-3 text-center">...........................................</p>
               <p className="text-center">( นายเรืองศักดิ์  ใจโพธิ์)</p>
               <p className="text-lg text-center">นายแพทย์ชำนาญการ รักษาการในตำแหน่งผู้อำนวยการโรงพยาบาลครบุรี</p>
             </div>
           </div> */}
-          <table className="border-collapse border text-center border-spacing-2 mx-auto text-lg whitespace-nowrap">
+          <table className="mx-auto text-lg text-center border border-collapse border-spacing-2 whitespace-nowrap">
             <tbody>
               <tr className="bg-white">
                 <td className="border border-white border-b-black" colSpan={daysInMonth + 9}>
-                  <div className="text-center text-2xl">
+                  <div className="text-2xl text-center">
                     ตารางการปฎิบัติงานเวลาราชการ นอกเวลาราชการและวันหยุดราชการเพื่อให้บริการรักษาพยาบาลและสนับสนุนงานบริการอื่นๆ
                   </div>
-                  <div className="text-center text-lg">
+                  <div className="text-lg text-center">
                     ส่วนราชการ โรงพยาบาลครบุรี จังหวัดนครราชสีมา ประจำเดือน......................... {dayjs(`${dayjs().year()}-${+monthValue + 1}-${+monthValue + 1}`).format("MMMM")}.........................พ.ศ..........{yearTH}..........<br />
                     คำสั่งโรงพยาบาลครบุรี ที่..................../....................ลงวันที่....................เดือน........................................พ.ศ....................
                   </div>
                 </td>
               </tr>
-              <tr className="border text-black">
+              <tr className="text-black border">
                 <td
                   className="border border-black bg-white min-w-[50px]"
                   colSpan={1}
                   rowSpan={2}
                 >
-                  ลำดับ
+                  <div className="text-sm">ลำดับ</div>
                 </td>
                 <td
                   className="border border-black bg-white min-w-[200px] sticky -left-5"
@@ -177,13 +177,13 @@ export const TableSelectMonthOnCall = ({
                   งานที่<br />ปฏิบัติ
                 </td>
                 <td
-                  className="border border-black bg-white"
+                  className="bg-white border border-black"
                   colSpan={daysInMonth}
                   rowSpan={1}
                 >
                   วันที่ปฏิบัติงาน
                 </td>
-                <td className="border border-black bg-white" colSpan={2} rowSpan={1}>
+                <td className="bg-white border border-black" colSpan={2} rowSpan={1}>
                   สรุป
                 </td>
                 <td
@@ -220,7 +220,7 @@ export const TableSelectMonthOnCall = ({
                       : "bg-white"
                       } `}
                   >
-                    {day + 1}
+                    <div className="text-base">{day + 1}</div>
                   </td>
                 ))}
                 <td className="border border-black bg-white text-black min-w-[30px]">
@@ -258,7 +258,7 @@ export const TableSelectMonthOnCall = ({
                   <tr key={key} className="border odd:bg-white">
                     <td className="border border-black">{key + 1}</td>
                     <td
-                      className={`border border-black text-left pl-3 sticky -left-5 ${key % 2 == 0
+                      className={`border border-black text-left sticky -left-5 ${key % 2 == 0
                         ? "bg-white"
                         : "even:bg-white"
                         }`}
@@ -340,7 +340,7 @@ export const TableSelectMonthOnCall = ({
                   <tr key={key} className="border odd:bg-white">
                     <td className="border border-black">{key + 1}</td>
                     <td
-                      className={`border border-black text-left pl-3 sticky -left-5 ${key % 2 == 0
+                      className={`border border-black text-left sticky -left-5 ${key % 2 == 0
                         ? "bg-white"
                         : "even:bg-white"
                         }`}
@@ -417,27 +417,27 @@ export const TableSelectMonthOnCall = ({
 
               <tr className="border" onClick={() => setOpen(e => e += 1)}>
                 <td
-                  className="border border-white py-5"
+                  className="py-5 border border-white"
                   colSpan={daysInMonth + 9}
                 >
 
-                  <div className="justify-between w-full hidden sm:flex">
+                  <div className="justify-between hidden w-full sm:flex">
                     <div>
-                      <p className="text-center mt-3">ลงชื่อ......................................................................(ผู้อนุมัติอยู่เวร)</p>
-                      <p className="text-left pl-32">( นายเรืองศักดิ์  ใจโพธิ์ )</p>
+                      <p className="mt-3 text-center">ลงชื่อ......................................................................(ผู้อนุมัติอยู่เวร)</p>
+                      <p className="pl-32 text-left">( นายเรืองศักดิ์  ใจโพธิ์ )</p>
                       <p className="text-left pl-14">นายแพทย์ชำนาญการ รักษาการในตำแหน่ง</p>
-                      <p className="text-leftpl-20  ">ผู้อำนวยการโรงพยาบาลครบุรี</p>
+                      <p className="text-leftpl-20 ">ผู้อำนวยการโรงพยาบาลครบุรี</p>
                     </div>
                     <div className="basis-6/12">
-                      <p className="text-center mt-3">ลงชื่อ......................................................................(ผู้ควบคุม)</p>
+                      <p className="mt-3 text-center">ลงชื่อ......................................................................(ผู้ควบคุม)</p>
                       <p className="text-left pl-96">( นางนงลักษณ์ คนเพียร )</p>
                       <p className="text-left pl-[22rem]"></p>
                       <p className="text-left pl-[23rem]">หัวหน้ากลุ่มงานการพยาบาล</p>
                     </div>
                     <div className="text-center">
-                      {/* <p className="text-center mt-3">ความคิดเห็นผู้อำนวยการ</p> */}
-                      <p className="text-center mt-3">ลงชื่อ......................................................หัวหน้าหน่วยงาน</p>
-                      <p className="text-left pl-16">( {configuration?.departmentor} )</p>
+                      {/* <p className="mt-3 text-center">ความคิดเห็นผู้อำนวยการ</p> */}
+                      <p className="mt-3 text-center">ลงชื่อ......................................................หัวหน้าหน่วยงาน</p>
+                      <p className="pl-16 text-left">( {configuration?.departmentor} )</p>
                     </div>
                   </div>
 
@@ -447,8 +447,8 @@ export const TableSelectMonthOnCall = ({
           </table>
         </div>
       </div>
-      <div className="w-100 bg-white shadow-xl p-5 my-10 rounded-md overflow-x-auto">
-        <div className="justify-center text-center h2 text-xl font-normal leading-normal mt-0 mb-2 text-black">
+      <div className="p-5 my-10 overflow-x-auto bg-white rounded-md shadow-xl w-100">
+        <div className="justify-center mt-0 mb-2 text-xl font-normal leading-normal text-center text-black h2">
           จัดคนขึ้นเวร
         </div>
         <form
@@ -468,10 +468,10 @@ export const TableSelectMonthOnCall = ({
             await getUserDropdown();
           }}
         >
-          <div className="flex flex-wrap -mx-3 mb-6">
-            <div className="w-full md:w-2/5 px-3 mb-6 md:mb-0">
+          <div className="flex flex-wrap mb-6 -mx-3">
+            <div className="w-full px-3 mb-6 md:w-2/5 md:mb-0">
               <label
-                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                className="block mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase"
                 for="grid-state"
               >
                 ชื่อ-นามสกุล
@@ -480,7 +480,7 @@ export const TableSelectMonthOnCall = ({
                 <select
                   id="userId"
                   name="userId"
-                  className="block appearance-none w-full bg-white border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                  className="block w-full px-4 py-3 pr-8 leading-tight text-gray-700 bg-white border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
                 >
                   {userList
                     ?.filter(
@@ -497,9 +497,9 @@ export const TableSelectMonthOnCall = ({
                       </option>
                     ))}
                 </select>
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                <div className="absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 pointer-events-none">
                   <svg
-                    className="fill-current h-4 w-4"
+                    className="w-4 h-4 fill-current"
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 20 20"
                   >
@@ -508,9 +508,9 @@ export const TableSelectMonthOnCall = ({
                 </div>
               </div>
             </div>
-            <div className="w-full md:w-2/5 px-3 mb-6 md:mb-0">
+            <div className="w-full px-3 mb-6 md:w-2/5 md:mb-0">
               <label
-                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                className="block mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase"
                 for="grid-state"
               >
                 งานที่ปฏิบัติ
@@ -519,7 +519,7 @@ export const TableSelectMonthOnCall = ({
                 <select
                   id="locationId"
                   name="locationId"
-                  className="block appearance-none w-full bg-white border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                  className="block w-full px-4 py-3 pr-8 leading-tight text-gray-700 bg-white border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
                 >
                   {location?.map(({ id, name }) => (
                     <option key={id} value={id}>
@@ -527,9 +527,9 @@ export const TableSelectMonthOnCall = ({
                     </option>
                   ))}
                 </select>
-                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                <div className="absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 pointer-events-none">
                   <svg
-                    className="fill-current h-4 w-4"
+                    className="w-4 h-4 fill-current"
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 20 20"
                   >
@@ -539,15 +539,15 @@ export const TableSelectMonthOnCall = ({
               </div>
             </div>
 
-            <div className="w-full md:w-1/5 px-3 mb-6 md:mb-0">
+            <div className="w-full px-3 mb-6 md:w-1/5 md:mb-0">
               <label
-                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                className="block mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase"
                 for="grid-state"
               >
                 บันทึก
               </label>
               <div className="relative">
-                <button className="bg-blue-500 hover:bg-blue-700 text-black font-bold py-2 px-4 rounded">
+                <button className="px-4 py-2 font-bold text-black bg-blue-500 rounded hover:bg-blue-700">
                   บันทึก
                 </button>
               </div>

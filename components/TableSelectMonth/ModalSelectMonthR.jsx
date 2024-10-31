@@ -84,7 +84,7 @@ export default function ModalSelectMonthR({
         {dutyOfDay.map(({ Shif, isOT }, index) => {
             return (
               <span
-                className={`${Shif?.class} text-lg ${Shif?.class ? " text-sm w-[16px] h-[16px] inline-block leading-[16px]" : " text-black decoration-red-500 decoration-1"}`}
+                className={`${Shif?.class} text-md ${Shif?.class ? " text-sm w-[16px] h-[16px] inline-block leading-[16px]" : " text-black decoration-red-500 decoration-1"}`}
                 key={index}
               >
                 /
