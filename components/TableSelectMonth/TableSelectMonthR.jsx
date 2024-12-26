@@ -499,6 +499,9 @@ export const TableSelectMonthR = ({
                     <div>
                       <p className="mt-3 text-center">
                         ลงชื่อ......................................................................ผู้จ่ายเงิน
+                      <p className="pl-24 text-left">( นางเยาวมาลย์ สุวรรณทา )</p>
+                      <p className="pl-16 text-left"></p>
+                      <p className="pl-10 text-left">เจ้าพนักงานการเงินและบัญชีชำนาญการ</p>
                       </p>
                     </div>
                   </div>
