@@ -154,21 +154,6 @@ export const TableSelectMonth = ({
         )}
         <div ref={componentRef} className="text-lg shift-table">
           <div className="justify-between hidden w-11/12 lg:flex">
-            {/*<div>
-              <p className="text-center">เสนอนายแพทย์ชำนาญการ รักษาการในตำแหน่งผู้อำนวยการโรงพยาบาลครบุรี เพื่อโปรดพิจารณา</p>
-              <p className="mt-3 text-center">...........................................</p>
-              <p className="text-center">( นางนงลักษณ์ คนเพียร )</p>
-              <p className="text-lg text-center">หัวหน้ากลุ่มงานการพยาบาล</p>
-            </div>*/}
-            {/* <div>
-              <p className="text-xl">กลุ่มงานการพยาบาล โรงพยาบาลครบุรี</p>
-            </div> */}
-            {/* <div>
-              <p className="text-center">ความคิดเห็นผู้อำนวยการ</p>
-              <p className="mt-3 text-center">...........................................</p>
-              <p className="text-center">( นายเรืองศักดิ์  ใจโพธิ์)</p>
-              <p className="text-lg text-center">นายแพทย์ชำนาญการ รักษาการในตำแหน่งผู้อำนวยการโรงพยาบาลครบุรี</p>
-            </div> */}
           </div>
           <table className="mx-auto text-lg text-center border border-collapse border-spacing-2 whitespace-nowrap">
             <tbody>
@@ -679,11 +664,11 @@ export const TableSelectMonth = ({
                       <p className="mt-3 text-center">
                         ลงชื่อ......................................................................(ผู้ควบคุม)
                       </p>
-                      <p className="text-left pl-96">( นางนงลักษณ์ คนเพียร )</p>
+                      <p className="text-left pl-[20rem]">( นางนงลักษณ์ คนเพียร )</p>
                       <p className="text-left pl-[22rem]">
                         
                       </p>
-                      <p className="text-left pl-[23rem]">
+                      <p className="text-left pl-[19rem]">
                         หัวหน้ากลุ่มงานการพยาบาล
                       </p>
                     </div>

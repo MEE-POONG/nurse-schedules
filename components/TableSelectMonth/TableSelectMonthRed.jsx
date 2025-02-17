@@ -130,21 +130,6 @@ export const TableSelectMonthRed = ({
         )} */}
         <div ref={componentRef} className="text-lg shift-table">
           <div className="justify-between hidden w-11/12 lg:flex">
-            {/*<div>
-              <p className="text-center">เสนอนายแพทย์ชำนาญการ รักษาการในตำแหน่งผู้อำนวยการโรงพยาบาลครบุรี เพื่อโปรดพิจารณา</p>
-              <p className="mt-3 text-center">...........................................</p>
-              <p className="text-center">( นางนงลักษณ์ คนเพียร )</p>
-              <p className="text-lg text-center">หัวหน้ากลุ่มงานการพยาบาล</p>
-            </div>*/}
-            {/* <div>
-              <p className="text-xl">กลุ่มงานการพยาบาล โรงพยาบาลครบุรี</p>
-            </div> */}
-            {/* <div>
-              <p className="text-center">ความคิดเห็นผู้อำนวยการ</p>
-              <p className="mt-3 text-center">...........................................</p>
-              <p className="text-center">( นายเรืองศักดิ์  ใจโพธิ์)</p>
-              <p className="text-lg text-center">นายแพทย์ชำนาญการ รักษาการในตำแหน่งผู้อำนวยการโรงพยาบาลครบุรี</p>
-            </div> */}
           </div>
           <table className="mx-auto text-lg text-center border border-collapse border-spacing-2 whitespace-nowrap">
             <tbody>
@@ -436,9 +421,9 @@ export const TableSelectMonthRed = ({
                     </div>
                     <div className="basis-6/12">
                       <p className="mt-3 text-center">ลงชื่อ......................................................................(ผู้ควบคุม)</p>
-                      <p className="text-left pl-96">( นางนงลักษณ์ คนเพียร )</p>
+                      <p className="text-left pl-[17rem]">( นางนงลักษณ์ คนเพียร )</p>
                       <p className="text-left pl-[22rem]"></p>
-                      <p className="text-left pl-[23rem]">หัวหน้ากลุ่มงานการพยาบาล</p>
+                      <p className="text-left pl-[16rem]">หัวหน้ากลุ่มงานการพยาบาล</p>
                     </div>
                     <div className="text-center">
                       {/* <p className="mt-3 text-center">ความคิดเห็นผู้อำนวยการ</p> */}
