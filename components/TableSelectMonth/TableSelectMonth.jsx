@@ -124,9 +124,11 @@ export const TableSelectMonth = ({
   )
     return <ErrorComponent />;
 
-    const trainning = user?.filter((e) => e.Duty?.filter(({ Shif }) => Shif?.name === "อบรม")?.length > 0)
-    const trainningUID = trainning?.map((e) => e.id)
-    
+  const trainning = user?.filter(
+    (e) => e.Duty?.filter(({ Shif }) => Shif?.name === "อบรม")?.length > 0
+  );
+  const trainningUID = trainning?.map((e) => e.id);
+
   return (
     <>
       <style>{printStyle()}</style>
@@ -153,8 +155,7 @@ export const TableSelectMonth = ({
           <></>
         )}
         <div ref={componentRef} className="text-lg shift-table">
-          <div className="justify-between hidden w-11/12 lg:flex">
-          </div>
+          <div className="justify-between hidden w-11/12 lg:flex"></div>
           <table className="mx-auto text-lg text-center border border-collapse border-spacing-2 whitespace-nowrap">
             <tbody>
               <tr className="bg-white">
@@ -206,7 +207,11 @@ export const TableSelectMonth = ({
                   colSpan={1}
                   rowSpan={2}
                 >
-                  <div className="text-sm">งานที่<br />ปฏิบัติ</div>
+                  <div className="text-sm">
+                    งานที่
+                    <br />
+                    ปฏิบัติ
+                  </div>
                 </td>
                 <td
                   className="bg-white border border-black whitespace-nowrap"
@@ -285,11 +290,12 @@ export const TableSelectMonth = ({
               )
                 } */}
 
-
-                 {/* ข้อมูลการขึ้นเวร */}
+              {/* ข้อมูลการขึ้นเวร */}
               {user
-                ?.filter((e) => e.Position?.name !== "พนักงานเปล" && !e.UserDuty?.isTrain)
-                ?.filter((e) => !trainningUID.includes(e.id))
+                ?.filter(
+                  (e) =>
+                    e.Position?.name !== "พนักงานเปล"
+                )
                 ?.map((person, key) => {
                   const afternoonShift = person?.Duty?.filter(
                     ({ Shif, isOT }) => Shif?.name == "บ" && !isOT
@@ -302,6 +308,66 @@ export const TableSelectMonth = ({
                       ["ช", "บ", "ด"].includes(Shif?.name) && !isOT
                   )?.length;
                   const ot = person?.Duty?.filter(({ isOT }) => isOT)?.length;
+
+                  const isTrain = person?.UserDuty?.isTrain;
+
+                  if (!isTrain) {
+                    return (
+                      <tr key={key} className="bg-white border">
+                        <td className="border border-black">
+                          {person?.firstname ? key + 1 : ""}
+                        </td>
+                        <td
+                          className={`border border-black text-left sticky -left-5 ${
+                            key % 2 == 0 ? "bg-white" : "bg-white"
+                          }`}
+                        >
+                          {person?.Title?.name} {person?.firstname}{" "}
+                          {person?.lastname}
+                        </td>
+                        <td className="border border-black whitespace-nowrap">
+                          {person?.Position?.name}
+                        </td>
+                        <td className="border border-black whitespace-nowrap">
+                          {person.UserDuty?.Location?.name}
+                        </td>
+                        {/* แสดงรายละเอียดของตาราง กะ */}
+                        {arrayDayInMonth?.map((day, index) => (
+                          <ModalSelectMonth
+                            key={index}
+                            userId={person?.id}
+                            Duty={person?.Duty}
+                            day={day + 1}
+                            name={person?.firstname + " " + person?.lastname}
+                            Shif={shif}
+                            getUserList={getUserList}
+                            executeDuty={executeDuty}
+                            deleteDuty={deleteDuty}
+                            userLoading={userLoading}
+                            monthEN={+monthValue + 1}
+                            monthTH={monthTH}
+                            yearEN={yearEN}
+                            yearTH={yearTH}
+                          />
+                        ))}
+                        <td className="border border-black">
+                          {!person?.firstname ? <p>&nbsp;</p> : afternoonShift}
+                        </td>
+                        <td className="border border-black">
+                          {!person?.firstname ? <p>&nbsp;</p> : nightShift}
+                        </td>
+                        <td className="border border-black">
+                          {!person?.firstname ? <p>&nbsp;</p> : ot}
+                        </td>
+                        <td className="border border-black">
+                          {!person?.firstname ? <p>&nbsp;</p> : workingDay}
+                        </td>
+                        <td className="border border-black">
+                          {!person?.firstname ? <p>&nbsp;</p> : workingDay + ot}
+                        </td>
+                      </tr>
+                    );
+                  }
 
                   return (
                     <tr key={key} className="bg-white border">
@@ -323,12 +389,40 @@ export const TableSelectMonth = ({
                         {person.UserDuty?.Location?.name}
                       </td>
                       {/* แสดงรายละเอียดของตาราง กะ */}
-                      {arrayDayInMonth?.map((day, index) => (
+
+                      <td
+                        className="border border-black"
+                        colSpan={
+                          daysInMonth -
+                          (daysInMonth -
+                            person?.Duty.filter(
+                              (duty) => duty.Shif.name === "อบรม"
+                            ).length)
+                        }
+                      >
+                        {person.UserDuty?.TrainingName || "อบรม"}
+                      </td>
+
+                      {Array.from(
+                        {
+                          length:
+                            daysInMonth -
+                            person?.Duty.filter(
+                              (duty) => duty.Shif.name === "อบรม"
+                            ).length,
+                        },
+                        (_, index) => index + 1
+                      )?.map((day, index) => (
                         <ModalSelectMonth
                           key={index}
                           userId={person?.id}
                           Duty={person?.Duty}
-                          day={day + 1}
+                          day={
+                            day +
+                            person?.Duty.filter(
+                              (duty) => duty.Shif.name === "อบรม"
+                            ).length
+                          }
                           name={person?.firstname + " " + person?.lastname}
                           Shif={shif}
                           getUserList={getUserList}
@@ -341,6 +435,7 @@ export const TableSelectMonth = ({
                           yearTH={yearTH}
                         />
                       ))}
+
                       <td className="border border-black">
                         {!person?.firstname ? <p>&nbsp;</p> : afternoonShift}
                       </td>
@@ -360,89 +455,112 @@ export const TableSelectMonth = ({
                   );
                 })}
 
-                 {/* ข้อมูลการขึ้นเวรอบรม 1 */}
-                 {trainning
-                ?.map((person, key) => {
-                  const afternoonShift = person?.Duty?.filter(
-                    ({ Shif, isOT }) => Shif?.name == "บ" && !isOT
-                  )?.length;
-                  const nightShift = person?.Duty?.filter(
-                    ({ Shif, isOT }) => Shif?.name == "ด" && !isOT
-                  )?.length;
-                  const workingDay = person?.Duty?.filter(
-                    ({ Shif, isOT }) =>
-                      ["ช", "บ", "ด"].includes(Shif?.name) && !isOT
-                  )?.length;
-                  const ot = person?.Duty?.filter(({ isOT }) => isOT)?.length;
-                  const i = user?.filter((e) => e.Position?.name !== "พนักงานเปล" && !e.UserDuty?.isTrain)?.length
+              {/* ข้อมูลการขึ้นเวรอบรม 1 */}
+              {/* {trainning?.map((person, key) => {
+                const afternoonShift = person?.Duty?.filter(
+                  ({ Shif, isOT }) => Shif?.name == "บ" && !isOT
+                )?.length;
+                const nightShift = person?.Duty?.filter(
+                  ({ Shif, isOT }) => Shif?.name == "ด" && !isOT
+                )?.length;
+                const workingDay = person?.Duty?.filter(
+                  ({ Shif, isOT }) =>
+                    ["ช", "บ", "ด"].includes(Shif?.name) && !isOT
+                )?.length;
+                const ot = person?.Duty?.filter(({ isOT }) => isOT)?.length;
+                const i = user?.filter(
+                  (e) =>
+                    e.Position?.name !== "พนักงานเปล" && !e.UserDuty?.isTrain
+                )?.length;
 
-                  return (
-                    <tr key={key} className="bg-white border">
-                      <td className="border border-black">
-                        {person?.firstname ? key + i : ""}
-                      </td>
-                      <td
-                        className={`border border-black text-left sticky -left-5 ${
-                          key % 2 == 0 ? "bg-white" : "bg-white"
-                        }`}
-                      >
-                        {person?.Title?.name} {person?.firstname}{" "}
-                        {person?.lastname}
-                      </td>
-                      <td className="border border-black whitespace-nowrap">
-                        {person?.Position?.name}
-                      </td>
-                      <td className="border border-black whitespace-nowrap">
-                        {person.UserDuty?.Location?.name}
-                      </td>
-                      {/* แสดงรายละเอียดของตาราง กะ */}
-                      
-                      <td className="border border-black" colSpan={daysInMonth - (daysInMonth - person?.Duty.filter(duty => duty.Shif.name === "อบรม").length)}>
-                        {person.UserDuty?.TrainingName || 'อบรม'}
-                      </td>
+                return (
+                  <tr key={key} className="bg-white border">
+                    <td className="border border-black">
+                      {person?.firstname ? key + i : ""}
+                    </td>
+                    <td
+                      className={`border border-black text-left sticky -left-5 ${
+                        key % 2 == 0 ? "bg-white" : "bg-white"
+                      }`}
+                    >
+                      {person?.Title?.name} {person?.firstname}{" "}
+                      {person?.lastname}
+                    </td>
+                    <td className="border border-black whitespace-nowrap">
+                      {person?.Position?.name}
+                    </td>
+                    <td className="border border-black whitespace-nowrap">
+                      {person.UserDuty?.Location?.name}
+                    </td>
 
+
+                    <td
+                      className="border border-black"
+                      colSpan={
+                        daysInMonth -
+                        (daysInMonth -
+                          person?.Duty.filter(
+                            (duty) => duty.Shif.name === "อบรม"
+                          ).length)
+                      }
+                    >
+                      {person.UserDuty?.TrainingName || "อบรม"}
+                    </td>
+
+                    {Array.from(
                       {
-                        Array.from({ length: daysInMonth - person?.Duty.filter(duty => duty.Shif.name === "อบรม").length }, (_, index) => index + 1)?.map((day, index) => (
-                          <ModalSelectMonth
-                            key={index}
-                            userId={person?.id}
-                            Duty={person?.Duty}
-                            day={day + person?.Duty.filter(duty => duty.Shif.name === "อบรม").length}
-                            name={person?.firstname + " " + person?.lastname}
-                            Shif={shif}
-                            getUserList={getUserList}
-                            executeDuty={executeDuty}
-                            deleteDuty={deleteDuty}
-                            userLoading={userLoading}
-                            monthEN={+monthValue + 1}
-                            monthTH={monthTH}
-                            yearEN={yearEN}
-                            yearTH={yearTH}
-                          />
-                        ))}
+                        length:
+                          daysInMonth -
+                          person?.Duty.filter(
+                            (duty) => duty.Shif.name === "อบรม"
+                          ).length,
+                      },
+                      (_, index) => index + 1
+                    )?.map((day, index) => (
+                      <ModalSelectMonth
+                        key={index}
+                        userId={person?.id}
+                        Duty={person?.Duty}
+                        day={
+                          day +
+                          person?.Duty.filter(
+                            (duty) => duty.Shif.name === "อบรม"
+                          ).length
+                        }
+                        name={person?.firstname + " " + person?.lastname}
+                        Shif={shif}
+                        getUserList={getUserList}
+                        executeDuty={executeDuty}
+                        deleteDuty={deleteDuty}
+                        userLoading={userLoading}
+                        monthEN={+monthValue + 1}
+                        monthTH={monthTH}
+                        yearEN={yearEN}
+                        yearTH={yearTH}
+                      />
+                    ))}
 
+                    <td className="border border-black">
+                      {!person?.firstname ? <p>&nbsp;</p> : afternoonShift}
+                    </td>
+                    <td className="border border-black">
+                      {!person?.firstname ? <p>&nbsp;</p> : nightShift}
+                    </td>
+                    <td className="border border-black">
+                      {!person?.firstname ? <p>&nbsp;</p> : ot}
+                    </td>
+                    <td className="border border-black">
+                      {!person?.firstname ? <p>&nbsp;</p> : workingDay}
+                    </td>
+                    <td className="border border-black">
+                      {!person?.firstname ? <p>&nbsp;</p> : workingDay + ot}
+                    </td>
+                  </tr>
+                );
+              })} */}
 
-                      <td className="border border-black">
-                        {!person?.firstname ? <p>&nbsp;</p> : afternoonShift}
-                      </td>
-                      <td className="border border-black">
-                        {!person?.firstname ? <p>&nbsp;</p> : nightShift}
-                      </td>
-                      <td className="border border-black">
-                        {!person?.firstname ? <p>&nbsp;</p> : ot}
-                      </td>
-                      <td className="border border-black">
-                        {!person?.firstname ? <p>&nbsp;</p> : workingDay}
-                      </td>
-                      <td className="border border-black">
-                        {!person?.firstname ? <p>&nbsp;</p> : workingDay + ot}
-                      </td>
-                    </tr>
-                  );
-                })}
-
-                 {/* ข้อมูลการขึ้นเวรอบรม 2 */}
-              {user
+              {/* ข้อมูลการขึ้นเวรอบรม 2 */}
+              {/* {user
                 ?.filter((e) => e.UserDuty?.isTrain)
                 ?.map((person, key) => {
                   const afternoonShift = person?.Duty?.filter(
@@ -456,7 +574,10 @@ export const TableSelectMonth = ({
                       ["ช", "บ", "ด"].includes(Shif?.name) && !isOT
                   )?.length;
                   const ot = person?.Duty?.filter(({ isOT }) => isOT)?.length;
-                  const i = user?.filter((e) => e.Position?.name !== "พนักงานเปล" && !e.UserDuty?.isTrain)?.length
+                  const i = user?.filter(
+                    (e) =>
+                      e.Position?.name !== "พนักงานเปล" && !e.UserDuty?.isTrain
+                  )?.length;
 
                   return (
                     <tr key={key} className="bg-white border">
@@ -477,8 +598,7 @@ export const TableSelectMonth = ({
                       <td className="border border-black whitespace-nowrap">
                         {person.UserDuty?.Location?.name}
                       </td>
-                      {/* แสดงรายละเอียดของตาราง กะ */}
-                      
+
                       <td className="border border-black" colSpan={daysInMonth}>
                         {person.UserDuty?.TrainingName}
                       </td>
@@ -500,7 +620,7 @@ export const TableSelectMonth = ({
                       </td>
                     </tr>
                   );
-                })}
+                })} */}
 
               <tr className="border">
                 <td className="border border-black">&nbsp;</td>
@@ -610,7 +730,9 @@ export const TableSelectMonth = ({
                 ""
               )}
 
-              {user?.find(person => person?.UserDuty?.Location?.name === "ICU")?.UserDuty?.Location?.name === "ICU" ? (
+              {user?.find(
+                (person) => person?.UserDuty?.Location?.name === "ICU"
+              )?.UserDuty?.Location?.name === "ICU" ? (
                 <tr className="border" onClick={() => setOpen((e) => (e += 1))}>
                   <td className="border border-black" colSpan={daysInMonth + 9}>
                     เวร ON CALL
@@ -618,7 +740,9 @@ export const TableSelectMonth = ({
                 </tr>
               ) : null}
 
-              {user?.find(person => person?.UserDuty?.Location?.name === "ICU")?.UserDuty?.Location?.name === "ICU" ? (
+              {user?.find(
+                (person) => person?.UserDuty?.Location?.name === "ICU"
+              )?.UserDuty?.Location?.name === "ICU" ? (
                 <TableSelectMonthOnCall2
                   daysInMonth={daysInMonth}
                   arrayDayInMonth={arrayDayInMonth}
@@ -664,10 +788,10 @@ export const TableSelectMonth = ({
                       <p className="mt-3 text-center">
                         ลงชื่อ......................................................................(ผู้ควบคุม)
                       </p>
-                      <p className="text-left pl-[20rem]">( นางนงลักษณ์ คนเพียร )</p>
-                      <p className="text-left pl-[22rem]">
-                        
+                      <p className="text-left pl-[20rem]">
+                        ( นางนงลักษณ์ คนเพียร )
                       </p>
+                      <p className="text-left pl-[22rem]"></p>
                       <p className="text-left pl-[19rem]">
                         หัวหน้ากลุ่มงานการพยาบาล
                       </p>
