@@ -324,7 +324,7 @@ export const TableSelectMonthRed = ({
                         {/* แสดงรายละเอียดของตาราง กะ */}
 
                         <td
-                          className="border border-black"
+                          className="text-xs border border-black"
                           colSpan={
                             daysInMonth -
                             (daysInMonth -
