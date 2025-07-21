@@ -165,6 +165,29 @@ async function main() {
 //         titleId: title.find((item) => item.name === "นาย").id,
 //         username: "admin",
 //         password: "admin",
+//         isChief: true, // ตัวอย่างหัวหน้า
+//         isPregnant: false,
+//         isElderly: false,
+//       },
+//       {
+//         firstname: 'รุ่งเพชร',
+//         lastname: 'ยิ่งยืน',
+//         locationId: location.find((item) => item.name === 'ICU').id,
+//         positionId: position.find((item) => item.name === 'พยาบาลวิชาชีพ').id,
+//         titleId: title.find((item) => item.name === 'น.ส.').id,
+//         isChief: false,
+//         isPregnant: true, // ตัวอย่างคนท้อง
+//         isElderly: false,
+//       },
+//       {
+//         firstname: 'ภาวิณี',
+//         lastname: 'วิทยกิตติกุล',
+//         locationId: location.find((item) => item.name === 'ICU').id,
+//         positionId: position.find((item) => item.name === 'พยาบาลวิชาชีพ').id,
+//         titleId: title.find((item) => item.name === 'นาง').id,
+//         isChief: false,
+//         isPregnant: false,
+//         isElderly: true, // ตัวอย่างผู้สูงอายุ
 //       },
 //     ],
 //   });

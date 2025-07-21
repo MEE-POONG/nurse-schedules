@@ -8,27 +8,22 @@ export default async function handler(req, res) {
                 const data = await prisma.location.findMany();
                 res.status(200).json(data)
             } catch (error) {
-                res.status(400).json({ success: false })
+                console.error('GET /api/location error:', error);
+                res.status(400).json({ success: false, error: error.message })
             }
             break
         case 'POST':
             try {
-                await prisma.product.create({
+                await prisma.location.create({
                     data: {
                         name: req.body.name,
-                        price: parseInt(req.body.price),
-                        description: req.body.description,
-                        image: req.body.image,
-                        categoryId: req.body.categoryId,
-                        amount: parseInt(req.body.amount),
-                        unitId: req.body.unitId,
                     }
                 })
                 
                 res.status(201).json({ success: true })
             } catch (error) {
-                
-                res.status(400).json({ success: false })
+                console.error('POST /api/location error:', error);
+                res.status(400).json({ success: false, error: error.message })
             }
             break
         default:

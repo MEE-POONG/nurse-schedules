@@ -1,7 +1,7 @@
 import dayFunction from "@/utils/day";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
-import DropDownDate from "../DropDownDate/DropDownDate";
+
 import { TableSelectMonth } from "../TableSelectMonth/TableSelectMonth";
 import { TableSelectMonthAF } from "../TableSelectMonth/TableSelectMonthAF";
 import { TableSelectMonthOT } from "../TableSelectMonth/TableSelectMonthOT";
@@ -18,11 +18,12 @@ import { authProvider } from "src/authProvider";
 import dayjs from "dayjs";
 import LoadingComponent from "../LoadingComponent";
 
-export default function TableIndex() {
+export default function TableIndex({ month, year }) {
   const { dateStore } = useSelector((state) => ({ ...state }));
 
-  const monthValue = dateStore.value.month;
-  const yearValue = dateStore.value.year;
+  // ใช้ props ถ้ามี ถ้าไม่มีใช้ค่าจาก Redux store
+  const monthValue = month !== undefined ? month : dateStore.value.month;
+  const yearValue = year !== undefined ? year : dateStore.value.year;
   const { daysInMonth, arrayDayInMonth, monthEN, yearEN, monthTH, yearTH } =
     dayFunction(monthValue, yearValue);
 
@@ -114,9 +115,7 @@ export default function TableIndex() {
         </button>
       </div>
 
-      <div className="text-center mt-6">
-        <DropDownDate />
-      </div>
+
       <TableSelectMonth
         daysInMonth={daysInMonth}
         arrayDayInMonth={arrayDayInMonth}

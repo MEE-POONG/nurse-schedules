@@ -43,12 +43,14 @@ model UserDuty {
 }
 
 model Location {
-  id         String       @id @default(auto()) @map("_id") @db.ObjectId
-  name       String       @unique
-  User       User[]
-  Duty       Duty[]
-  UserDuty   UserDuty[]
-  OnCallDuty OnCallDuty[]
+  id              String            @id @default(auto()) @map("_id") @db.ObjectId
+  name            String            @unique
+  User            User[]
+  Duty            Duty[]
+  UserDuty        UserDuty[]
+  OnCallDuty      OnCallDuty[]
+  ShiftPreference ShiftPreference[]
+  ShiftHistory    ShiftHistory[]
 }
 
 model Position {
@@ -58,37 +60,45 @@ model Position {
 }
 
 model Shif {
-  id         String       @id @default(auto()) @map("_id") @db.ObjectId
-  name       String
-  Duty       Duty[]
-  code       Int?
-  class      String?
-  isOT       Boolean?
-  isShif     Boolean?
-  isDayOff   Boolean?
-  OnCallDuty OnCallDuty[]
+  id              String            @id @default(auto()) @map("_id") @db.ObjectId
+  name            String
+  Duty            Duty[]
+  code            Int?
+  class           String?
+  isOT            Boolean?
+  isShif          Boolean?
+  isDayOff        Boolean?
+  OnCallDuty      OnCallDuty[]
+  ShiftPreference ShiftPreference[]
+  ShiftHistory    ShiftHistory[]
 }
 
 model User {
-  id                    String       @id @default(auto()) @map("_id") @db.ObjectId
+  id                    String            @id @default(auto()) @map("_id") @db.ObjectId
   firstname             String?
   lastname              String?
   username              String?
   password              String?
-  normal_compensation   Int?         @default(360)
-  overtime_compensation Int?         @default(720)
-  isPartTime            Boolean?     @default(false)
-  isAdmin               Boolean?     @default(true)
-  isActive              Boolean      @default(true)
+  normal_compensation   Int?              @default(360)
+  overtime_compensation Int?              @default(720)
+  isPartTime            Boolean?          @default(false)
+  isAdmin               Boolean?          @default(true)
+  isActive              Boolean           @default(true)
+  isChief               Boolean?          @default(false)
+  isPregnant            Boolean?          @default(false)
+  isElderly             Boolean?          @default(false)
+  SequenceNo            Int?
   Duty                  Duty[]
-  Location              Location?    @relation(fields: [locationId], references: [id])
-  Position              Position?    @relation(fields: [positionId], references: [id])
-  Title                 Title?       @relation(fields: [titleId], references: [id])
-  locationId            String?      @db.ObjectId
-  positionId            String       @db.ObjectId
-  titleId               String       @db.ObjectId
+  Location              Location?         @relation(fields: [locationId], references: [id])
+  Position              Position?         @relation(fields: [positionId], references: [id])
+  Title                 Title?            @relation(fields: [titleId], references: [id])
+  locationId            String?           @db.ObjectId
+  positionId            String            @db.ObjectId
+  titleId               String            @db.ObjectId
   UserDuty              UserDuty[]
   OnCallDuty            OnCallDuty[]
+  ShiftPreference       ShiftPreference[]
+  ShiftHistory          ShiftHistory[]
 }
 
 model Title {
@@ -102,4 +112,34 @@ model Configuration {
   departmentor String?
   leader       String?
   director     String?
+}
+
+model ShiftPreference {
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  User       User      @relation(fields: [userId], references: [id])
+  Shif       Shif      @relation(fields: [shifId], references: [id])
+  Location   Location? @relation(fields: [locationId], references: [id])
+  userId     String    @db.ObjectId
+  shifId     String    @db.ObjectId
+  locationId String?   @db.ObjectId
+  datetime   DateTime
+  priority   Int       @default(1) // 1=สูงสุด, 2=ปกติ, 3=ไม่อยาก
+  isReserved Boolean   @default(false)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@unique([userId, shifId, datetime])
+}
+
+model ShiftHistory {
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
+  User       User      @relation(fields: [userId], references: [id])
+  Shif       Shif      @relation(fields: [shifId], references: [id])
+  Location   Location? @relation(fields: [locationId], references: [id])
+  userId     String    @db.ObjectId
+  shifId     String    @db.ObjectId
+  locationId String?   @db.ObjectId
+  datetime   DateTime
+  isOT       Boolean   @default(false)
+  createdAt  DateTime  @default(now())
 }

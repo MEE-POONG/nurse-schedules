@@ -45,6 +45,20 @@ export default function DefaultNavbar() {
               >
                 ช่องทางการสนับสนุน
               </Link>
+              <Link
+                href="/official-schedule"
+                className="text-gray-800 text-sm font-semibold hover:text-green-700 mr-4"
+              >
+                ตารางทางการ
+              </Link>
+              {authProvider.getIdentity()?.isAdmin && (
+                <Link
+                  href="/auto-schedule"
+                  className="text-gray-800 text-sm font-semibold hover:text-green-700 mr-4"
+                >
+                  จัดตารางอัตโนมัติ
+                </Link>
+              )}
             </div>
 
             <div className="hidden sm:flex sm:items-center">
@@ -108,6 +122,22 @@ export default function DefaultNavbar() {
               >
                 ช่องทางการสนับสนุน
               </Link>
+
+              <Link
+                href="/official-schedule"
+                className="text-gray-800 text-sm font-semibold hover:text-green-700 mb-1 flex justify-center"
+              >
+                ตารางทางการ
+              </Link>
+
+              {authProvider.getIdentity()?.isAdmin && (
+                <Link
+                  href="/auto-schedule"
+                  className="text-gray-800 text-sm font-semibold hover:text-green-700 mb-1 flex justify-center"
+                >
+                  จัดตารางอัตโนมัติ
+                </Link>
+              )}
 
               <div className="flex justify-center items-center border-t-2 pt-2">
                 <Link

@@ -6,17 +6,32 @@ export default async function handler(req, res) {
   switch (method) {
     case "GET":
       try {
+        const { ids } = req.query;
+
+        let whereClause = {
+        };
+
+        // ถ้ามี ids ให้กรองตาม ID ที่ระบุ
+        if (ids) {
+          const idArray = ids.split(',').map(id => id.trim());
+          whereClause.id = {
+            in: idArray
+          };
+        }
+
         const data = await prisma.user.findMany({
-          where: {
-            NOT: {
-              isActive: false,
-            }
+          where: whereClause,
+          include: {
+            Title: true,
+            Position: true
           }
         });
-        console.log(data);
+
+        console.log(`Found ${data.length} users`);
         res.status(200).json(data);
       } catch (error) {
-        res.status(400).json({ success: false });
+        console.error("Error fetching users:", error);
+        res.status(400).json({ success: false, error: error.message });
       }
       break;
     case "POST":
