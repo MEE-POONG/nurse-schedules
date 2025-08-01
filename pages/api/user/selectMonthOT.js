@@ -73,6 +73,7 @@ export default async function handler(req, res) {
             };
           })
           .sort((a, b) => ("" + a.UserDuty.id).localeCompare(b.UserDuty.id))
+          .sort((a, b) => a.SequenceNo - b.SequenceNo)
           .sort((a, b) =>
             ("" + a.UserDuty.locationId).localeCompare(b.UserDuty.locationId)
           );
