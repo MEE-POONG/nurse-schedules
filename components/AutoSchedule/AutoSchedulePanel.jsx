@@ -367,21 +367,53 @@ const AutoSchedulePanel = ({ month, year, locationId, onScheduleGenerated }) => 
 
 function getViolationMessage(violation) {
   const messages = {
+    // ข้อจำกัดเดิม
     MAX_CONSECUTIVE_DAYS: `พนักงาน ID ${violation.userId} ทำงานติดต่อกันเกิน ${violation.current} วัน ในวันที่ ${violation.day}`,
     FORBIDDEN_CONSECUTIVE: `พนักงาน ID ${violation.userId} ไม่สามารถเวร ${violation.previous} ตามด้วย ${violation.current} ในวันที่ ${violation.day}`,
     MAX_SHIFTS_PER_MONTH: `พนักงาน ID ${violation.userId} เวรเกิน ${violation.current} เวรต่อเดือน ในวันที่ ${violation.day}`,
+    
+    // ข้อจำกัดใหม่สำหรับระบบ 2 กะ + On-Call
+    DUPLICATE_SHIFT_REMOVED: `ลบเวรซ้ำของพนักงาน ID ${violation.userId} ในวันที่ ${violation.date} (เวร: ${violation.removedShift})`,
+    INSUFFICIENT_REST: `พนักงาน ID ${violation.userId} พักผ่อนไม่เพียงพอในวันที่ ${violation.date} (ต้องการ: ${violation.requiredRest} ชม., ได้รับ: ${violation.actualRest} ชม.)`,
+    INSUFFICIENT_STAFF: `ไม่พอบุคลากรสำหรับเวร ${violation.shift} ในวันที่ ${violation.date} (ต้องการ: ${violation.required}, ได้รับ: ${violation.assigned})`,
+    
+    // ข้อจำกัดกลุ่มบุคลากรพิเศษ
+    SPECIAL_STAFF_VIOLATION: `กลุ่มบุคลากรพิเศษ ID ${violation.userId} ละเมิดข้อจำกัดในวันที่ ${violation.date}`,
+    SPECIAL_WEEKEND_VIOLATION: `กลุ่มบุคลากรพิเศษ ID ${violation.userId} ทำงานในวันหยุดเสาร์-อาทิตย์ในวันที่ ${violation.date}`,
+    
+    // ข้อจำกัดทั่วไป
+    MAX_NIGHT_SHIFTS: `พนักงาน ID ${violation.userId} เกินจำนวนเวรดึกที่กำหนด (สูงสุด: ${violation.maxNightPer14d} เวร/14 วัน)`,
+    MAX_DOUBLE_SHIFTS: `พนักงาน ID ${violation.userId} เกินจำนวนเวรควบที่กำหนด (สูงสุด: ${violation.maxDoublePerMonth} เวร/เดือน)`,
+    MAX_ONCALL_SHIFTS: `พนักงาน ID ${violation.userId} เกินจำนวน On-Call ที่กำหนด (สูงสุด: ${violation.maxOnCallPerMonth} ครั้ง/เดือน)`,
+    CONSECUTIVE_ONCALL: `พนักงาน ID ${violation.userId} มี On-Call ติดกันในวันที่ ${violation.date}`,
+    MAX_CONSECUTIVE_SAME: `พนักงาน ID ${violation.userId} มีเวร ${violation.shiftType} ติดกันเกิน ${violation.maxConsecutiveSame} ครั้ง`,
+    INSUFFICIENT_DAYOFFS: `พนักงาน ID ${violation.userId} มีวันหยุดไม่เพียงพอ (ขั้นต่ำ: ${violation.minDayOffPer7d} วัน/7 วัน)`,
   };
   
-  return messages[violation.type] || `ข้อจำกัด ${violation.type} สำหรับพนักงาน ID ${violation.userId}`;
+  return messages[violation.type] || `ข้อจำกัด ${violation.type} สำหรับพนักงาน ID ${violation.userId || 'ไม่ระบุ'}`;
 }
 
 function getShiftName(shifId) {
-  // สำหรับตอนนี้ใช้ mapping แบบง่ายๆ ก่อน
+  // Mapping สำหรับระบบเวร 2 กะ + On-Call
   const shiftMap = {
-    "66c74ecaaf47d3097ba9acb3": "ช", // เช้า
-    "66c74ecaaf47d3097ba9acb4": "บ", // บ่าย
-    "66c74ecaaf47d3097ba9acb5": "ด", // ดึก
-    "66c74ecaaf47d3097ba9acb6": "x", // วันหยุด
+    // เวรหลัก
+    "M": "M", // เช้า (Morning)
+    "A": "A", // บ่าย (Afternoon) 
+    "N": "N", // ดึก (Night)
+    
+    // เวรควบ
+    "MA": "MA", // เช้า+บ่าย
+    "NA": "NA", // ดึก+บ่าย
+    
+    // On-Call และวันหยุด
+    "OC": "OC", // On-Call
+    "OFF": "OFF", // วันหยุด
+    
+    // Legacy mapping (ถ้ายังมี)
+    "66c74ecaaf47d3097ba9acb3": "M", // เช้า
+    "66c74ecaaf47d3097ba9acb4": "A", // บ่าย
+    "66c74ecaaf47d3097ba9acb5": "N", // ดึก
+    "66c74ecaaf47d3097ba9acb6": "OFF", // วันหยุด
   };
   
   return shiftMap[shifId] || `ไม่ทราบ (${shifId?.slice(-6) || 'N/A'})`;

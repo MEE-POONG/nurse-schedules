@@ -102,16 +102,16 @@ export const TableSelectMonthAFC = ({
   return (
     <>
       <style>{printStyle()}</style>
-      <div className="flex items-center justify-center pb-10">
+      <div className="flex justify-center items-center pb-10">
         <button
           onClick={handlePrint}
-          className="inline-flex items-center px-4 py-2 mt-6 -mb-10 font-bold text-black bg-white hover:bg-white rounded-xl"
+          className="inline-flex items-center px-4 py-2 mt-6 -mb-10 font-bold text-black bg-white rounded-xl hover:bg-white"
         >
           <BsPrinterFill className="my-auto" />
           <span className="mx-2">ออกรายงาน</span>
         </button>
       </div>
-      <div className="min-h-screen p-5 my-10 overflow-x-auto bg-white rounded-md shadow-xl w-100 print:flex print:items-center print:justify-center">
+      <div className="overflow-x-auto p-5 my-10 min-h-screen bg-white rounded-md shadow-xl w-100 print:flex print:items-center print:justify-center">
         {/* {userLoading ||
           shifLoading ||
           dutyLoading ||
@@ -124,9 +124,9 @@ export const TableSelectMonthAFC = ({
           <></>
         )} */}
         <div ref={componentRef} className="text-lg shift-table">
-          <div className="justify-between hidden w-11/12 lg:flex">
+          <div className="hidden justify-between w-11/12 lg:flex">
           </div>
-          <table className="mx-auto text-lg text-center border border-collapse border-spacing-2 whitespace-nowrap">
+          <table className="mx-auto text-lg text-center whitespace-nowrap border border-collapse border-spacing-2">
             <tbody>
               <tr className="bg-white">
                 <td className="border border-white border-b-black" colSpan={daysInMonth + 9}>
@@ -169,7 +169,7 @@ export const TableSelectMonthAFC = ({
                   <div className="text-sm">งานที่<br />ปฏิบัติ</div>
                 </td>
                 <td
-                  className="bg-white border border-black whitespace-nowrap"
+                  className="whitespace-nowrap bg-white border border-black"
                   colSpan={daysInMonth}
                   rowSpan={1}
                 >
@@ -258,8 +258,8 @@ export const TableSelectMonthAFC = ({
                     >
                       {person?.Title?.name} {person?.firstname} {person?.lastname}
                     </td>
-                    <td className="border border-black whitespace-nowrap">{person?.Position?.name}</td>
-                    <td className="border border-black whitespace-nowrap">
+                    <td className="whitespace-nowrap border border-black">{person?.Position?.name}</td>
+                    <td className="whitespace-nowrap border border-black">
                       {
                         person?.UserDuty?.Location
                           ?.name
@@ -333,12 +333,18 @@ export const TableSelectMonthAFC = ({
                   colSpan={daysInMonth + 9}
                 >
 
-                  <div className="justify-between hidden w-full sm:flex">
+                  <div className="hidden justify-between w-full sm:flex">
                     <div>
                       <p className="mt-3 text-center">ลงชื่อ......................................................................(ผู้อนุมัติอยู่เวร)</p>
-                      <p className="pl-32 text-left">( นายเรืองศักดิ์  ใจโพธิ์ )</p>
-                      <p className="text-left pl-14">นายแพทย์ชำนาญการ รักษาการในตำแหน่ง</p>
-                      <p className="text-leftpl-20 ">ผู้อำนวยการโรงพยาบาลครบุรี</p>
+                      <p className="pl-32 text-left">
+                        {/* ( นายเรืองศักดิ์  ใจโพธิ์ ) */}
+                        </p>
+                      <p className="pl-14 text-left">
+                        {/* นายแพทย์ชำนาญการ รักษาการในตำแหน่ง */}
+                        </p>
+                      <p className="text-leftpl-20">
+                        {/* ผู้อำนวยการโรงพยาบาลครบุรี */}
+                        </p>
                     </div>
                     <div className="basis-6/12">
                       <p className="mt-3 text-center">ลงชื่อ......................................................................(ผู้ควบคุม)</p>
@@ -383,8 +389,8 @@ export const TableSelectMonthAFC = ({
             await getUserDropdown();
           }}
         >
-          <div className="flex flex-wrap mb-6 -mx-3">
-            <div className="w-full px-3 mb-6 md:w-2/5 md:mb-0">
+          <div className="flex flex-wrap -mx-3 mb-6">
+            <div className="px-3 mb-6 w-full md:w-2/5 md:mb-0">
               <label
                 className="block mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase"
                 for="grid-state"
@@ -395,7 +401,7 @@ export const TableSelectMonthAFC = ({
                 <select
                   id="userId"
                   name="userId"
-                  className="block w-full px-4 py-3 pr-8 leading-tight text-gray-700 bg-white border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
+                  className="block px-4 py-3 pr-8 w-full leading-tight text-gray-700 bg-white rounded border border-gray-200 appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
                 >
 
                   {userList
@@ -413,7 +419,7 @@ export const TableSelectMonthAFC = ({
                       </option>
                     ))}
                 </select>
-                <div className="absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 pointer-events-none">
+                <div className="flex absolute inset-y-0 right-0 items-center px-2 text-gray-700 pointer-events-none">
                   <svg
                     className="w-4 h-4 fill-current"
                     xmlns="http://www.w3.org/2000/svg"
@@ -424,7 +430,7 @@ export const TableSelectMonthAFC = ({
                 </div>
               </div>
             </div>
-            <div className="w-full px-3 mb-6 md:w-2/5 md:mb-0">
+            <div className="px-3 mb-6 w-full md:w-2/5 md:mb-0">
               <label
                 className="block mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase"
                 for="grid-state"
@@ -435,7 +441,7 @@ export const TableSelectMonthAFC = ({
                 <select
                   id="locationId"
                   name="locationId"
-                  className="block w-full px-4 py-3 pr-8 leading-tight text-gray-700 bg-white border border-gray-200 rounded appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
+                  className="block px-4 py-3 pr-8 w-full leading-tight text-gray-700 bg-white rounded border border-gray-200 appearance-none focus:outline-none focus:bg-white focus:border-gray-500"
                 >
                   {location?.map(({ id, name }) => (
                     <option key={id} value={id}>
@@ -443,7 +449,7 @@ export const TableSelectMonthAFC = ({
                     </option>
                   ))}
                 </select>
-                <div className="absolute inset-y-0 right-0 flex items-center px-2 text-gray-700 pointer-events-none">
+                <div className="flex absolute inset-y-0 right-0 items-center px-2 text-gray-700 pointer-events-none">
                   <svg
                     className="w-4 h-4 fill-current"
                     xmlns="http://www.w3.org/2000/svg"
@@ -455,7 +461,7 @@ export const TableSelectMonthAFC = ({
               </div>
             </div>
 
-            <div className="w-full px-3 mb-6 md:w-1/5 md:mb-0">
+            <div className="px-3 mb-6 w-full md:w-1/5 md:mb-0">
               <label
                 className="block mb-2 text-xs font-bold tracking-wide text-gray-700 uppercase"
                 for="grid-state"

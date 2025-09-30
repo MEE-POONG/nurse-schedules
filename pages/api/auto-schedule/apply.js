@@ -10,162 +10,163 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { schedule, month, year, locationId, replaceExisting = false } = req.body;
+    const { schedule, locationId, month, year, weeks } = req.body;
 
     if (!schedule || !Array.isArray(schedule)) {
-      return res.status(400).json({ error: "Invalid schedule data" });
+      return res.status(400).json({ error: "Schedule array is required" });
     }
 
-    if (!month || !year) {
-      return res.status(400).json({ error: "Month and year are required" });
+    if (!locationId) {
+      return res.status(400).json({ error: "Location ID is required" });
     }
 
-    const firstDay = dayjs().month(month).year(year).startOf("month");
-    const lastDay = dayjs().month(month).year(year).endOf("month");
+    console.log(`Applying auto schedule for ${month}/${year}, ${weeks} weeks, location: ${locationId}`);
+    console.log(`Total schedule items: ${schedule.length}`);
 
-    // หากเลือกที่จะแทนที่ตารางเดิม ให้ลบเวรเก่าก่อน
-    if (replaceExisting) {
-      await prisma.duty.deleteMany({
-        where: {
-          datetime: {
-            gte: firstDay.toDate(),
-            lte: lastDay.toDate()
-          },
-          locationId: locationId
-        }
-      });
-    }
+    // เริ่ม transaction
+    const result = await prisma.$transaction(async (tx) => {
+      const appliedSchedule = [];
+      const errors = [];
 
-    // บันทึกตารางเวรใหม่
-    const createdDuties = [];
-    const errors = [];
+      for (const item of schedule) {
+        try {
+          // ตรวจสอบว่ามีข้อมูลที่จำเป็นครบ
+          if (!item.userId || !item.shifId || !item.datetime) {
+            errors.push({
+              item: item,
+              error: "Missing required fields: userId, shifId, or datetime"
+            });
+            continue;
+          }
 
-    for (const shift of schedule) {
-      try {
-        // ตรวจสอบว่ามีเวรซ้ำหรือไม่ (กรณีไม่แทนที่เวรเดิม)
-        if (!replaceExisting) {
-          const existing = await prisma.duty.findFirst({
+          // ตรวจสอบว่าผู้ใช้มีอยู่จริง
+          const user = await tx.user.findUnique({
+            where: { id: item.userId }
+          });
+
+          if (!user) {
+            errors.push({
+              item: item,
+              error: `User not found: ${item.userId}`
+            });
+            continue;
+          }
+
+          // ตรวจสอบว่ากะมีอยู่จริง
+          const shift = await tx.shif.findUnique({
+            where: { id: item.shifId }
+          });
+
+          if (!shift) {
+            errors.push({
+              item: item,
+              error: `Shift not found: ${item.shifId}`
+            });
+            continue;
+          }
+
+          // ตรวจสอบว่ามีการจัดเวรซ้ำหรือไม่
+          const existingDuty = await tx.duty.findFirst({
             where: {
-              userId: shift.userId,
-              shifId: shift.shifId,
-              datetime: new Date(shift.datetime),
+              userId: item.userId,
+              datetime: new Date(item.datetime),
               locationId: locationId
             }
           });
 
-          if (existing) {
-            errors.push({
-              userId: shift.userId,
-              datetime: shift.datetime,
-              error: "Duty already exists"
-            });
-            continue;
-          }
-        }
-
-        const duty = await prisma.duty.create({
-          data: {
-            userId: shift.userId,
-            shifId: shift.shifId,
-            locationId: locationId,
-            datetime: new Date(shift.datetime),
-            isOT: shift.isOT || false
-          },
-          include: {
-            User: {
-              select: {
-                id: true,
-                firstname: true,
-                lastname: true,
-                Title: true,
-                Position: true
+          if (existingDuty) {
+            // อัพเดทเวรที่มีอยู่
+            const updatedDuty = await tx.duty.update({
+              where: { id: existingDuty.id },
+              data: {
+                shifId: item.shifId,
+                isOT: item.isOT || false,
+                isOnCall: item.isOnCall || false
               }
-            },
-            Shif: true,
-            Location: true
+            });
+
+            appliedSchedule.push({
+              ...item,
+              id: updatedDuty.id,
+              action: "updated",
+              originalShiftId: existingDuty.shifId
+            });
+
+            console.log(`Updated duty: User ${user.firstname} ${user.lastname}, Date ${dayjs(item.datetime).format("YYYY-MM-DD")}, Shift ${shift.name}`);
+          } else {
+            // สร้างเวรใหม่
+            const newDuty = await tx.duty.create({
+              data: {
+                userId: item.userId,
+                shifId: item.shifId,
+                locationId: locationId,
+                datetime: new Date(item.datetime),
+                isOT: item.isOT || false,
+                isOnCall: item.isOnCall || false
+              }
+            });
+
+            appliedSchedule.push({
+              ...item,
+              id: newDuty.id,
+              action: "created"
+            });
+
+            console.log(`Created duty: User ${user.firstname} ${user.lastname}, Date ${dayjs(item.datetime).format("YYYY-MM-DD")}, Shift ${shift.name}`);
           }
-        });
 
-        createdDuties.push(duty);
-
-        // บันทึกประวัติการทำงาน
-        await prisma.shiftHistory.create({
-          data: {
-            userId: shift.userId,
-            shifId: shift.shifId,
-            locationId: locationId,
-            datetime: new Date(shift.datetime),
-            isOT: shift.isOT || false
-          }
-        });
-
-      } catch (error) {
-        console.error(`Error creating duty for user ${shift.userId}:`, error);
-        errors.push({
-          userId: shift.userId,
-          datetime: shift.datetime,
-          error: error.message
-        });
+        } catch (error) {
+          console.error("Error processing schedule item:", error);
+          errors.push({
+            item: item,
+            error: error.message
+          });
+        }
       }
-    }
 
-    // อัพเดทสถานะการจองที่ได้รับการจัดเวรแล้ว
-    const assignedPreferences = await updateAssignedPreferences(createdDuties, month, year);
+      // บันทึกประวัติการจัดเวร
+      if (appliedSchedule.length > 0) {
+        const shiftHistoryPromises = appliedSchedule.map(item => 
+          tx.shiftHistory.create({
+            data: {
+              userId: item.userId,
+              shifId: item.shifId,
+              locationId: locationId,
+              datetime: new Date(item.datetime),
+              isOT: item.isOT || false
+            }
+          })
+        );
+
+        await Promise.all(shiftHistoryPromises);
+        console.log(`Created ${shiftHistoryPromises.length} shift history records`);
+      }
+
+      return {
+        appliedSchedule,
+        errors,
+        summary: {
+          totalItems: schedule.length,
+          applied: appliedSchedule.length,
+          errors: errors.length,
+          successRate: ((appliedSchedule.length / schedule.length) * 100).toFixed(2) + "%"
+        }
+      };
+
+    });
 
     res.status(200).json({
       success: true,
       message: "Auto schedule applied successfully",
-      summary: {
-        totalShifts: schedule.length,
-        created: createdDuties.length,
-        errors: errors.length,
-        assignedPreferences: assignedPreferences
-      },
-      createdDuties: createdDuties,
-      errors: errors
+      data: result
     });
 
   } catch (error) {
     console.error("Error applying auto schedule:", error);
-    res.status(500).json({ error: "Failed to apply automatic schedule" });
+    console.error("Error stack:", error.stack);
+    res.status(500).json({ 
+      error: "Failed to apply automatic schedule", 
+      details: error.message 
+    });
   }
-}
-
-async function updateAssignedPreferences(createdDuties, month, year) {
-  const firstDay = dayjs().month(month).year(year).startOf("month");
-  const lastDay = dayjs().month(month).year(year).endOf("month");
-  
-  let updatedCount = 0;
-
-  for (const duty of createdDuties) {
-    try {
-      // หาการจองที่ตรงกับเวรที่ถูกจัด
-      const preference = await prisma.shiftPreference.findFirst({
-        where: {
-          userId: duty.userId,
-          shifId: duty.shifId,
-          datetime: {
-            gte: dayjs(duty.datetime).startOf("day").toDate(),
-            lte: dayjs(duty.datetime).endOf("day").toDate()
-          }
-        }
-      });
-
-      if (preference) {
-        // อัพเดทสถานะเป็น "ได้รับการจัดแล้ว"
-        await prisma.shiftPreference.update({
-          where: { id: preference.id },
-          data: { 
-            isReserved: true,
-            updatedAt: new Date()
-          }
-        });
-        updatedCount++;
-      }
-    } catch (error) {
-      console.error(`Error updating preference for duty ${duty.id}:`, error);
-    }
-  }
-
-  return updatedCount;
 }

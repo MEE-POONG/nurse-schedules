@@ -30,7 +30,7 @@ const StaffAssignmentPanel = ({ month, year, onAssignmentComplete }) => {
 
   // จัดพนักงานเข้าแผนก
   const [{ loading: assignLoading }, executeAssign] = useAxios(
-    { url: "/api/auto-assign-staff", method: "POST" },
+    { url: "/api/staff-assignment", method: "POST" },
     { manual: true }
   );
 
@@ -38,13 +38,13 @@ const StaffAssignmentPanel = ({ month, year, onAssignmentComplete }) => {
     try {
       const result = await executeAssign({
         data: {
+          mode: "auto",
           month: month,
-          year: year,
-          assignments: "auto"
+          year: year
         }
       });
 
-      alert(`จัดพนักงานเข้าแผนกสำเร็จ!\nจัดพนักงานได้: ${result.data.summary.assigned} คน\nพนักงานที่ไม่ได้จัด: ${result.data.summary.unassigned} คน`);
+      alert(`จัดพนักงานเข้าแผนกสำเร็จ!\nจัดพนักงานได้: ${result.data.summary.created} คน\nข้อผิดพลาด: ${result.data.summary.errors} รายการ`);
       
       await refetchExisting();
       onAssignmentComplete && onAssignmentComplete();
@@ -64,13 +64,14 @@ const StaffAssignmentPanel = ({ month, year, onAssignmentComplete }) => {
     try {
       const result = await executeAssign({
         data: {
+          mode: "manual",
           month: month,
           year: year,
           assignments: manualAssignments
         }
       });
 
-      alert(`จัดพนักงานเข้าแผนกสำเร็จ!\nจัดพนักงานได้: ${result.data.summary.created} คน`);
+      alert(`จัดพนักงานเข้าแผนกสำเร็จ!\nจัดพนักงานได้: ${result.data.summary.created} คน\nข้อผิดพลาด: ${result.data.summary.errors} รายการ`);
       
       setManualAssignments([]);
       await refetchExisting();
