@@ -431,9 +431,9 @@ export const TableSelectMonthAF = ({
                     </div>
                     <div>
                       <p className="mt-3 text-center">ลงชื่อ......................................................................ผู้จ่ายเงิน</p>
-                      <p className="pl-24 text-left">( นางเยาวมาลย์ สุวรรณทา )</p>
+                      <p className="pl-24 text-left">( นางสาวคุณัญญา เอิบพรมราช )</p>
                       <p className="pl-16 text-left"></p>
-                      <p className="pl-10 text-left">เจ้าพนักงานการเงินและบัญชีชำนาญงาน</p>
+                      <p className="pl-10 text-left">นักวิชาการการเงินและบัญชี</p>
                     </div>
                   </div>
 
