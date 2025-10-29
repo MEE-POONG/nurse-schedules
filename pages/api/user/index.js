@@ -9,6 +9,7 @@ export default async function handler(req, res) {
         const { ids } = req.query;
 
         let whereClause = {
+          isActive :true
         };
 
         // ถ้ามี ids ให้กรองตาม ID ที่ระบุ
