@@ -24,53 +24,143 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_TOKEN }}
 
-      #     - name: Build the Docker image
-      #       run: docker build -t chunwarayut/${{ steps.string.outputs.lowercase }}:latest .
-
-      - name: Push to Docker Hub RN
+      - name: Push to Docker Hub
         uses: docker/build-push-action@v4
         with:
           push: true
           tags: chunwarayut/${{ steps.string.outputs.lowercase }}:latest
-          
+
   deploy:
     needs: build
     runs-on: ubuntu-latest
-    
+
     steps:
       - id: string
         uses: ASzc/change-string-case-action@v1
         with:
           string: ${{ github.event.repository.name }}
-          
-      - name: SSH Command
-        uses: D3rHase/ssh-command-action@v0.2.2
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          user: ${{ secrets.SERVER_USER }}
-          private_key: ${{ secrets.SSH_KEY }}
-          command: docker pull chunwarayut/${{ steps.string.outputs.lowercase }}:latest && docker stop ${{ steps.string.outputs.lowercase }} && docker rm ${{ steps.string.outputs.lowercase }} && docker run --name ${{ steps.string.outputs.lowercase }} --restart=always -d -p 6040:3000 -e DATABASE_URL=${{ secrets.DATABASE_URL_RN }} --memory=512m --memory-swap=512m --cpus=1.5 --log-opt max-size=10m --log-opt max-file=3 chunwarayut/${{ steps.string.outputs.lowercase }}
 
-      - name: SSH Command
+      # === Service 1: nurse-schedules (RN) ===
+      - name: SSH Command docker pull (nurse-schedules)
         uses: D3rHase/ssh-command-action@v0.2.2
         with:
           host: ${{ secrets.SERVER_HOST }}
           user: ${{ secrets.SERVER_USER }}
           private_key: ${{ secrets.SSH_KEY }}
-          command: docker pull chunwarayut/${{ steps.string.outputs.lowercase }}:latest && docker stop pasuk-pn-tarangwen && docker rm pasuk-pn-tarangwen && docker run --name pasuk-pn-tarangwen --restart=always -d -p 6041:3000 -e DATABASE_URL=${{ secrets.DATABASE_URL_PN }} --memory=512m --memory-swap=512m --cpus=1.5 --log-opt max-size=10m --log-opt max-file=3 chunwarayut/${{ steps.string.outputs.lowercase }}
+          command: docker pull chunwarayut/${{ steps.string.outputs.lowercase }}:latest
 
-      - name: SSH Command
+      - name: SSH Command docker stop (nurse-schedules)
         uses: D3rHase/ssh-command-action@v0.2.2
         with:
           host: ${{ secrets.SERVER_HOST }}
           user: ${{ secrets.SERVER_USER }}
           private_key: ${{ secrets.SSH_KEY }}
-          command: docker pull chunwarayut/${{ steps.string.outputs.lowercase }}:latest && docker stop icu-rn-tarangwen && docker rm icu-rn-tarangwen && docker run --name icu-rn-tarangwen --restart=always -d -p 6042:3000 -e DATABASE_URL=${{ secrets.DATABASE_URL_RN_ICU }} --memory=512m --memory-swap=512m --cpus=1.5 --log-opt max-size=10m --log-opt max-file=3 chunwarayut/${{ steps.string.outputs.lowercase }}
+          command: docker stop ${{ steps.string.outputs.lowercase }}  || true
 
-      - name: SSH Command
+      - name: SSH Command docker rm (nurse-schedules)
         uses: D3rHase/ssh-command-action@v0.2.2
         with:
           host: ${{ secrets.SERVER_HOST }}
           user: ${{ secrets.SERVER_USER }}
           private_key: ${{ secrets.SSH_KEY }}
-          command: docker pull chunwarayut/${{ steps.string.outputs.lowercase }}:latest && docker stop icu-pn-tarangwen && docker rm icu-pn-tarangwen && docker run --name icu-pn-tarangwen --restart=always -d -p 6043:3000 -e DATABASE_URL=${{ secrets.DATABASE_URL_PN_ICU }} --memory=512m --memory-swap=512m --cpus=1.5 --log-opt max-size=10m --log-opt max-file=3 chunwarayut/${{ steps.string.outputs.lowercase }}
+          command: docker rm ${{ steps.string.outputs.lowercase }} || true
+
+      - name: SSH Command docker run (nurse-schedules)
+        uses: D3rHase/ssh-command-action@v0.2.2
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          user: ${{ secrets.SERVER_USER }}
+          private_key: ${{ secrets.SSH_KEY }}
+          command: docker run --name ${{ steps.string.outputs.lowercase }} --restart=always -d -p 6040:3000 -e DATABASE_URL="${{ secrets.DATABASE_URL_RN }}" --memory=512m --memory-swap=512m --cpus=1.5 --log-opt max-size=10m --log-opt max-file=3 chunwarayut/${{ steps.string.outputs.lowercase }}:latest
+
+      # === Service 2: pasuk-pn-tarangwen (PN) ===
+      - name: SSH Command docker stop (pasuk-pn-tarangwen)
+        uses: D3rHase/ssh-command-action@v0.2.2
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          user: ${{ secrets.SERVER_USER }}
+          private_key: ${{ secrets.SSH_KEY }}
+          command: docker stop pasuk-pn-tarangwen  || true
+
+      - name: SSH Command docker rm (pasuk-pn-tarangwen)
+        uses: D3rHase/ssh-command-action@v0.2.2
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          user: ${{ secrets.SERVER_USER }}
+          private_key: ${{ secrets.SSH_KEY }}
+          command: docker rm pasuk-pn-tarangwen || true
+
+      - name: SSH Command docker run (pasuk-pn-tarangwen)
+        uses: D3rHase/ssh-command-action@v0.2.2
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          user: ${{ secrets.SERVER_USER }}
+          private_key: ${{ secrets.SSH_KEY }}
+          command: docker run --name pasuk-pn-tarangwen --restart=always -d -p 6041:3000 -e DATABASE_URL="${{ secrets.DATABASE_URL_PN }}" --memory=512m --memory-swap=512m --cpus=1.5 --log-opt max-size=10m --log-opt max-file=3 chunwarayut/${{ steps.string.outputs.lowercase }}:latest
+
+      # === Service 3: icu-rn-tarangwen (RN ICU) ===
+      - name: SSH Command docker stop (icu-rn-tarangwen)
+        uses: D3rHase/ssh-command-action@v0.2.2
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          user: ${{ secrets.SERVER_USER }}
+          private_key: ${{ secrets.SSH_KEY }}
+          command: docker stop icu-rn-tarangwen || true
+
+      - name: SSH Command docker rm (icu-rn-tarangwen)
+        uses: D3rHase/ssh-command-action@v0.2.2
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          user: ${{ secrets.SERVER_USER }}
+          private_key: ${{ secrets.SSH_KEY }}
+          command: docker rm icu-rn-tarangwen || true
+
+      - name: SSH Command docker run (icu-rn-tarangwen)
+        uses: D3rHase/ssh-command-action@v0.2.2
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          user: ${{ secrets.SERVER_USER }}
+          private_key: ${{ secrets.SSH_KEY }}
+          command: docker run --name icu-rn-tarangwen --restart=always -d -p 6042:3000 -e DATABASE_URL="${{ secrets.DATABASE_URL_RN_ICU }}" --memory=512m --memory-swap=512m --cpus=1.5 --log-opt max-size=10m --log-opt max-file=3 chunwarayut/${{ steps.string.outputs.lowercase }}:latest
+
+      # === Service 4: icu-pn-tarangwen (PN ICU) ===
+      - name: SSH Command docker stop (icu-pn-tarangwen)
+        uses: D3rHase/ssh-command-action@v0.2.2
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          user: ${{ secrets.SERVER_USER }}
+          private_key: ${{ secrets.SSH_KEY }}
+          command: docker stop icu-pn-tarangwen || true
+
+      - name: SSH Command docker rm (icu-pn-tarangwen)
+        uses: D3rHase/ssh-command-action@v0.2.2
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          user: ${{ secrets.SERVER_USER }}
+          private_key: ${{ secrets.SSH_KEY }}
+          command: docker rm icu-pn-tarangwen || true
+
+      - name: SSH Command docker run (icu-pn-tarangwen)
+        uses: D3rHase/ssh-command-action@v0.2.2
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          user: ${{ secrets.SERVER_USER }}
+          private_key: ${{ secrets.SSH_KEY }}
+          command: docker run --name icu-pn-tarangwen --restart=always -d -p 6043:3000 -e DATABASE_URL="${{ secrets.DATABASE_URL_PN_ICU }}" --memory=512m --memory-swap=512m --cpus=1.5 --log-opt max-size=10m --log-opt max-file=3 chunwarayut/${{ steps.string.outputs.lowercase }}:latest
+
+      # === Cleanup & Logs ===
+      - name: SSH Command docker image prune
+        uses: D3rHase/ssh-command-action@v0.2.2
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          user: ${{ secrets.SERVER_USER }}
+          private_key: ${{ secrets.SSH_KEY }}
+          command: docker image prune -a -f
+
+      - name: SSH Command docker logs (nurse-schedules)
+        uses: D3rHase/ssh-command-action@v0.2.2
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          user: ${{ secrets.SERVER_USER }}
+          private_key: ${{ secrets.SSH_KEY }}
+          command: docker logs --timestamps --since=1h ${{ steps.string.outputs.lowercase }}
