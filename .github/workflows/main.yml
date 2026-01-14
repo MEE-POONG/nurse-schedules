@@ -71,7 +71,7 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           user: ${{ secrets.SERVER_USER }}
           private_key: ${{ secrets.SSH_KEY }}
-          command: docker run --name ${{ steps.string.outputs.lowercase }} --restart=always -d -p 6040:3000 -e DATABASE_URL="${{ secrets.DATABASE_URL_RN }}" --memory=512m --memory-swap=512m --cpus=1.5 --log-opt max-size=10m --log-opt max-file=3 chunwarayut/${{ steps.string.outputs.lowercase }}:latest
+          command: docker run --name ${{ steps.string.outputs.lowercase }} --network kong_kong-net --restart=always -d -p 6040:3000 -e DATABASE_URL="${{ secrets.DATABASE_URL_RN }}" --memory=512m --memory-swap=512m --cpus=1.5 --log-opt max-size=10m --log-opt max-file=3 chunwarayut/${{ steps.string.outputs.lowercase }}:latest
 
       # === Service 2: pasuk-pn-tarangwen (PN) ===
       - name: SSH Command docker stop (pasuk-pn-tarangwen)
@@ -96,7 +96,7 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           user: ${{ secrets.SERVER_USER }}
           private_key: ${{ secrets.SSH_KEY }}
-          command: docker run --name pasuk-pn-tarangwen --restart=always -d -p 6041:3000 -e DATABASE_URL="${{ secrets.DATABASE_URL_PN }}" --memory=512m --memory-swap=512m --cpus=1.5 --log-opt max-size=10m --log-opt max-file=3 chunwarayut/${{ steps.string.outputs.lowercase }}:latest
+          command: docker run --name pasuk-pn-tarangwen --network kong_kong-net --restart=always -d -p 6041:3000 -e DATABASE_URL="${{ secrets.DATABASE_URL_PN }}" --memory=512m --memory-swap=512m --cpus=1.5 --log-opt max-size=10m --log-opt max-file=3 chunwarayut/${{ steps.string.outputs.lowercase }}:latest
 
       # === Service 3: icu-rn-tarangwen (RN ICU) ===
       - name: SSH Command docker stop (icu-rn-tarangwen)
@@ -121,7 +121,7 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           user: ${{ secrets.SERVER_USER }}
           private_key: ${{ secrets.SSH_KEY }}
-          command: docker run --name icu-rn-tarangwen --restart=always -d -p 6042:3000 -e DATABASE_URL="${{ secrets.DATABASE_URL_RN_ICU }}" --memory=512m --memory-swap=512m --cpus=1.5 --log-opt max-size=10m --log-opt max-file=3 chunwarayut/${{ steps.string.outputs.lowercase }}:latest
+          command: docker run --name icu-rn-tarangwen --network kong_kong-net --restart=always -d -p 6042:3000 -e DATABASE_URL="${{ secrets.DATABASE_URL_RN_ICU }}" --memory=512m --memory-swap=512m --cpus=1.5 --log-opt max-size=10m --log-opt max-file=3 chunwarayut/${{ steps.string.outputs.lowercase }}:latest
 
       # === Service 4: icu-pn-tarangwen (PN ICU) ===
       - name: SSH Command docker stop (icu-pn-tarangwen)
@@ -146,7 +146,7 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           user: ${{ secrets.SERVER_USER }}
           private_key: ${{ secrets.SSH_KEY }}
-          command: docker run --name icu-pn-tarangwen --restart=always -d -p 6043:3000 -e DATABASE_URL="${{ secrets.DATABASE_URL_PN_ICU }}" --memory=512m --memory-swap=512m --cpus=1.5 --log-opt max-size=10m --log-opt max-file=3 chunwarayut/${{ steps.string.outputs.lowercase }}:latest
+          command: docker run --name icu-pn-tarangwen --network kong_kong-net --restart=always -d -p 6043:3000 -e DATABASE_URL="${{ secrets.DATABASE_URL_PN_ICU }}" --memory=512m --memory-swap=512m --cpus=1.5 --log-opt max-size=10m --log-opt max-file=3 chunwarayut/${{ steps.string.outputs.lowercase }}:latest
 
       # === Cleanup & Logs ===
       - name: SSH Command docker image prune
