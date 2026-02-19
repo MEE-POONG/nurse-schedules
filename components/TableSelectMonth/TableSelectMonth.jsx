@@ -143,13 +143,13 @@ export const TableSelectMonth = ({
       </div>
       <div className="overflow-x-auto p-5 my-10 min-h-screen bg-white rounded-md shadow-xl w-100 print:flex print:items-center print:justify-center">
         {userLoading ||
-        shifLoading ||
-        dutyLoading ||
-        dutyDeleteLoading ||
-        locationLoading ||
-        userListLoading ||
-        configurationLoading ||
-        dutyUserLoading ? (
+          shifLoading ||
+          dutyLoading ||
+          dutyDeleteLoading ||
+          locationLoading ||
+          userListLoading ||
+          configurationLoading ||
+          dutyUserLoading ? (
           <LoadingComponent />
         ) : (
           <></>
@@ -254,15 +254,14 @@ export const TableSelectMonth = ({
                 {arrayDayInMonth.map((day, index) => (
                   <td
                     key={index}
-                    className={`border border-black text-black  min-w-[40px] ${
-                      ["เสาร์", "อาทิตย์"].includes(
-                        dayjs(`${yearEN}-${+monthValue + 1}-${day + 1}`).format(
-                          "dddd"
-                        )
+                    className={`border border-black text-black  min-w-[40px] ${["เสาร์", "อาทิตย์"].includes(
+                      dayjs(`${yearEN}-${+monthValue + 1}-${day + 1}`).format(
+                        "dddd"
                       )
+                    )
                         ? "bg-white"
                         : "bg-white"
-                    } `}
+                      } `}
                   >
                     <div className="text-base">{day + 1}</div>
                   </td>
@@ -318,9 +317,8 @@ export const TableSelectMonth = ({
                           {person?.firstname ? key + 1 : ""}
                         </td>
                         <td
-                          className={`border border-black text-left sticky -left-5 ${
-                            key % 2 == 0 ? "bg-white" : "bg-white"
-                          }`}
+                          className={`border border-black text-left sticky -left-5 ${key % 2 == 0 ? "bg-white" : "bg-white"
+                            }`}
                         >
                           {person?.Title?.name} {person?.firstname}{" "}
                           {person?.lastname}
@@ -375,9 +373,8 @@ export const TableSelectMonth = ({
                         {person?.firstname ? key + 1 : ""}
                       </td>
                       <td
-                        className={`border border-black text-left sticky -left-5 ${
-                          key % 2 == 0 ? "bg-white" : "bg-white"
-                        }`}
+                        className={`border border-black text-left sticky -left-5 ${key % 2 == 0 ? "bg-white" : "bg-white"
+                          }`}
                       >
                         {person?.Title?.name} {person?.firstname}{" "}
                         {person?.lastname}
@@ -390,51 +387,69 @@ export const TableSelectMonth = ({
                       </td>
                       {/* แสดงรายละเอียดของตาราง กะ */}
 
-                      <td
-                        className="text-xs border border-black"
-                        colSpan={
-                          daysInMonth -
-                          (daysInMonth -
-                            person?.Duty.filter(
-                              (duty) => duty.Shif.name === "อบรม"
-                            ).length)
-                        }
-                      >
-                        {person.UserDuty?.TrainingName || "อบรม"}
-                      </td>
+                      {(() => {
+                        let content = [];
+                        let i = 0;
+                        while (i < daysInMonth) {
+                          const currentDay = i + 1;
+                          const hasTraining = person?.Duty?.some(
+                            (d) =>
+                              +dayjs(d.datetime).format("D") === currentDay &&
+                              d.Shif?.name === "อบรม"
+                          );
 
-                      {Array.from(
-                        {
-                          length:
-                            daysInMonth -
-                            person?.Duty.filter(
-                              (duty) => duty.Shif.name === "อบรม"
-                            ).length,
-                        },
-                        (_, index) => index + 1
-                      )?.map((day, index) => (
-                        <ModalSelectMonth
-                          key={index}
-                          userId={person?.id}
-                          Duty={person?.Duty}
-                          day={
-                            day +
-                            person?.Duty.filter(
-                              (duty) => duty.Shif.name === "อบรม"
-                            ).length
+                          if (hasTraining) {
+                            let colspan = 1;
+                            let j = i + 1;
+                            while (j < daysInMonth) {
+                              const nextDay = j + 1;
+                              const nextHasTraining = person?.Duty?.some(
+                                (d) =>
+                                  +dayjs(d.datetime).format("D") === nextDay &&
+                                  d.Shif?.name === "อบรม"
+                              );
+                              if (nextHasTraining) {
+                                colspan++;
+                                j++;
+                              } else {
+                                break;
+                              }
+                            }
+
+                            content.push(
+                              <td
+                                key={`train-${currentDay}`}
+                                className="text-xs border border-black"
+                                colSpan={colspan}
+                              >
+                                {person.UserDuty?.TrainingName || "อบรม"}
+                              </td>
+                            );
+                            i += colspan;
+                          } else {
+                            content.push(
+                              <ModalSelectMonth
+                                key={currentDay}
+                                userId={person?.id}
+                                Duty={person?.Duty}
+                                day={currentDay}
+                                name={`${person?.firstname} ${person?.lastname}`}
+                                Shif={shif}
+                                getUserList={getUserList}
+                                executeDuty={executeDuty}
+                                deleteDuty={deleteDuty}
+                                userLoading={userLoading}
+                                monthEN={+monthValue + 1}
+                                monthTH={monthTH}
+                                yearEN={yearEN}
+                                yearTH={yearTH}
+                              />
+                            );
+                            i++;
                           }
-                          name={person?.firstname + " " + person?.lastname}
-                          Shif={shif}
-                          getUserList={getUserList}
-                          executeDuty={executeDuty}
-                          deleteDuty={deleteDuty}
-                          userLoading={userLoading}
-                          monthEN={+monthValue + 1}
-                          monthTH={monthTH}
-                          yearEN={yearEN}
-                          yearTH={yearTH}
-                        />
-                      ))}
+                        }
+                        return content;
+                      })()}
 
                       <td className="border border-black">
                         {!person?.firstname ? <p>&nbsp;</p> : afternoonShift}
@@ -664,9 +679,8 @@ export const TableSelectMonth = ({
                     <tr key={key} className="bg-white border">
                       <td className="border border-black">{key + 1}</td>
                       <td
-                        className={`whitespace-nowrap border border-black text-left pl-3 ${
-                          key % 2 == 0 ? "bg-white" : "bg-white"
-                        }`}
+                        className={`whitespace-nowrap border border-black text-left pl-3 ${key % 2 == 0 ? "bg-white" : "bg-white"
+                          }`}
                       >
                         {person.Title.name} {person.firstname} {person.lastname}
                       </td>
