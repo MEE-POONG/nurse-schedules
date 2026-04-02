@@ -321,58 +321,71 @@ export const TableSelectMonthRed = ({
                         <td className="whitespace-nowrap border border-black">
                           {person.UserDuty?.Location?.name}
                         </td>
-                        {/* แสดงรายละเอียดของตาราง กะ */}
+                        {/* แสดงรายละเอียดของตาราง กะ แบบ inline merge */}
+                        {(() => {
+                          let content = [];
+                          let i = 0;
+                          while (i < daysInMonth) {
+                            const currentDay = i + 1;
+                            const hasTraining = person?.Duty?.some(
+                              (d) =>
+                                +dayjs(d.datetime).format("D") === currentDay &&
+                                d.Shif?.name === "อบรม"
+                            );
 
-                        <td
-                          className="text-xs border border-black"
-                          colSpan={
-                            daysInMonth -
-                            (daysInMonth -
-                              person?.Duty.filter(
-                                (duty) => duty.Shif.name === "อบรม"
-                              ).length)
-                          }
-                        >
-                          {person.UserDuty?.TrainingName || "อบรม"}
-                        </td>
+                            if (hasTraining) {
+                              let colspan = 1;
+                              let j = i + 1;
+                              while (j < daysInMonth) {
+                                const nextDay = j + 1;
+                                const nextHasTraining = person?.Duty?.some(
+                                  (d) =>
+                                    +dayjs(d.datetime).format("D") === nextDay &&
+                                    d.Shif?.name === "อบรม"
+                                );
+                                if (nextHasTraining) {
+                                  colspan++;
+                                  j++;
+                                } else {
+                                  break;
+                                }
+                              }
 
-                        {Array.from(
-                          {
-                            length:
-                              daysInMonth -
-                              person?.Duty.filter(
-                                (duty) => duty.Shif.name === "อบรม"
-                              ).length,
-                          },
-                          (_, index) => index + 1
-                        )?.map((day, index) => (
-                          <ModalSelectMonth
-                            key={index}
-                            userId={person?.id}
-                            Duty={person?.Duty}
-                            day={
-                              day +
-                              person?.Duty.filter(
-                                (duty) => duty.Shif.name === "อบรม"
-                              ).length
+                              content.push(
+                                <td
+                                  key={`train-${currentDay}`}
+                                  className="text-xs border border-black"
+                                  colSpan={colspan}
+                                >
+                                  {person.UserDuty?.TrainingName || "อบรม"}
+                                </td>
+                              );
+                              i += colspan;
+                            } else {
+                              content.push(
+                                <ModalSelectMonthRed
+                                  key={currentDay}
+                                  userId={person?.id}
+                                  Duty={person?.Duty}
+                                  day={currentDay}
+                                  name={`${person?.firstname} ${person?.lastname}`}
+                                  Shif={shif}
+                                  getUserList={getUserList}
+                                  executeDuty={executeDuty}
+                                  deleteDuty={deleteDuty}
+                                  userLoading={userLoading}
+                                  monthEN={+monthValue + 1}
+                                  monthTH={monthTH}
+                                  yearEN={yearEN}
+                                  yearTH={yearTH}
+                                />
+                              );
+                              i++;
                             }
-                            name={person?.firstname + " " + person?.lastname}
-                            Shif={shif}
-                            getUserList={getUserList}
-                            executeDuty={executeDuty}
-                            deleteDuty={deleteDuty}
-                            userLoading={userLoading}
-                            monthEN={+monthValue + 1}
-                            monthTH={monthTH}
-                            yearEN={yearEN}
-                            yearTH={yearTH}
-                          />
-                        ))}
+                          }
+                          return content;
+                        })()}
 
-                        {/* <td className="border border-black">{afternoonShift}</td> */}
-                        {/* <td className="border border-black">{nightShift}</td> */}
-                        {/* <td className="border border-black">{ot}</td> */}
-                        {/* <td className="border border-black">{workingDay}</td> */}
                         <td className="border border-black">
                           {!person?.firstname ? <p>&nbsp;</p> : workingDay + ot}
                         </td>
