@@ -151,7 +151,10 @@ export async function sendShiftReminders(prisma, { leadMinutes = 60 } = {}) {
   for (const { model, isOnCall } of sources) {
     const rows = await model.findMany({
       where: {
-        reminderSentAt: null,
+        // เวรเก่าถูกสร้างก่อนจะมี field นี้ → ใน Mongo field จะ "ไม่มี" (ไม่ใช่ null)
+        // Prisma { reminderSentAt: null } จะ match เฉพาะที่เป็น null จริง ไม่ครอบคลุม field ที่ไม่มี
+        // จึงต้อง OR กับ isSet:false ด้วย ไม่งั้นจะ scan ได้ 0 เสมอ
+        OR: [{ reminderSentAt: null }, { reminderSentAt: { isSet: false } }],
         datetime: { gte: rangeStart, lte: rangeEnd },
       },
       include: { Shif: true },
