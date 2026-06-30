@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a nurse scheduling system for Krabi Hospital (tarangwen), built with Next.js and MongoDB. The system manages nurse duty schedules, on-call duties, overtime tracking, and generates printable reports for monthly schedules.
+This is a nurse scheduling system for Khonburi Hospital (โรงพยาบาลครบุรี, tarangwen), Nakhon Ratchasima province, built with Next.js and MongoDB. The system manages nurse duty schedules, on-call duties, overtime tracking, and generates printable reports for monthly schedules.
 
 ## Development Commands
 
