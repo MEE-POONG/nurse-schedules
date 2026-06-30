@@ -10,13 +10,12 @@ import { TableSelectMonthRed } from "../TableSelectMonth/TableSelectMonthRed";
 import { TableSelectMonthAFC } from "../TableSelectMonth/TableSelectMonthAFC";
 import { TableSelectMonthRF } from "../TableSelectMonth/TableSelectMonthRF";
 
-import FullCalendar from "@fullcalendar/react";
-import dayGridPlugin from "@fullcalendar/daygrid"; // a plugin!
 import useAxios from "axios-hooks";
 
 import { authProvider } from "src/authProvider";
 import dayjs from "dayjs";
 import LoadingComponent from "../LoadingComponent";
+import ScheduleCalendar from "../ScheduleCalendar";
 
 export default function TableIndex({ month, year }) {
   const { dateStore } = useSelector((state) => ({ ...state }));
@@ -46,62 +45,16 @@ export default function TableIndex({ month, year }) {
       <div className="flex justify-center items-center pb-10">
         <button
           onClick={handelUnCheckIsMe}
-          className="bg-white hover:bg-white text-black font-bold mt-6 -mb-10 py-2 px-4 rounded-xl inline-flex items-center"
+          className="inline-flex items-center px-5 py-2 mt-6 font-bold text-white bg-green-600 rounded-xl shadow hover:bg-green-700"
         >
-          <span className="mx-2">แสดงแบบตาราง</span>
+          <span className="mx-2">📋 แสดงแบบตาราง</span>
         </button>
       </div>
 
       {loading ? <LoadingComponent /> : <></>}
 
-      <div className="w-100 bg-[#d5a5a5] shadow-xl p-5 my-10 rounded-md overflow-x-auto">
-        <FullCalendar
-          plugins={[dayGridPlugin]}
-          initialView="dayGridMonth"
-          titleFormat={{
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          }}
-          headerToolbar={{
-            start: "title",
-            center: "",
-            end: "",
-          }}
-          events={data
-            ?.find((e) => e.id === authProvider.getIdentity().id)
-            ?.Duty?.map((e) => {
-              return {
-                date: dayjs(e.datetime).format("YYYY-MM-DD"),
-                title: " - " + e.Shif?.name + " - ",
-                textColor:
-                  e.Shif?.name === "R"
-                    ? "#CC0000"
-                    : e.Shif?.name === "x"
-                    ? "#CC0000"
-                    : e.Shif?.name === "R"
-                    ? "#CC0000"
-                    : e.Shif?.class === "circle-dark"
-                    ? "#0F0F0F"
-                    : e.Shif?.class === "circle-red"
-                    ? "#CC0000"
-                    : e.Shif?.class === "circle-blue"
-                    ? "#0000ff"
-                    : "#000000",
-                borderColor:
-                  e.Shif?.name === "R"
-                    ? "#CC0000"
-                    : e.Shif?.class === "circle-dark"
-                    ? "#0F0F0F"
-                    : e.Shif?.class === "circle-red"
-                    ? "#CC0000"
-                    : e.Shif?.class === "circle-blue"
-                    ? "#0000ff"
-                    : "#FFFFFF",
-                backgroundColor: "#FFFFFF",
-              };
-            })}
-        />
+      <div className="px-2 my-6">
+        <ScheduleCalendar data={data} month={monthValue} year={yearValue} />
       </div>
     </>
   ) : (
@@ -109,9 +62,9 @@ export default function TableIndex({ month, year }) {
       <div className="flex justify-center items-center pb-24">
         <button
           onClick={handelCheckIsMe}
-          className="bg-white hover:bg-white text-black font-bold mt-6 -mb-10 py-2 px-4 rounded-xl inline-flex items-center"
+          className="inline-flex items-center px-5 py-2 mt-6 font-bold text-white bg-green-600 rounded-xl shadow hover:bg-green-700"
         >
-          <span className="mx-2">แสดงแบบปฎิทิน</span>
+          <span className="mx-2">📅 แสดงแบบปฏิทิน</span>
         </button>
       </div>
 
