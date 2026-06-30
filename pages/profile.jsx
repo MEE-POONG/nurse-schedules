@@ -99,7 +99,7 @@ function Profile() {
                 แก้ไขข้อมูล
               </label>
               <div className="relative">
-                <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded whitespace-nowrap">
+                <button className="bg-teal-700 hover:bg-teal-800 text-white font-bold py-3 px-6 rounded whitespace-nowrap">
                   แก้ไขข้อมูล
                 </button>
               </div>

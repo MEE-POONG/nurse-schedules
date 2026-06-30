@@ -28,15 +28,15 @@ export default function Home() {
   const yearTH = (selectedYear + 543).toString();
 
   return (
-    <>
-      <div className="my-5">
-        <div className="text-center mt-10">
-          <h1>สรุปยอดตารางเวรประจำเดือน {monthTH} พ.ศ. {yearTH}</h1>
-        </div>
+    <div className="px-4 py-6 mx-auto max-w-6xl sm:px-6">
+      {/* หัวข้อหน้า */}
+      <div className="mb-5">
+        <h1 className="text-xl font-semibold text-gray-800 sm:text-2xl">สรุปยอดตารางเวร</h1>
+        <p className="mt-0.5 text-sm text-gray-500">ประจำเดือน {monthTH} พ.ศ. {yearTH}</p>
       </div>
 
       {/* เลือกเดือน/ปี */}
-      <div className="max-w-4xl mx-auto px-4 mb-6">
+      <div className="mb-5">
         <MonthYearSelector
           selectedMonth={selectedMonth}
           selectedYear={selectedYear}
@@ -45,16 +45,16 @@ export default function Home() {
       </div>
 
       {/* เวรของฉัน + เข้าเวรวันนี้ */}
-      <div className="max-w-6xl mx-auto px-4 mb-6">
+      <div className="mb-5">
         <TodayBoard month={selectedMonth} year={selectedYear} />
       </div>
 
       {/* การ์ดสรุปความเป็นธรรมแบบย่อ */}
-      <div className="max-w-4xl mx-auto px-4 mb-6">
+      <div className="mb-5">
         <FairnessSummaryCard month={selectedMonth} year={selectedYear} />
       </div>
 
       <TableIndex month={selectedMonth} year={selectedYear} />
-    </>
+    </div>
   );
 }

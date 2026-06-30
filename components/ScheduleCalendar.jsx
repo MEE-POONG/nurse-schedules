@@ -53,7 +53,7 @@ const ScheduleCalendar = ({ data, month, year }) => {
   };
 
   const renderDayCell = (day) => {
-    const todayCls = isToday(day) ? "ring-2 ring-green-500" : "";
+    const todayCls = isToday(day) ? "ring-2 ring-teal-500" : "";
     const weekendCls = [0, 6].includes(ref.date(day).day()) ? "bg-red-50" : "bg-white";
 
     if (mode === "me") {
@@ -111,13 +111,13 @@ const ScheduleCalendar = ({ data, month, year }) => {
         <div className="flex p-0.5 bg-gray-100 rounded-lg">
           <button
             onClick={() => setMode("me")}
-            className={`px-3 py-1 text-sm rounded-md ${mode === "me" ? "bg-white shadow text-green-700 font-medium" : "text-gray-500"}`}
+            className={`px-3 py-1 text-sm rounded-md ${mode === "me" ? "bg-white shadow text-teal-700 font-medium" : "text-gray-500"}`}
           >
             เวรของฉัน
           </button>
           <button
             onClick={() => setMode("team")}
-            className={`px-3 py-1 text-sm rounded-md ${mode === "team" ? "bg-white shadow text-green-700 font-medium" : "text-gray-500"}`}
+            className={`px-3 py-1 text-sm rounded-md ${mode === "team" ? "bg-white shadow text-teal-700 font-medium" : "text-gray-500"}`}
           >
             ทั้งทีม
           </button>

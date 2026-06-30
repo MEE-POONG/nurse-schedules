@@ -128,7 +128,7 @@ const AutoSchedulePanel = ({ month, year, locationId, onScheduleGenerated }) => 
         <button
           onClick={handleGenerateSchedule}
           disabled={generateLoading}
-          className="px-6 py-2 text-white bg-green-600 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-6 py-2 text-white bg-teal-700 rounded-md hover:bg-teal-800 focus:outline-none focus:ring-2 focus:ring-teal-500 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {generateLoading ? "กำลังสร้างตาราง..." : "สร้างตารางเวรอัตโนมัติ"}
         </button>
@@ -301,7 +301,7 @@ const AutoSchedulePanel = ({ month, year, locationId, onScheduleGenerated }) => 
                 type="checkbox"
                 checked={replaceExisting}
                 onChange={(e) => setReplaceExisting(e.target.checked)}
-                className="mr-2 w-4 h-4 text-blue-600"
+                className="mr-2 w-4 h-4 text-teal-600"
               />
               <span className="text-sm">
                 แทนที่ตารางเวรที่มีอยู่ (จะลบเวรเดิมของแผนกนี้ในเดือนนี้ก่อนบันทึกใหม่)
@@ -320,7 +320,7 @@ const AutoSchedulePanel = ({ month, year, locationId, onScheduleGenerated }) => 
             
             <button
               onClick={() => window.print()}
-              className="px-4 py-2 text-white bg-green-600 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="px-4 py-2 text-white bg-teal-700 rounded-md hover:bg-teal-800 focus:outline-none focus:ring-2 focus:ring-teal-500"
             >
               🖨️ พิมพ์ตาราง
             </button>
@@ -337,7 +337,7 @@ const AutoSchedulePanel = ({ month, year, locationId, onScheduleGenerated }) => 
             <button
               onClick={handleApplySchedule}
               disabled={applyLoading}
-              className="px-6 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-2 text-white bg-teal-700 rounded-md hover:bg-teal-800 focus:outline-none focus:ring-2 focus:ring-teal-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {applyLoading ? "กำลังบันทึก..." : "บันทึกตารางเวร"}
             </button>

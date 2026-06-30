@@ -261,7 +261,7 @@ export const TableSelectMonth = ({
                       key={index}
                       className={`border min-w-[40px] ${
                         isToday
-                          ? "bg-green-200 text-green-900 font-bold ring-2 ring-green-500 ring-inset border-green-600"
+                          ? "bg-teal-100 text-teal-900 font-bold ring-2 ring-teal-500 ring-inset border-teal-600"
                           : "border-black text-black bg-white"
                       } `}
                     >
@@ -934,7 +934,7 @@ export const TableSelectMonth = ({
                 บันทึก
               </label>
               <div className="relative">
-                <button className="px-4 py-2 font-bold text-black bg-blue-500 rounded hover:bg-blue-700">
+                <button className="px-4 py-2 font-bold text-black bg-teal-700 rounded hover:bg-teal-800">
                   บันทึก
                 </button>
               </div>

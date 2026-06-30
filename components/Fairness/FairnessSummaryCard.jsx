@@ -51,7 +51,7 @@ const FairnessSummaryCard = ({ month, year }) => {
         </div>
         <Link
           href="/fairness"
-          className="px-4 py-2 text-sm font-semibold text-green-700 whitespace-nowrap rounded-lg border border-green-700 hover:bg-green-50"
+          className="px-4 py-2 text-sm font-semibold text-teal-700 whitespace-nowrap rounded-lg border border-teal-700 hover:bg-teal-50"
         >
           ดูรายละเอียด →
         </Link>

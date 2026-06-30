@@ -141,7 +141,7 @@ const TodayBoard = ({ month, year }) => {
                       <div className="text-xs text-gray-400">—</div>
                     ) : (
                       list.map(({ user, ot }, i) => (
-                        <div key={i} className={`text-xs ${user.id === me?.id ? "font-bold text-green-700" : "text-gray-700"}`}>
+                        <div key={i} className={`text-xs ${user.id === me?.id ? "font-bold text-teal-700" : "text-gray-700"}`}>
                           {nameOf(user)}{ot ? " (OT)" : ""}
                         </div>
                       ))
