@@ -519,6 +519,9 @@ async function generateAdvancedAutoSchedule({ staff, specialStaff, normalStaff, 
       stats.assignedOnCallToday = false;
     });
 
+    // เคารพการจองแน่นอน (isReserved) ก่อน: จัดกะ/วันหยุดที่พยาบาลจองไว้
+    honorReservations(schedule, staffStats, currentDate, locationId, shifts, preferences);
+
     // Assign วันหยุดตามที่กำหนดไว้
     assignDayOffs(schedule, staffStats, dayOffSchedule, currentDate, locationId, shifts);
 
@@ -661,6 +664,42 @@ function generateBalancedDayOffs(staff, startDate, endDate, weeks) {
   return dayOffSchedule;
 }
 
+// เคารพการจอง "แน่นอน" (isReserved): จัดกะหรือวันหยุดที่พยาบาลจองไว้ก่อนการจัดอัตโนมัติ
+// - จอง x (หยุด) → ให้หยุดวันนั้น (กันไม่ให้ถูกจัดเวร)
+// - จอง ช/บ/ด → จัดกะนั้นให้แน่นอน
+function honorReservations(schedule, staffStats, currentDate, locationId, shifts, preferences) {
+  const dateStr = currentDate.format("YYYY-MM-DD");
+  const idToShift = {};
+  shifts.forEach((s) => { idToShift[s.id] = s; });
+
+  (preferences || [])
+    .filter((p) => p.isReserved && dayjs(p.datetime).format("YYYY-MM-DD") === dateStr)
+    .forEach((p) => {
+      const stats = staffStats[p.userId];
+      if (!stats || stats.assignedShiftsToday.length > 0) return; // จัดไปแล้ววันนี้
+      const shiftObj =
+        idToShift[p.shifId] ||
+        (p.Shif && shifts.find((s) => s.name === p.Shif.name && !s.isOT));
+      if (!shiftObj) return;
+      const name = shiftObj.name;
+
+      schedule.push({
+        userId: p.userId,
+        shifId: shiftObj.id,
+        locationId,
+        datetime: currentDate.toDate(),
+        isOT: !!shiftObj.isOT,
+        isOnCall: false,
+        shiftType: name,
+        assignedBy: "reserved",
+      });
+
+      if (["ช", "บ", "ด"].includes(name)) updateStaffStats(stats, name, currentDate);
+      stats.assignedShiftsToday.push(name);
+      if (["x", "R"].includes(name)) stats.totalDayOffs++;
+    });
+}
+
 function assignDayOffs(schedule, staffStats, dayOffSchedule, currentDate, locationId, shifts) {
   const dayIndex = currentDate.diff(dayjs().month(currentDate.month()).year(currentDate.year()).startOf("month"), "day");
   
@@ -676,7 +715,8 @@ function assignDayOffs(schedule, staffStats, dayOffSchedule, currentDate, locati
   }
   
   Object.entries(dayOffSchedule).forEach(([userId, days]) => {
-    if (days.includes(dayIndex)) {
+    // ข้ามถ้าวันนี้ถูกจัด (เช่น จองเวร/จองหยุดไว้แล้ว) เพื่อไม่ให้ซ้ำ
+    if (days.includes(dayIndex) && staffStats[userId].assignedShiftsToday.length === 0) {
       schedule.push({
         userId: userId,
         shifId: offShift.id,
