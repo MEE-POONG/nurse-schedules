@@ -78,8 +78,9 @@ const ShiftReservationModal = ({
 
   if (!isOpen) return null;
 
-  const availableShifts = shifts?.filter(shift => 
-    shift.isShif && ["ช", "บ", "ด"].includes(shift.name)
+  // รวมกะทำงาน (ช/บ/ด) และวันหยุด (x) ให้จองได้
+  const availableShifts = shifts?.filter(shift =>
+    (shift.isShif && ["ช", "บ", "ด"].includes(shift.name)) || shift.name === "x"
   ) || [];
 
   const currentDateReservations = existingReservations?.filter(res => 
@@ -127,7 +128,9 @@ const ShiftReservationModal = ({
                 <option value="">-- เลือกกะงาน --</option>
                 {availableShifts.map(shift => (
                   <option key={shift.id} value={shift.id}>
-                    {shift.name} ({getShiftTime(shift.name)})
+                    {shift.name === "x"
+                      ? "หยุด (วันหยุด)"
+                      : `${shift.name} (${getShiftTime(shift.name)})`}
                   </option>
                 ))}
               </select>
