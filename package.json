@@ -39,6 +39,7 @@
     "react-to-print": "^2.14.11",
     "react-toastify": "^9.1.2",
     "thai-baht-text": "^1.0.8",
+    "web-push": "^3.6.7",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {

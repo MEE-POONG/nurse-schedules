@@ -143,3 +143,15 @@ model ShiftHistory {
   isOT       Boolean   @default(false)
   createdAt  DateTime  @default(now())
 }
+
+// เก็บ Web Push subscription ของแต่ละเบราว์เซอร์/อุปกรณ์ (สำหรับส่งแจ้งเตือน)
+model PushSubscription {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  endpoint  String   @unique
+  p256dh    String
+  auth      String
+  userId    String?  @db.ObjectId
+  userAgent String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
