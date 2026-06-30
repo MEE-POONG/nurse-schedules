@@ -41,8 +41,8 @@ const SHIFT_RULES = {
   H1: { description: "Rest หลังเวรเดี่ยว ≥ 12 ชม.", minRestHours: 12 },
   H2: { description: "Rest หลังเวรควบ ≥ 24 ชม.", minRestHours: 24 },
   H3: { description: "Rest หลัง On-Call ≥ 12 ชม.", minRestHours: 12 },
-  H4: { description: "ไม่เกิน 4 N ภายใน 14 วัน", maxNightPer14d: 4 },
-  H5: { description: "ไม่เกิน 2 เวรควบ/เดือน/คน และคั่น ≥ 3 วัน", maxDoublePerMonth: 2, minDaysBetweenDouble: 3 },
+  H4: { description: "ไม่เกิน 6 N ภายใน 14 วัน (อิงเวรจริง ดึก ~7/เดือน)", maxNightPer14d: 6 },
+  H5: { description: "เวรควบ ≤ 10/เดือน/คน และคั่น ≥ 1 วัน (อิงเวรจริง ~7/เดือน)", maxDoublePerMonth: 10, minDaysBetweenDouble: 1 },
   H6: { description: "ไม่เกิน 4 On-Call/เดือน/คน และห้าม OC ติด OC", maxOnCallPerMonth: 4, noConsecutiveOnCall: true },
   H7: { description: "เวรชนิดเดียวกันติดกันได้สูงสุด 2 ครั้ง", maxConsecutiveSame: 2 },
   H8: { description: "ลูปหมุนมาตรฐาน: ด → ช → บ", rotationPattern: ["ด", "ช", "บ"] },
@@ -140,18 +140,19 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { month, year, locationId, weeks = 4 } = req.body;
+    const { month, year, locationId } = req.body;
 
     if (!month || !year) {
       return res.status(400).json({ error: "Month and year are required" });
     }
 
-    console.log(`Generating auto schedule for ${month}/${year}, ${weeks} weeks, location: ${locationId}`);
-
-    // ดึงข้อมูลที่จำเป็น
+    // จัดตารางให้ครอบคลุม "ทั้งเดือนจริง" (30/31 วัน) ไม่ใช่แค่ 4 สัปดาห์ (28 วัน)
     const startDate = dayjs().month(month).year(year).startOf("month");
-    const endDate = startDate.add(weeks, "weeks").subtract(1, "day");
+    const endDate = dayjs().month(month).year(year).endOf("month");
     const totalDays = endDate.diff(startDate, "day") + 1;
+    const weeks = Math.ceil(totalDays / 7);
+
+    console.log(`Generating auto schedule for ${month}/${year}, ${totalDays} days (${weeks} weeks), location: ${locationId}`);
 
     // ดึงรายชื่อพนักงาน
     const staff = await getActiveStaff(locationId, month, year);
@@ -247,6 +248,8 @@ export default async function handler(req, res) {
     res.status(200).json({
       success: true,
       schedule: schedule.schedule,
+      violations: schedule.violations || [],
+      staffStats: schedule.staffStats || {},
       summary: {
         totalStaff: staff.length,
         specialStaff: specialStaff.length,
@@ -419,10 +422,10 @@ async function getAvailableShifts() {
       "x": "x" // วันหยุด
     };
     
-    // กรองเวรที่ต้องการ - ใช้เวรทั้งหมดที่มีอยู่
+    // กรองเวรที่ต้องการ - รวมกะ OT (isOT=true) ด้วย เพื่อให้จัดเวร OT/เวรควบได้
     const filteredShifts = allShifts.filter(shift => {
       const mappedName = shiftMapping[shift.name];
-      return mappedName && (mappedName === "x" || shift.isShif === true);
+      return mappedName && (mappedName === "x" || shift.isShif === true || shift.isOT === true);
     });
     
     // ถ้าไม่มีเวรที่กรองแล้ว ให้ใช้เวรทั้งหมด
@@ -472,25 +475,29 @@ async function generateAdvancedAutoSchedule({ staff, specialStaff, normalStaff, 
   const reservationMap = createReservationMap(preferences);
 
   // กำหนดจำนวนเวรแต่ละกะ/วัน - ตามเงื่อนไขใหม่
+  // จำนวนเวร "regular" ต่อกะต่อวัน อิงจากเวรจริงของ ICU (เฉลี่ย มี.ค.–พ.ค. 2026)
+  // หมายเหตุ: on-call จัดแยกใน OnCallDuty ไม่ใช่ที่นี่ → oncall = 0
   const SHIFT_REQUIREMENTS = {
-    "ช": { regular: 4, oncall: 1 },
-    "บ": { regular: 2, oncall: 1 },
-    "ด": { regular: 2, oncall: 1 }
+    "ช": { regular: 2, oncall: 0 },
+    "บ": { regular: 2, oncall: 0 },
+    "ด": { regular: 2, oncall: 0 }
+  };
+
+  // วันหยุด (เสาร์-อาทิตย์/นักขัตฤกษ์): เวรเช้า regular ลดเหลือ 1 (จากเวรจริง weekend ช≈0–1)
+  const WEEKEND_REQUIREMENTS = {
+    "ช": { regular: 1, oncall: 0 },
+    "บ": { regular: 2, oncall: 0 },
+    "ด": { regular: 2, oncall: 0 }
   };
 
   // ฟังก์ชันสำหรับดึงจำนวนเวรที่ต้องการตามวัน
   function getShiftRequirements(shiftName, currentDate) {
     const baseReq = SHIFT_REQUIREMENTS[shiftName];
     if (!baseReq) return { regular: 0, oncall: 0 };
-    
-    // เสาร์-อาทิตย์ และวันหยุดนักขัตฤกษ์: ลดจำนวนเวร
+
     if (isWeekendOrHoliday(currentDate)) {
-      return { 
-        regular: Math.max(1, Math.floor(baseReq.regular * 0.7)), 
-        oncall: baseReq.oncall 
-      };
+      return WEEKEND_REQUIREMENTS[shiftName] || baseReq;
     }
-    
     return baseReq;
   }
 
@@ -521,14 +528,15 @@ async function generateAdvancedAutoSchedule({ staff, specialStaff, normalStaff, 
     // Assign เวรหลัก (M, A, N)
     assignMainShifts(schedule, staffStats, currentDate, locationId, shifts, SHIFT_REQUIREMENTS, getShiftRequirements, reservationMap, violations);
 
-    // Assign เวรควบ (MA, NA) ตามโอกาส (เฉพาะกลุ่มทั่วไป)
-    assignDoubleShifts(schedule, staffStats, currentDate, locationId, shifts, violations, reservationMap);
-
-    // Assign On-Call (เฉพาะกลุ่มทั่วไป)
-    assignOnCallShifts(schedule, staffStats, currentDate, locationId, shifts, violations, reservationMap);
+    // Assign OT เช้า + เวรควบ (ช(OT)+บ, ด+บ(OT)) ตามรูปแบบจริง
+    // หมายเหตุ: on-call จัดแยกใน OnCallDuty ไม่ทำที่นี่
+    assignOTAndDoubles(schedule, staffStats, currentDate, locationId, shifts);
 
     // ตรวจสอบและแก้ไขข้อขัดแย้ง
-    resolveConflicts(schedule, staffStats, currentDate, violations);
+    resolveConflicts(schedule, staffStats, currentDate, violations, shifts);
+
+    // เติมวันหยุด (x) ให้คนที่ยังไม่มีเวร/หยุดในวันนี้ เพื่อไม่ให้เหลือช่องว่าง
+    fillRemainingAsOff(schedule, staffStats, currentDate, locationId, shifts);
   }
 
   // คำนวณคะแนนเป้าหมาย
@@ -723,8 +731,9 @@ function assignSpecialWeekendOffs(schedule, staffStats, currentDate, locationId,
 }
 
 function assignMainShifts(schedule, staffStats, currentDate, locationId, shifts, SHIFT_REQUIREMENTS, getShiftRequirements, reservationMap, violations) {
-  // ใช้ลำดับการหมุนเวรตามที่กำหนด: ด → ช → บ
-  const shiftTypes = SHIFT_RULES.H15.rotationPattern;
+  // จัดดึก/บ่ายก่อนเช้า เพราะเวรเช้ามี OT เสริม (ช OT) อยู่แล้ว
+  // ถ้าจัดเช้าก่อนจะแย่งคนจนดึก/บ่ายไม่ครบ
+  const shiftTypes = ["ด", "บ", "ช"];
   
   for (const shiftType of shiftTypes) {
     // หาเวรที่ตรงกับ shiftType (รองรับทั้งเวรเก่าและใหม่)
@@ -765,54 +774,117 @@ function assignMainShifts(schedule, staffStats, currentDate, locationId, shifts,
         datetime: currentDate.toDate(),
         isOT: false,
         isOnCall: false,
+        shiftType: shiftType,
         assignedBy: "auto-main"
       });
-      
+
       updateStaffStats(staffStats[selectedStaff.id], shiftType, currentDate);
+      // บันทึกว่าวันนี้ทำกะนี้แล้ว เพื่อให้จัดเวร OT/ควบต่อยอดได้ และกันเวรหลักซ้ำ
+      staffStats[selectedStaff.id].assignedShiftsToday.push(shiftType);
       assignedCount++;
     }
   }
 }
 
-function assignDoubleShifts(schedule, staffStats, currentDate, locationId, shifts, violations, reservationMap = {}) {
-  // ใช้เฉพาะเวรควบที่อนุญาตตาม H14
-  const allowedDoubleShifts = SHIFT_RULES.H14.allowedShifts.filter(shift => 
-    shift.includes('/') && !shift.startsWith('OC') && !shift.endsWith('OC')
-  );
-  
-  for (const shiftType of allowedDoubleShifts) {
-    // หาเวรที่ตรงกับ shiftType (รองรับทั้งเวรเก่าและใหม่)
-    const shiftObj = shifts.find(s => {
-      const mappedName = getShiftTypeById(s.name);
-      return mappedName === shiftType;
+// หา Shif object ตามชื่อกะ + สถานะ OT + สี (class)
+function findShiftObj(shifts, name, { isOT = false, cls = null } = {}) {
+  const matches = shifts.filter((s) => s.name === name && !!s.isOT === !!isOT);
+  if (cls) {
+    const byClass = matches.find((s) => s.class === cls);
+    if (byClass) return byClass;
+  }
+  return matches[0] || null;
+}
+
+// จัดเวร OT และเวรควบตามรูปแบบจริงของ ICU (อิงเวรจริง มี.ค.–พ.ค. 2026):
+//  - เช้า OT (circle-dark) ~2 คน/วันธรรมดา มักทำควบกับบ่าย → เวรควบ ช(OT)+บ (เด่นสุด)
+//  - บ่าย OT (circle-red) ~1 คน/วันธรรมดา มักทำควบกับดึก → เวรควบ ด+บ(OT)
+// เก็บเป็น 2 Duty แยกในวันเดียว (DB ไม่มีกะ "ช/บ"); on-call จัดแยกใน OnCallDuty จึงไม่ทำที่นี่
+function assignOTAndDoubles(schedule, staffStats, currentDate, locationId, shifts) {
+  const weekend = isWeekendOrHoliday(currentDate);
+  const chOT = findShiftObj(shifts, "ช", { isOT: true, cls: "circle-dark" });
+  const baOT = findShiftObj(shifts, "บ", { isOT: true, cls: "circle-red" });
+
+  const pushOT = (userId, shiftObj, baseType) => {
+    const stats = staffStats[userId];
+    schedule.push({
+      userId,
+      shifId: shiftObj.id,
+      locationId,
+      datetime: currentDate.toDate(),
+      isOT: true,
+      isOnCall: false,
+      shiftType: baseType,
+      assignedBy: "auto-ot",
     });
-    
-    if (!shiftObj) {
-      console.log(`No double shift found for type: ${shiftType}`);
-      continue;
+    stats.shiftCounts[baseType] = (stats.shiftCounts[baseType] || 0) + 1;
+    stats.totalWorkload += SHIFT_WEIGHTS[baseType]?.weight || 1;
+    const becomesDouble = stats.assignedShiftsToday.length >= 1;
+    stats.assignedShiftsToday.push(baseType);
+    if (becomesDouble) {
+      stats.doubleShiftCount++;
+      stats.lastDoubleShiftDate = currentDate;
     }
-    
-    // ตรวจสอบโอกาสในการ assign เวรควบ (เฉพาะกลุ่มทั่วไป)
-    if (Math.random() < 0.3) { // 30% โอกาส
-      const availableStaff = getAvailableStaffForDoubleShift(staffStats, shiftType, currentDate, violations);
-      
-      if (availableStaff.length > 0) {
-        const selectedStaff = selectBestStaff(availableStaff, staffStats, shiftType, currentDate, reservationMap);
-        
-        schedule.push({
-          userId: selectedStaff.id,
-          shifId: shiftObj.id,
-          locationId: locationId,
-          datetime: currentDate.toDate(),
-          isOT: false,
-          isOnCall: false,
-          assignedBy: "auto-double"
-        });
-        
-        updateStaffStats(staffStats[selectedStaff.id], shiftType, currentDate);
+  };
+
+  // เช้า OT — ให้คนที่ทำบ่ายอยู่แล้วก่อน (เวรควบ ช(OT)+บ) แล้วจึงคนว่าง
+  if (chOT) {
+    const target = weekend ? 0 : 2;
+    let n = 0;
+    const pick = (filterFn) => {
+      for (const [id, s] of Object.entries(staffStats)) {
+        if (n >= target) break;
+        if (SPECIAL_ROLES.includes(s.role)) continue;       // กลุ่มพิเศษไม่ทำ OT
+        if (s.assignedShiftsToday.includes("ช")) continue;  // มีเช้าแล้ว
+        if (s.doubleShiftCount >= SHIFT_RULES.H5.maxDoublePerMonth) continue;
+        if (!filterFn(s)) continue;
+        pushOT(id, chOT, "ช");
+        n++;
       }
+    };
+    pick((s) => s.assignedShiftsToday.includes("บ")); // ควบกับบ่าย
+    pick((s) => s.assignedShiftsToday.length === 0);  // คนว่าง (เช้า OT เดี่ยว)
+  }
+
+  // บ่าย OT — ให้คนที่ทำดึกอยู่แล้ว (เวรควบ ด+บ(OT)) เฉพาะวันธรรมดา
+  if (baOT && !weekend) {
+    const target = 1;
+    let n = 0;
+    for (const [id, s] of Object.entries(staffStats)) {
+      if (n >= target) break;
+      if (SPECIAL_ROLES.includes(s.role)) continue;
+      if (s.assignedShiftsToday.includes("บ")) continue;
+      if (!s.assignedShiftsToday.includes("ด")) continue;
+      if (s.doubleShiftCount >= SHIFT_RULES.H5.maxDoublePerMonth) continue;
+      pushOT(id, baOT, "บ");
+      n++;
     }
   }
+}
+
+// เติมวันหยุด (x) ให้พนักงานที่วันนี้ยังไม่มีเวรหรือวันหยุด เพื่อให้ตารางเต็มไม่มีช่องว่าง
+function fillRemainingAsOff(schedule, staffStats, currentDate, locationId, shifts) {
+  const offShift = shifts.find((s) => s.name === "x");
+  if (!offShift) return;
+  const dateStr = currentDate.format("YYYY-MM-DD");
+  Object.entries(staffStats).forEach(([userId, stats]) => {
+    const hasAny = schedule.some(
+      (s) => s.userId === userId && dayjs(s.datetime).format("YYYY-MM-DD") === dateStr
+    );
+    if (!hasAny) {
+      schedule.push({
+        userId,
+        shifId: offShift.id,
+        locationId,
+        datetime: currentDate.toDate(),
+        isOT: false,
+        isOnCall: false,
+        shiftType: "x",
+        assignedBy: "auto-fill-off",
+      });
+      stats.totalDayOffs++;
+    }
+  });
 }
 
 function assignOnCallShifts(schedule, staffStats, currentDate, locationId, shifts, violations, reservationMap = {}) {
@@ -936,19 +1008,8 @@ function isValidShiftAssignment(stats, shiftType, currentDate) {
     return false;
   }
   
-  // ตรวจสอบ H15: ลำดับการหมุนเวร ด → ช → บ (เฉพาะเวรเดี่ยว)
-  if (["ด", "ช", "บ"].includes(shiftType) && stats.lastShift && ["ด", "ช", "บ"].includes(stats.lastShift)) {
-    const rotationPattern = SHIFT_RULES.H15.rotationPattern;
-    const lastShiftIndex = rotationPattern.indexOf(stats.lastShift);
-    const currentShiftIndex = rotationPattern.indexOf(shiftType);
-    
-    // ตรวจสอบว่าตามลำดับการหมุนเวรหรือไม่
-    const expectedNextIndex = (lastShiftIndex + 1) % rotationPattern.length;
-    if (currentShiftIndex !== expectedNextIndex) {
-      return false;
-    }
-  }
-  
+  // หมายเหตุ: ไม่บังคับลำดับหมุนเวร ด→ช→บ แบบเป๊ะ (H15) เพราะเวรจริงของ ICU
+  // ไม่ได้หมุนตามลำดับนั้น การบังคับทำให้กรองคนออกมากจนจัดเวรไม่ครบ
   return true;
 }
 
@@ -1126,11 +1187,17 @@ function updateStaffStats(stats, shiftType, currentDate) {
   }
 }
 
-function resolveConflicts(schedule, staffStats, currentDate, violations) {
+function resolveConflicts(schedule, staffStats, currentDate, violations, shifts = []) {
   const dateStr = currentDate.format("YYYY-MM-DD");
-  
+
+  // map ObjectId ของกะ → ชื่อกะ (ช/บ/ด/x) เพื่อระบุชนิดเวรของ schedule item ได้ถูกต้อง
+  // (getShiftTypeById คืน null เมื่อรับ ObjectId)
+  const idToType = {};
+  shifts.forEach((s) => { idToType[s.id] = s.name; });
+  const typeOf = (item) => item.shiftType || idToType[item.shifId] || getShiftTypeById(item.shifId);
+
   // ตรวจสอบการขัดแย้งของเวรในวันเดียวกัน
-  const dailyShifts = schedule.filter(s => 
+  const dailyShifts = schedule.filter(s =>
     dayjs(s.datetime).format("YYYY-MM-DD") === dateStr
   );
   
@@ -1148,7 +1215,7 @@ function resolveConflicts(schedule, staffStats, currentDate, violations) {
     if (shifts.length > 1) {
       // ตรวจสอบเวรที่ไม่อนุญาตตาม H14
       shifts.forEach(shift => {
-        const shiftType = getShiftTypeById(shift.shifId);
+        const shiftType = typeOf(shift);
         if (!SHIFT_RULES.H14.allowedShifts.includes(shiftType)) {
           violations.push({
             type: "FORBIDDEN_SHIFT",
@@ -1174,8 +1241,8 @@ function resolveConflicts(schedule, staffStats, currentDate, violations) {
       const forbiddenPairs = [];
       for (let i = 0; i < shifts.length; i++) {
         for (let j = i + 1; j < shifts.length; j++) {
-          const shift1Type = getShiftTypeById(shifts[i].shifId);
-          const shift2Type = getShiftTypeById(shifts[j].shifId);
+          const shift1Type = typeOf(shifts[i]);
+          const shift2Type = typeOf(shifts[j]);
           
           if (SHIFT_RULES.H13.forbiddenConsecutive.includes(`${shift1Type}/${shift2Type}`) ||
               SHIFT_RULES.H13.forbiddenConsecutive.includes(`${shift2Type}/${shift1Type}`)) {
@@ -1186,8 +1253,8 @@ function resolveConflicts(schedule, staffStats, currentDate, violations) {
       
       // ลบเวรที่ขัดแย้งกับเงื่อนไขห้ามเวรซ้ำติดกัน
       forbiddenPairs.forEach(([shift1, shift2]) => {
-        const shift1Type = getShiftTypeById(shift1.shifId);
-        const shift2Type = getShiftTypeById(shift2.shifId);
+        const shift1Type = typeOf(shift1);
+        const shift2Type = typeOf(shift2);
         
         violations.push({
           type: "FORBIDDEN_CONSECUTIVE",
@@ -1215,7 +1282,7 @@ function resolveConflicts(schedule, staffStats, currentDate, violations) {
           // อัพเดทสถิติ
           const stats = staffStats[userId];
           if (stats) {
-            const shiftType = getShiftTypeById(shiftToRemove.shifId);
+            const shiftType = typeOf(shiftToRemove);
             if (shiftType) {
               stats.shiftCounts[shiftType] = Math.max(0, stats.shiftCounts[shiftType] - 1);
               stats.totalWorkload -= getShiftWeight({ id: userId, ...stats }, shiftType);
@@ -1232,7 +1299,7 @@ function resolveConflicts(schedule, staffStats, currentDate, violations) {
             userId: userId,
             date: dateStr,
             removedShift: shiftToRemove.shifId,
-            reason: `Forbidden consecutive shift: ${getShiftTypeById(shift1.shifId)}/${getShiftTypeById(shift2.shifId)}`
+            reason: `Forbidden consecutive shift: ${typeOf(shift1)}/${typeOf(shift2)}`
           });
         }
       });
@@ -1243,13 +1310,18 @@ function resolveConflicts(schedule, staffStats, currentDate, violations) {
         dayjs(s.datetime).format("YYYY-MM-DD") === dateStr
       );
       
-      if (remainingShifts.length > 1) {
+      // เวรควบที่ถูกต้องตามเวรจริง (ช+บ หรือ ด+บ) ไม่ต้องลบ
+      const baseTypes = [...new Set(remainingShifts.map(typeOf))].sort();
+      const pairKey = baseTypes.join("+");
+      const isAllowedDouble = remainingShifts.length === 2 && (pairKey === "ช+บ" || pairKey === "ด+บ");
+
+      if (remainingShifts.length > 1 && !isAllowedDouble) {
         const sortedShifts = remainingShifts.sort((a, b) => {
-          const aWeight = SHIFT_WEIGHTS[getShiftTypeById(a.shifId)]?.weight || 0;
-          const bWeight = SHIFT_WEIGHTS[getShiftTypeById(b.shifId)]?.weight || 0;
+          const aWeight = SHIFT_WEIGHTS[typeOf(a)]?.weight || 0;
+          const bWeight = SHIFT_WEIGHTS[typeOf(b)]?.weight || 0;
           return bWeight - aWeight;
         });
-        
+
         // ลบเวรที่มีน้ำหนักต่ำกว่า
         for (let i = 1; i < sortedShifts.length; i++) {
           const shiftToRemove = sortedShifts[i];
@@ -1265,7 +1337,7 @@ function resolveConflicts(schedule, staffStats, currentDate, violations) {
             // อัพเดทสถิติ
             const stats = staffStats[userId];
             if (stats) {
-              const shiftType = getShiftTypeById(shiftToRemove.shifId);
+              const shiftType = typeOf(shiftToRemove);
               if (shiftType) {
                 stats.shiftCounts[shiftType] = Math.max(0, stats.shiftCounts[shiftType] - 1);
                 stats.totalWorkload -= getShiftWeight({ id: userId, ...stats }, shiftType);
@@ -1290,70 +1362,12 @@ function resolveConflicts(schedule, staffStats, currentDate, violations) {
     }
   });
   
-  // ตรวจสอบการละเมิดข้อจำกัดการพักผ่อน
-  Object.entries(staffStats).forEach(([userId, stats]) => {
-    if (stats.lastShift && stats.lastShiftDate) {
-      const daysSinceLastShift = currentDate.diff(stats.lastShiftDate, "day");
-      const minRestHours = getMinRestHours(stats.lastShift);
-      const minRestDays = minRestHours / 24;
-      
-      if (daysSinceLastShift < minRestDays) {
-        // ลบเวรที่ขัดแย้งกับข้อจำกัดการพักผ่อน
-        const conflictingShifts = dailyShifts.filter(s => s.userId === userId);
-        conflictingShifts.forEach(shift => {
-          const removeIndex = schedule.findIndex(s => 
-            s.userId === shift.userId && 
-            s.datetime.getTime() === shift.datetime.getTime() &&
-            s.shifId === shift.shifId
-          );
-          
-          if (removeIndex !== -1) {
-            schedule.splice(removeIndex, 1);
-            
-            violations.push({
-              type: "INSUFFICIENT_REST",
-              userId: userId,
-              date: dateStr,
-              lastShift: stats.lastShift,
-              lastShiftDate: stats.lastShiftDate.format("YYYY-MM-DD"),
-              requiredRest: minRestHours,
-              actualRest: daysSinceLastShift * 24
-            });
-          }
-        });
-      }
-    }
-  });
-  
-  // ตรวจสอบการหมุนเวรตามลำดับ ด → ช → บ
-  Object.entries(staffStats).forEach(([userId, stats]) => {
-    if (stats.lastShift && ["ด", "ช", "บ"].includes(stats.lastShift)) {
-      const dailyShiftsForUser = dailyShifts.filter(s => s.userId === userId);
-      
-      dailyShiftsForUser.forEach(shift => {
-        const shiftType = getShiftTypeById(shift.shifId);
-        if (["ด", "ช", "บ"].includes(shiftType)) {
-          const rotationPattern = SHIFT_RULES.H15.rotationPattern;
-          const lastShiftIndex = rotationPattern.indexOf(stats.lastShift);
-          const currentShiftIndex = rotationPattern.indexOf(shiftType);
-          
-          // ตรวจสอบว่าตามลำดับการหมุนเวรหรือไม่
-          const expectedNextIndex = (lastShiftIndex + 1) % rotationPattern.length;
-          if (currentShiftIndex !== expectedNextIndex) {
-            violations.push({
-              type: "ROTATION_VIOLATION",
-              userId: userId,
-              date: dateStr,
-              lastShift: stats.lastShift,
-              currentShift: shiftType,
-              expectedShift: rotationPattern[expectedNextIndex],
-              description: `ไม่เป็นไปตามลำดับการหมุนเวร ด → ช → บ (${stats.lastShift} → ${shiftType})`
-            });
-          }
-        }
-      });
-    }
-  });
+  // หมายเหตุ: ไม่ตรวจ rest ซ้ำที่นี่ เพราะ isValidShiftAssignment เช็กเวลาพัก
+  // ตั้งแต่ตอน assign แล้ว (ตอนนั้น lastShiftDate ยังเป็นเวรก่อนหน้า เทียบได้ถูกต้อง)
+  // เดิมโค้ดส่วนนี้รัน "หลัง" updateStaffStats ทำให้ lastShiftDate = วันนี้
+  // → daysSinceLastShift = 0 < minRestDays → ลบเวรที่เพิ่งจัดทิ้งทุกอัน เหลือแต่ off
+
+  // ไม่รายงาน ROTATION_VIOLATION แล้ว (ด→ช→บ ไม่ใช่กฎที่เวรจริงทำตาม จึงเป็น noise)
 }
 
 // ฟังก์ชันช่วยสำหรับการแปลง shift ID เป็นชื่อเวร

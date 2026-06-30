@@ -10,7 +10,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { schedule, locationId, month, year, weeks } = req.body;
+    const { schedule, locationId, month, year, weeks, replaceExisting } = req.body;
 
     if (!schedule || !Array.isArray(schedule)) {
       return res.status(400).json({ error: "Schedule array is required" });
@@ -20,13 +20,28 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: "Location ID is required" });
     }
 
-    console.log(`Applying auto schedule for ${month}/${year}, ${weeks} weeks, location: ${locationId}`);
+    console.log(`Applying auto schedule for ${month}/${year}, ${weeks} weeks, location: ${locationId}, replaceExisting: ${replaceExisting}`);
     console.log(`Total schedule items: ${schedule.length}`);
 
     // เริ่ม transaction
     const result = await prisma.$transaction(async (tx) => {
       const appliedSchedule = [];
       const errors = [];
+      let deletedCount = 0;
+
+      // ถ้าเลือกแทนที่ของเดิม: ลบเวรเดิมของแผนกนี้ในเดือนที่เลือกทั้งหมดก่อน
+      if (replaceExisting && month != null && year != null) {
+        const firstDay = dayjs().year(year).month(month).startOf("month").toDate();
+        const lastDay = dayjs().year(year).month(month).endOf("month").toDate();
+        const deleted = await tx.duty.deleteMany({
+          where: {
+            locationId: locationId,
+            datetime: { gte: firstDay, lte: lastDay },
+          },
+        });
+        deletedCount = deleted.count;
+        console.log(`Replace mode: deleted ${deletedCount} existing duties`);
+      }
 
       for (const item of schedule) {
         try {
@@ -80,8 +95,7 @@ export default async function handler(req, res) {
               where: { id: existingDuty.id },
               data: {
                 shifId: item.shifId,
-                isOT: item.isOT || false,
-                isOnCall: item.isOnCall || false
+                isOT: item.isOT || false
               }
             });
 
@@ -101,8 +115,7 @@ export default async function handler(req, res) {
                 shifId: item.shifId,
                 locationId: locationId,
                 datetime: new Date(item.datetime),
-                isOT: item.isOT || false,
-                isOnCall: item.isOnCall || false
+                isOT: item.isOT || false
               }
             });
 
@@ -147,9 +160,12 @@ export default async function handler(req, res) {
         errors,
         summary: {
           totalItems: schedule.length,
-          applied: appliedSchedule.length,
+          created: appliedSchedule.length,
+          deleted: deletedCount,
           errors: errors.length,
-          successRate: ((appliedSchedule.length / schedule.length) * 100).toFixed(2) + "%"
+          successRate: schedule.length > 0
+            ? ((appliedSchedule.length / schedule.length) * 100).toFixed(2) + "%"
+            : "0%"
         }
       };
 
@@ -158,6 +174,7 @@ export default async function handler(req, res) {
     res.status(200).json({
       success: true,
       message: "Auto schedule applied successfully",
+      summary: result.summary,
       data: result
     });
 

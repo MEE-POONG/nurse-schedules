@@ -28,6 +28,12 @@ const OfficialScheduleTable = ({ month, year, locationFilter = null, generatedSc
     method: "GET"
   });
 
+  // ดึงข้อมูลกะทั้งหมด เพื่อ map shifId → ชื่อกะ (รวมกะ OT ที่ไม่ได้อยู่ใน map แบบ hardcode)
+  const [{ data: shifData }] = useAxios({
+    url: "/api/shif",
+    method: "GET"
+  });
+
 
 
   // กรองข้อมูลตามแผนกที่เลือก
@@ -148,15 +154,17 @@ const OfficialScheduleTable = ({ month, year, locationFilter = null, generatedSc
     return summary;
   };
 
-  // ฟังก์ชันสำหรับแปลงชื่อเวร
+  // ฟังก์ชันสำหรับแปลงชื่อเวร — ใช้ข้อมูลกะจริงจาก /api/shif ก่อน (ครอบคลุมกะ OT)
   function getShiftName(shifId) {
+    const fromDb = shifData?.find((s) => s.id === shifId);
+    if (fromDb) return fromDb.name;
+
     const shiftMap = {
       "66c74ecaaf47d3097ba9acb3": "ช", // เช้า
       "66c74ecaaf47d3097ba9acb4": "บ", // บ่าย
       "66c74ecaaf47d3097ba9acb5": "ด", // ดึก
       "66c74ecaaf47d3097ba9acb6": "x", // วันหยุด
     };
-    
     return shiftMap[shifId] || "ไม่ทราบ";
   }
 
