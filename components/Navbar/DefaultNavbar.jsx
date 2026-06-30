@@ -34,6 +34,12 @@ export default function DefaultNavbar() {
                 สรุปยอดตารางเวรประจำเดือน
               </Link>
               <Link
+                href="/reservation"
+                className="text-gray-800 text-sm font-semibold hover:text-green-700 mr-4"
+              >
+                จองเวร
+              </Link>
+              <Link
                 href="/on-call"
                 className="text-gray-800 text-sm font-semibold hover:text-green-700 mr-4"
               >
@@ -59,6 +65,12 @@ export default function DefaultNavbar() {
                   จัดตารางอัตโนมัติ
                 </Link>
               )}
+              <Link
+                href="/fairness"
+                className="text-gray-800 text-sm font-semibold hover:text-green-700 mr-4"
+              >
+                สรุปความเป็นธรรม
+              </Link>
             </div>
 
             <div className="hidden sm:flex sm:items-center">
@@ -110,6 +122,12 @@ export default function DefaultNavbar() {
                 สรุปยอดตารางเวรประจำเดือน
               </Link>
               <Link
+                href="/reservation"
+                className="text-gray-800 text-sm font-semibold hover:text-green-700 mb-1 flex justify-center"
+              >
+                จองเวร
+              </Link>
+              <Link
                 href="/on-call"
                 className="text-gray-800 text-sm font-semibold hover:text-green-700 mb-1 flex justify-center"
               >
@@ -138,6 +156,13 @@ export default function DefaultNavbar() {
                   จัดตารางอัตโนมัติ
                 </Link>
               )}
+
+              <Link
+                href="/fairness"
+                className="text-gray-800 text-sm font-semibold hover:text-green-700 mb-1 flex justify-center"
+              >
+                สรุปความเป็นธรรม
+              </Link>
 
               <div className="flex justify-center items-center border-t-2 pt-2">
                 <Link
