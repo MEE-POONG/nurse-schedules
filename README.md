@@ -123,9 +123,40 @@ yarn          # หรือ npm install
 ```env
 # MongoDB connection string (ต้องเป็น replica set / รองรับ transaction)
 DATABASE_URL="mongodb+srv://<user>:<password>@<cluster>/<db-name>?authSource=admin&tls=true"
+
+# Web Push (PWA แจ้งเตือน) — สร้างคีย์ด้วย: npx web-push generate-vapid-keys
+VAPID_PUBLIC_KEY="<vapid-public-key>"
+VAPID_PRIVATE_KEY="<vapid-private-key>"
+NEXT_PUBLIC_VAPID_PUBLIC_KEY="<vapid-public-key>"   # ค่าเดียวกับ VAPID_PUBLIC_KEY
+VAPID_SUBJECT="mailto:admin@example.com"
+
+# ลับสำหรับ endpoint cron (เตือนก่อนเข้าเวร / broadcast เดือนใหม่) — ทางเลือกแต่แนะนำ
+CRON_SECRET="<random-secret>"
 ```
 
 > ⚠️ ค่า `DATABASE_URL` ชี้ไปยังฐานข้อมูลจริง อย่า commit รหัสผ่านลง git
+
+#### การแจ้งเตือน (Web Push)
+
+ระบบส่งแจ้งเตือนใน 4 กรณี:
+
+| เหตุการณ์ | ทำงานอย่างไร |
+|-----------|--------------|
+| จัดเวร / แก้เวร | อัตโนมัติเมื่อบันทึกที่ `POST /api/duty` |
+| เวร On-call (ICU) | อัตโนมัติเมื่อบันทึกที่ `POST /api/on-call` |
+| เตือนก่อนเข้าเวร | ตั้ง cron เรียก `GET /api/push/cron/shift-reminders?lead=60` (ทุก 15–30 นาที) |
+| เปิดตารางเดือนใหม่ | เรียก `POST /api/push/announce-month` (broadcast ทุกคน) |
+
+ตัวอย่างตั้ง crontab (เตือนล่วงหน้า 60 นาที, เช็คทุก 15 นาที):
+
+```cron
+*/15 * * * * curl -s -H "x-cron-secret: $CRON_SECRET" "https://<your-domain>/api/push/cron/shift-reminders?lead=60"
+```
+
+> 🐳 **ถ้า deploy ด้วย Docker** ใช้ `cron sidecar` แทน host crontab ได้เลย — ดูตัวอย่าง [`docker-compose.example.yml`](docker-compose.example.yml)
+> และอย่าลืมส่ง `VAPID_*` (ฝั่ง server) กับ `CRON_SECRET` เข้า container ตอน **runtime** ด้วย (Dockerfile ไม่ได้ copy `.env` ไปขั้น deploy)
+>
+> ⚙️ **โปรเจกต์นี้ deploy ผ่าน GitHub Actions** — ตัว cron ทำเป็น scheduled workflow ที่ [`.github/workflows/shift-reminders.yml`](.github/workflows/shift-reminders.yml) (SSH เข้า server แล้ว curl ทุก service ที่ `localhost:6040-6043`). ต้องเพิ่ม repo secret `CRON_SECRET` และ workflow จะเริ่มทำงานก็ต่อเมื่อไฟล์อยู่บน branch `main` แล้ว
 
 ### 3. เตรียมฐานข้อมูล
 
