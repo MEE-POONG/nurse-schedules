@@ -8,27 +8,29 @@ datasource db {
 }
 
 model Duty {
-  id         String    @id @default(auto()) @map("_id") @db.ObjectId
-  Shif       Shif?     @relation(fields: [shifId], references: [id])
-  User       User?     @relation(fields: [userId], references: [id])
-  Location   Location? @relation(fields: [locationId], references: [id])
-  locationId String?   @db.ObjectId
-  shifId     String?   @db.ObjectId
-  userId     String    @db.ObjectId
-  datetime   DateTime  @default(now())
-  isOT       Boolean?
+  id             String    @id @default(auto()) @map("_id") @db.ObjectId
+  Shif           Shif?     @relation(fields: [shifId], references: [id])
+  User           User?     @relation(fields: [userId], references: [id])
+  Location       Location? @relation(fields: [locationId], references: [id])
+  locationId     String?   @db.ObjectId
+  shifId         String?   @db.ObjectId
+  userId         String    @db.ObjectId
+  datetime       DateTime  @default(now())
+  isOT           Boolean?
+  reminderSentAt DateTime? // เวลาที่ส่ง "เตือนก่อนเข้าเวร" แล้ว (กันส่งซ้ำ)
 }
 
 model OnCallDuty {
-  id         String    @id @default(auto()) @map("_id") @db.ObjectId
-  Shif       Shif?     @relation(fields: [shifId], references: [id])
-  User       User?     @relation(fields: [userId], references: [id])
-  Location   Location? @relation(fields: [locationId], references: [id])
-  locationId String?   @db.ObjectId
-  shifId     String?   @db.ObjectId
-  userId     String    @db.ObjectId
-  datetime   DateTime  @default(now())
-  isOT       Boolean?
+  id             String    @id @default(auto()) @map("_id") @db.ObjectId
+  Shif           Shif?     @relation(fields: [shifId], references: [id])
+  User           User?     @relation(fields: [userId], references: [id])
+  Location       Location? @relation(fields: [locationId], references: [id])
+  locationId     String?   @db.ObjectId
+  shifId         String?   @db.ObjectId
+  userId         String    @db.ObjectId
+  datetime       DateTime  @default(now())
+  isOT           Boolean?
+  reminderSentAt DateTime? // เวลาที่ส่ง "เตือนก่อนเข้าเวร" แล้ว (กันส่งซ้ำ)
 }
 
 model UserDuty {

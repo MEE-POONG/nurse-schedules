@@ -1,0 +1,36 @@
+# ตัวอย่าง deploy ด้วย Docker Compose พร้อม cron sidecar สำหรับ "เตือนก่อนเข้าเวร"
+# คัดลอกเป็น docker-compose.yml แล้วเติมค่า env จริง (อย่า commit ค่าลับลง git)
+#
+#   docker compose -f docker-compose.yml up -d
+#
+services:
+  app:
+    image: chunwarayut/tarangwen:latest
+    restart: unless-stopped
+    ports:
+      - "6040:3000" # container ฟังที่พอร์ต 3000 (ENV PORT=3000 ใน Dockerfile)
+    environment:
+      DATABASE_URL: "mongodb+srv://<user>:<pass>@<cluster>/<db>?authSource=admin&tls=true"
+      # ฝั่ง server ใช้ส่ง Web Push (ต้องมีตอน runtime)
+      VAPID_PUBLIC_KEY: "<vapid-public-key>"
+      VAPID_PRIVATE_KEY: "<vapid-private-key>"
+      VAPID_SUBJECT: "mailto:admin@example.com"
+      # ลับสำหรับ endpoint cron / broadcast
+      CRON_SECRET: "<random-secret>"
+
+  # ยิง endpoint เตือนก่อนเข้าเวรทุก 15 นาที (เตือนล่วงหน้า 60 นาที)
+  push-cron:
+    image: curlimages/curl:latest
+    restart: unless-stopped
+    depends_on:
+      - app
+    environment:
+      CRON_SECRET: "<random-secret>" # ต้องตรงกับของ app
+    entrypoint: ["sh", "-c"]
+    command:
+      - |
+        while true; do
+          curl -s -H "x-cron-secret: $$CRON_SECRET" \
+            "http://app:3000/api/push/cron/shift-reminders?lead=60" || true
+          sleep 900
+        done

@@ -1,0 +1,25 @@
+name: Shift Reminders Cron
+
+# เตือนก่อนเข้าเวร — SSH เข้า server แล้ว curl ทุก service ที่ localhost (พอร์ต 6040-6043)
+# หมายเหตุ: GitHub schedule ใช้เวลา UTC และอาจดีเลย์/ข้ามรอบได้ช่วง runner คับคั่ง
+#           endpoint คำนวณเวลาไทย (UTC+7) เองจึงไม่กระทบ lead time
+on:
+  schedule:
+    - cron: "*/15 * * * *" # ทุก 15 นาที
+  workflow_dispatch: # กดรันเองได้จากแท็บ Actions
+
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger shift reminders on all services
+        uses: D3rHase/ssh-command-action@v0.2.2
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          user: ${{ secrets.SERVER_USER }}
+          private_key: ${{ secrets.SSH_KEY }}
+          command: >-
+            for p in 6040 6041 6042 6043; do
+            curl -s -H "x-cron-secret: ${{ secrets.CRON_SECRET }}"
+            "http://localhost:$p/api/push/cron/shift-reminders?lead=60" || true;
+            done
