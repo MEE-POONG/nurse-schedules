@@ -32,16 +32,10 @@ export default async function handler(req, res) {
             Duty: {
               include: {
                 Shif: true,
-                Location: true,
               },
               where: {
                 AND: { datetime: { gte: firstDay.format() } },
                 datetime: { lte: lastDay.format() },
-              },
-              orderBy: {
-                Location: {
-                  name: "asc",
-                },
               },
             },
             Position: true,

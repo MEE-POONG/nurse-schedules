@@ -80,6 +80,31 @@ export default function ScheduleBoard({ month, year }) {
     [usersRaw]
   );
 
+  // จัดทำดัชนีเวร [userId][day] = duties[] ครั้งเดียว แทนการ filter ซ้ำทุกเซลล์ (40×31 ครั้ง/render)
+  const dutyIndex = useMemo(() => {
+    const idx = {};
+    users.forEach((u) => {
+      const byDay = {};
+      (u.Duty || []).forEach((d) => {
+        const day = dayjs(d.datetime).date();
+        (byDay[day] ||= []).push({
+          id: d.id,
+          shifId: d.shifId ?? d.Shif?.id,
+          name: d.Shif?.name,
+          isOT: d.isOT || d.Shif?.isOT,
+          isOnCall: d.isOnCall,
+          Shif: d.Shif,
+        });
+      });
+      Object.values(byDay).forEach((arr) =>
+        arr.sort((a, b) => metaOf(a.name).order - metaOf(b.name).order)
+      );
+      idx[u.id] = byDay;
+    });
+    return idx;
+  }, [users]);
+  const getDuties = (user, day) => dutyIndex[user.id]?.[day] || [];
+
   const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
   const isWeekend = (day) => [0, 6].includes(ref.date(day).day());
   const isToday = (day) => isCurrentMonth && today.date() === day;
@@ -93,7 +118,7 @@ export default function ScheduleBoard({ month, year }) {
       userId: user.id,
       userName: nameOf(user),
       day,
-      duties: dutiesOfDay(user, day),
+      duties: getDuties(user, day),
     });
   };
 
@@ -228,7 +253,7 @@ export default function ScheduleBoard({ month, year }) {
                         <div className="text-[10px] text-gray-400">{user.Position?.name}</div>
                       </td>
                       {days.map((day) => {
-                        const duties = dutiesOfDay(user, day);
+                        const duties = getDuties(user, day);
                         return (
                           <td
                             key={day}
