@@ -45,20 +45,24 @@ const AutoSchedulePanel = ({ month, year, locationId, onScheduleGenerated }) => 
 
       // ตรวจสอบรูปแบบข้อมูลที่ได้รับ
       console.log("API Response:", result.data);
-      
-      // จัดการข้อมูลที่ได้รับจาก API
-      const scheduleData = result.data.schedule || result.data;
-      
-      setGeneratedSchedule(scheduleData);
+
+      // จัดเก็บเป็น object เดียวให้ตรงกับที่ส่วนแสดงผลใช้งาน
+      const data = result.data || {};
+      setGeneratedSchedule({
+        schedule: data.schedule || [],
+        violations: data.violations || data.summary?.constraintViolations || [],
+        staffStats: data.staffStats || {},
+        summary: data.summary || {},
+      });
       setShowPreview(true);
     } catch (error) {
       console.error("Error generating schedule:", error);
-      alert("เกิดข้อผิดพลาดในการสร้างตารางอัตโนมัติ");
+      alert("เกิดข้อผิดพลาดในการสร้างตารางอัตโนมัติ: " + (error?.response?.data?.details || error.message));
     }
   };
 
   const handleApplySchedule = async () => {
-    if (!generatedSchedule?.schedule) return;
+    if (!generatedSchedule?.schedule?.length) return;
 
     try {
       const result = await executeApply({
@@ -71,15 +75,16 @@ const AutoSchedulePanel = ({ month, year, locationId, onScheduleGenerated }) => 
         }
       });
 
-      alert(`บันทึกตารางเวรสำเร็จ!\nสร้างเวรใหม่: ${result.data.summary.created} เวร\nข้อผิดพลาด: ${result.data.summary.errors} รายการ`);
-      
+      const s = result.data?.summary || {};
+      alert(`บันทึกตารางเวรสำเร็จ!\nสร้าง/อัปเดต: ${s.created ?? 0} เวร\nลบของเดิม: ${s.deleted ?? 0} เวร\nข้อผิดพลาด: ${s.errors ?? 0} รายการ`);
+
       setGeneratedSchedule(null);
       setShowPreview(false);
       onScheduleGenerated && onScheduleGenerated();
-      
+
     } catch (error) {
       console.error("Error applying schedule:", error);
-      alert("เกิดข้อผิดพลาดในการบันทึกตารางเวร");
+      alert("เกิดข้อผิดพลาดในการบันทึกตารางเวร: " + (error?.response?.data?.details || error.message));
     }
   };
 
@@ -275,7 +280,7 @@ const AutoSchedulePanel = ({ month, year, locationId, onScheduleGenerated }) => 
                       ID: {userId.slice(-6)}
                     </div>
                     <div className="text-sm">
-                      <span className="font-medium">เวรทั้งหมด:</span> {stats.totalShifts} เวร
+                      <span className="font-medium">เวรทั้งหมด:</span> {stats.totalWorkload ?? 0} เวร
                     </div>
                     <div className="text-xs text-gray-600">
                       ช: {stats.shiftCounts.ช || 0} | บ: {stats.shiftCounts.บ || 0} | ด: {stats.shiftCounts.ด || 0}
@@ -299,7 +304,7 @@ const AutoSchedulePanel = ({ month, year, locationId, onScheduleGenerated }) => 
                 className="mr-2 w-4 h-4 text-blue-600"
               />
               <span className="text-sm">
-                แทนที่ตารางเวรที่มีอยู่ (จะลบเวรเดิมทั้งหมดในเดือนนี้)
+                แทนที่ตารางเวรที่มีอยู่ (จะลบเวรเดิมของแผนกนี้ในเดือนนี้ก่อนบันทึกใหม่)
               </span>
             </label>
           </div>

@@ -251,21 +251,24 @@ export const TableSelectMonth = ({
               </tr>
               <tr className="border">
                 {/* จำนวนวันของเดือน */}
-                {arrayDayInMonth.map((day, index) => (
-                  <td
-                    key={index}
-                    className={`border border-black text-black  min-w-[40px] ${["เสาร์", "อาทิตย์"].includes(
-                      dayjs(`${yearEN}-${+monthValue + 1}-${day + 1}`).format(
-                        "dddd"
-                      )
-                    )
-                        ? "bg-white"
-                        : "bg-white"
+                {arrayDayInMonth.map((day, index) => {
+                  const isToday =
+                    day + 1 === dayjs().date() &&
+                    +monthValue === dayjs().month() &&
+                    +yearEN === dayjs().year();
+                  return (
+                    <td
+                      key={index}
+                      className={`border min-w-[40px] ${
+                        isToday
+                          ? "bg-green-200 text-green-900 font-bold ring-2 ring-green-500 ring-inset border-green-600"
+                          : "border-black text-black bg-white"
                       } `}
-                  >
-                    <div className="text-base">{day + 1}</div>
-                  </td>
-                ))}
+                    >
+                      <div className="text-base">{day + 1}</div>
+                    </td>
+                  );
+                })}
                 <td className="border border-black bg-white text-black min-w-[30px]">
                   <div className="text-sm">บ</div>
                 </td>

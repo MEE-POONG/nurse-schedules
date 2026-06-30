@@ -149,6 +149,13 @@ async function autoAssignStaff(locationId, month, year) {
 
     for (const assignment of assignments) {
       try {
+        // กันการสร้างซ้ำ: ลบ UserDuty เดิมของพนักงานคนนี้ในเดือนนี้ก่อน
+        await prisma.userDuty.deleteMany({
+          where: {
+            userId: assignment.userId,
+            datetime: { gte: startDate.toDate(), lte: endDate.toDate() }
+          }
+        });
         let currentDate = startDate;
         while (currentDate.isBefore(endDate) || currentDate.isSame(endDate, "day")) {
           await prisma.userDuty.create({
@@ -200,6 +207,13 @@ async function manualAssignStaff(assignments, month, year) {
       }
 
       try {
+        // กันการสร้างซ้ำ: ลบ UserDuty เดิมของพนักงานคนนี้ในเดือนนี้ก่อน
+        await prisma.userDuty.deleteMany({
+          where: {
+            userId: assignment.userId,
+            datetime: { gte: startDate.toDate(), lte: endDate.toDate() }
+          }
+        });
         // สร้าง UserDuty record สำหรับทุกวันในเดือน
         let currentDate = startDate;
         while (currentDate.isBefore(endDate) || currentDate.isSame(endDate, "day")) {
