@@ -70,6 +70,14 @@ export default function ModalSelectMonthRed({
     }
   };
 
+  // เรียงกะในวันเดียวกันตามเวลาเริ่มกะ: ดึก(00:30) → เช้า(08:30) → บ่าย(16:30)
+  // เพื่อให้แสดงผล เช่น "ชบ" และ "ดบ" (กะอื่น ๆ เช่น x/ลา/R เรียงไว้ท้าย)
+  const SHIFT_ORDER = { ด: 1, ช: 2, บ: 3 };
+  const sortedDutyOfDay = [...(dutyOfDay ?? [])].sort(
+    (a, b) =>
+      (SHIFT_ORDER[a.Shif?.name] ?? 99) - (SHIFT_ORDER[b.Shif?.name] ?? 99)
+  );
+
   return (
     <>
       <td
@@ -81,7 +89,7 @@ export default function ModalSelectMonthRed({
           }`}
         onClick={() => setShowModal(true)}
       >
-        {dutyOfDay.map(({ Shif, isOT }, index) => {
+        {sortedDutyOfDay.map(({ Shif, isOT }, index) => {
           if (!isOT) {
             return <span className={`${Shif?.name === 'ลาพัก' ? ' text-[0.7rem] ' : Shif?.name === 'ลาป่วย' ? ' text-[0.7rem] ' : Shif?.name === 'ลากิจ' ? ' text-[0.7rem] ' : Shif?.name === 'R' ? ' circle-red text-[12px]  w-[12px] h-[12px] inline-block leading-[12px]' : ' text-lg '}`} key={index}>{Shif?.name}</span>;
           } else {
