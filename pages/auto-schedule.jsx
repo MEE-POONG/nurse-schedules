@@ -69,7 +69,7 @@ export default function AutoSchedulePage() {
                 onClick={() => setActiveTab("staff-assignment")}
                 className={`py-2 px-1 border-b-2 font-medium text-sm ${
                   activeTab === "staff-assignment"
-                    ? "border-blue-500 text-blue-600"
+                    ? "border-teal-600 text-teal-700"
                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 }`}
               >
@@ -79,7 +79,7 @@ export default function AutoSchedulePage() {
                 onClick={() => setActiveTab("auto-schedule")}
                 className={`py-2 px-1 border-b-2 font-medium text-sm ${
                   activeTab === "auto-schedule"
-                    ? "border-blue-500 text-blue-600"
+                    ? "border-teal-600 text-teal-700"
                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 }`}
               >
@@ -104,7 +104,7 @@ export default function AutoSchedulePage() {
               <select
                 value={selectedLocation}
                 onChange={(e) => setSelectedLocation(e.target.value)}
-                className="px-3 py-2 w-full rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="px-3 py-2 w-full rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
               >
                 <option value="">-- เลือกแผนก --</option>
                 {locations?.map(location => (

@@ -122,7 +122,7 @@ const ShiftReservationModal = ({
               <select
                 value={selectedShift}
                 onChange={(e) => setSelectedShift(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
                 required
               >
                 <option value="">-- เลือกกะงาน --</option>
@@ -143,7 +143,7 @@ const ShiftReservationModal = ({
               <select
                 value={priority}
                 onChange={(e) => setPriority(parseInt(e.target.value))}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-teal-500"
               >
                 <option value={1}>สูงสุด (ต้องการมาก)</option>
                 <option value={2}>ปกติ</option>
@@ -157,7 +157,7 @@ const ShiftReservationModal = ({
                   type="checkbox"
                   checked={isReserved}
                   onChange={(e) => setIsReserved(e.target.checked)}
-                  className="mr-2 h-4 w-4 text-blue-600"
+                  className="mr-2 h-4 w-4 text-teal-600"
                 />
                 <span className="text-sm text-gray-700">
                   จองแน่นอน (จะได้เวรนี้อย่างแน่นอน)
@@ -181,7 +181,7 @@ const ShiftReservationModal = ({
               <button
                 type="submit"
                 disabled={createLoading || !selectedShift}
-                className="flex-1 px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex-1 px-4 py-2 text-sm font-medium text-white bg-teal-700 rounded-md hover:bg-teal-800 focus:outline-none focus:ring-2 focus:ring-teal-500 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {createLoading ? "กำลังบันทึก..." : "บันทึกการจอง"}
               </button>

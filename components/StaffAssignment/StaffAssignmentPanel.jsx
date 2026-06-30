@@ -202,7 +202,7 @@ const StaffAssignmentPanel = ({ month, year, onAssignmentComplete }) => {
           <button
             onClick={handleAutoAssign}
             disabled={assignLoading}
-            className="px-6 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-6 py-2 bg-teal-700 text-white rounded-md hover:bg-teal-800 focus:outline-none focus:ring-2 focus:ring-teal-500 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {assignLoading ? "กำลังจัดพนักงาน..." : "จัดพนักงานอัตโนมัติ"}
           </button>
@@ -216,7 +216,7 @@ const StaffAssignmentPanel = ({ month, year, onAssignmentComplete }) => {
             <h4 className="font-medium">จัดพนักงานด้วยตัวเอง</h4>
             <button
               onClick={addManualAssignment}
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm"
+              className="px-4 py-2 bg-teal-700 text-white rounded-md hover:bg-teal-800 text-sm"
             >
               เพิ่มรายการ
             </button>
@@ -269,7 +269,7 @@ const StaffAssignmentPanel = ({ month, year, onAssignmentComplete }) => {
             <button
               onClick={handleManualAssign}
               disabled={assignLoading}
-              className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-2 bg-teal-700 text-white rounded-md hover:bg-teal-800 focus:outline-none focus:ring-2 focus:ring-teal-500 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {assignLoading ? "กำลังบันทึก..." : "บันทึกการจัด"}
             </button>

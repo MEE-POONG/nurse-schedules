@@ -33,7 +33,7 @@ export default function DropDownDate() {
             dispatch(setMonth(event.target.value));
           }}
           defaultValue={+monthEN - 1}
-          className="border border-gray-300 shadow-md rounded-full text-gray-600 h-10 pl-5 pr-10 bg-white hover:border-green-500 focus:border-green-500 focus:outline-none appearance-none"
+          className="border border-gray-300 shadow-md rounded-full text-gray-600 h-10 pl-5 pr-10 bg-white hover:border-teal-500 focus:border-teal-500 focus:outline-none appearance-none"
         >
           <option value={0}>มกราคม</option>
           <option value={1}>กุมภาพันธ์</option>
@@ -67,14 +67,14 @@ export default function DropDownDate() {
             dispatch(setYear(event.target.value));
           }}
           defaultValue={yearInt}
-          className="border border-gray-300 shadow-md rounded-full text-gray-600 h-10 pl-5 pr-10 bg-white hover:border-green-500 focus:border-green-500 focus:outline-none appearance-none"
+          className="border border-gray-300 shadow-md rounded-full text-gray-600 h-10 pl-5 pr-10 bg-white hover:border-teal-500 focus:border-teal-500 focus:outline-none appearance-none"
         >
           {Array.from(new Array(5), (v, i) => (
             <option
               key={i}
               value={year + i}
               className={`${year + i === new Date().getFullYear()
-                ? "bg-green-600 text-white"
+                ? "bg-teal-700 text-white"
                 : ""
                 }`}
             >

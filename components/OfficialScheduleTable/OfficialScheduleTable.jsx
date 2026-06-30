@@ -260,7 +260,7 @@ const OfficialScheduleTable = ({ month, year, locationFilter = null, generatedSc
           <select
             value={selectedLocation}
             onChange={(e) => setSelectedLocation(e.target.value)}
-            className="px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
           >
             <option value="">-- แสดงทุกแผนก --</option>
             {locations?.map(location => (

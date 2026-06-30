@@ -536,7 +536,7 @@ export const TableSelectMonthOnCall = ({
                 บันทึก
               </label>
               <div className="relative">
-                <button className="px-4 py-2 font-bold text-black bg-blue-500 rounded hover:bg-blue-700">
+                <button className="px-4 py-2 font-bold text-black bg-teal-700 rounded hover:bg-teal-800">
                   บันทึก
                 </button>
               </div>
