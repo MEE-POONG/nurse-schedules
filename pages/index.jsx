@@ -1,5 +1,7 @@
 import TableIndex from "@/components/TableIndex/TableIndex";
 import MonthYearSelector from "@/components/MonthYearSelector/MonthYearSelector";
+import FairnessSummaryCard from "@/components/Fairness/FairnessSummaryCard";
+import TodayBoard from "@/components/Home/TodayBoard";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
@@ -40,6 +42,16 @@ export default function Home() {
           selectedYear={selectedYear}
           onMonthYearChange={handleMonthYearChange}
         />
+      </div>
+
+      {/* เวรของฉัน + เข้าเวรวันนี้ */}
+      <div className="max-w-6xl mx-auto px-4 mb-6">
+        <TodayBoard month={selectedMonth} year={selectedYear} />
+      </div>
+
+      {/* การ์ดสรุปความเป็นธรรมแบบย่อ */}
+      <div className="max-w-4xl mx-auto px-4 mb-6">
+        <FairnessSummaryCard month={selectedMonth} year={selectedYear} />
       </div>
 
       <TableIndex month={selectedMonth} year={selectedYear} />
