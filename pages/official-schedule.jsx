@@ -5,6 +5,7 @@ import "dayjs/locale/th";
 import Layout from "@/components/Layout/Layout";
 import OfficialScheduleTable from "@/components/OfficialScheduleTable/OfficialScheduleTable";
 import MonthYearSelector from "@/components/MonthYearSelector/MonthYearSelector";
+import ExportExcelButton from "@/components/ExportExcelButton";
 import { authProvider } from "src/authProvider";
 
 dayjs.locale("th");
@@ -77,18 +78,7 @@ export default function OfficialSchedule() {
             🖨️ พิมพ์ตาราง
           </button>
           
-          <button
-            onClick={() => {
-              const table = document.querySelector('table');
-              if (table) {
-                const csvContent = generateCSV(table);
-                downloadCSV(csvContent, `schedule-${monthTH}-${yearTH}.csv`);
-              }
-            }}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-          >
-            📄 ส่งออก CSV
-          </button>
+          <ExportExcelButton month={selectedMonth} year={selectedYear} />
         </div>
 
         {/* ตารางทางการ */}
@@ -111,35 +101,3 @@ export default function OfficialSchedule() {
   );
 }
 
-// ฟังก์ชันสำหรับสร้าง CSV
-function generateCSV(table) {
-  const rows = table.querySelectorAll('tr');
-  const csvData = [];
-  
-  rows.forEach(row => {
-    const cells = row.querySelectorAll('td, th');
-    const rowData = [];
-    cells.forEach(cell => {
-      rowData.push(cell.textContent.trim());
-    });
-    csvData.push(rowData.join(','));
-  });
-  
-  return csvData.join('\n');
-}
-
-// ฟังก์ชันสำหรับดาวน์โหลด CSV
-function downloadCSV(csvContent, filename) {
-  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-  const link = document.createElement('a');
-  
-  if (link.download !== undefined) {
-    const url = URL.createObjectURL(blob);
-    link.setAttribute('href', url);
-    link.setAttribute('download', filename);
-    link.style.visibility = 'hidden';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  }
-} 
