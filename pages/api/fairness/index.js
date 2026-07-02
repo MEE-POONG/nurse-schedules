@@ -7,7 +7,7 @@ const SHIFT_WEIGHT = { ช: 1.0, บ: 1.2, ด: 1.5 };
 // โบนัสเวรควบ "เช้า-บ่าย" ที่ทำต่อเนื่อง 16 ชม. (08:30–00:30) หนักกว่าทำคนละวัน
 const DOUBLE_SHIFT_BONUS = 0.5;
 
-// สรุปสถิติความเป็นธรรมของการจัดเวรต่อคนในเดือนที่เลือก
+// สรุปสถิติความสมดุลภาระงานของการจัดเวรต่อคนในเดือนที่เลือก
 export default async function handler(req, res) {
   if (req.method !== "GET") {
     res.setHeader("Allow", ["GET"]);

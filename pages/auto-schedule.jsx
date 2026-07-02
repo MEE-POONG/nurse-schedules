@@ -127,7 +127,7 @@ export default function AutoSchedulePage() {
             </div>
             <div className="flex items-start">
               <span className="w-6 h-6 bg-blue-200 text-blue-800 rounded-full flex items-center justify-center text-xs font-bold mr-3 mt-0.5">2</span>
-              <p>ระบบจะพิจารณาการจองเวรของพนักงานและจัดตารางให้เป็นธรรม</p>
+              <p>ระบบจะพิจารณาการจองเวรของพนักงานและจัดตารางให้สมดุล</p>
             </div>
             <div className="flex items-start">
               <span className="w-6 h-6 bg-blue-200 text-blue-800 rounded-full flex items-center justify-center text-xs font-bold mr-3 mt-0.5">3</span>
@@ -153,10 +153,10 @@ export default function AutoSchedulePage() {
               </ul>
             </div>
             <div>
-              <h4 className="mb-2 font-medium">ความเป็นธรรม:</h4>
+              <h4 className="mb-2 font-medium">ความสมดุลภาระงาน:</h4>
               <ul className="space-y-1 list-disc list-inside">
                 <li>กระจายจำนวนเวรให้เท่าเทียมกัน</li>
-                <li>หมุนเวียนเวรหนัก (บ่าย/ดึก) อย่างเป็นธรรม</li>
+                <li>หมุนเวียนเวรหนัก (บ่าย/ดึก) อย่างสมดุล</li>
                 <li>เคารพการจองเวรของพนักงาน</li>
                 <li>จำกัดเวรต่อเดือนไม่เกิน 22 เวร</li>
               </ul>
