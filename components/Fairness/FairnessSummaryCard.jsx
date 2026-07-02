@@ -1,7 +1,7 @@
 import useAxios from "axios-hooks";
 import Link from "next/link";
 
-// การ์ดสรุปความเป็นธรรมแบบย่อ สำหรับวางบนหน้า Home
+// การ์ดสรุปความสมดุลภาระงานแบบย่อ สำหรับวางบนหน้า Home
 const FairnessSummaryCard = ({ month, year }) => {
   const [{ data, loading }] = useAxios(
     { url: `/api/fairness?month=${month}&year=${year}`, method: "GET" },
@@ -31,7 +31,7 @@ const FairnessSummaryCard = ({ month, year }) => {
       <div className="flex flex-wrap gap-4 justify-between items-center">
         <div className="flex flex-wrap gap-x-8 gap-y-3 items-center">
           <div>
-            <div className="text-xs text-gray-500">ความเป็นธรรมการจัดเวร</div>
+            <div className="text-xs text-gray-500">ความสมดุลภาระงานการจัดเวร</div>
             <div className={`text-lg font-bold ${balanced ? "text-green-600" : "text-amber-600"}`}>
               {balanced ? "สมดุลดี" : "ควรปรับให้สมดุล"}
             </div>

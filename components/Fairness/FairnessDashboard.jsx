@@ -43,7 +43,7 @@ const FairnessDashboard = ({ month, year }) => {
     );
   }
 
-  // ----- คำนวณค่าสรุป (ใช้ "คะแนนภาระงาน" เป็นตัววัดความเป็นธรรมหลัก) -----
+  // ----- คำนวณค่าสรุป (ใช้ "คะแนนภาระงาน" เป็นตัววัดความสมดุลหลัก) -----
   const sum = (key) => staff.reduce((a, s) => a + s[key], 0);
   const avg = (key) => sum(key) / staff.length;
   const maxOf = (key) => Math.max(...staff.map((s) => s[key]));
@@ -85,7 +85,7 @@ const FairnessDashboard = ({ month, year }) => {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">สรุปความเป็นธรรมการจัดเวร</h1>
+        <h1 className="text-2xl font-bold text-gray-900">สรุปความสมดุลภาระงานการจัดเวร</h1>
         <p className="text-gray-600">ประจำเดือน {monthTH} พ.ศ. {yearTH} · {staff.length} คน</p>
       </div>
 

@@ -15,7 +15,7 @@ export const NAV_ITEMS = [
   { href: "/reservation", label: "จองเวร", icon: TbCalendarPlus },
   { href: "/on-call", label: "On-Call", icon: TbPhoneCall },
   { href: "/auto-schedule", label: "จัดตารางอัตโนมัติ", icon: TbWand, adminOnly: true },
-  { href: "/fairness", label: "ความเป็นธรรม", icon: TbScale },
+  { href: "/fairness", label: "สมดุลภาระงาน", icon: TbScale },
   { href: "/official-schedule", label: "ตารางทางการ", icon: TbPrinter },
   { href: "/payment", label: "ช่องทางสนับสนุน", icon: TbHeartHandshake },
 ];

@@ -49,7 +49,7 @@ export default function Home() {
         <TodayBoard month={selectedMonth} year={selectedYear} />
       </div>
 
-      {/* การ์ดสรุปความเป็นธรรมแบบย่อ */}
+      {/* การ์ดสรุปความสมดุลภาระงานแบบย่อ */}
       <div className="mb-5">
         <FairnessSummaryCard month={selectedMonth} year={selectedYear} />
       </div>
