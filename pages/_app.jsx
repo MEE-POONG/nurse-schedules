@@ -4,6 +4,7 @@ import { Provider } from "react-redux";
 import { store } from "store/store";
 import SignIn from "./login";
 import { authProvider } from "src/authProvider";
+import PwaController from "@/components/PWA/PwaController";
 
 function MyApp({ Component, pageProps }) {
   return (
@@ -13,6 +14,7 @@ function MyApp({ Component, pageProps }) {
           <Component {...pageProps} />
         </Layout>
       </Auth>
+      <PwaController />
     </Provider>
   );
 }

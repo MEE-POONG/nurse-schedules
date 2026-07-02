@@ -1,5 +1,6 @@
 import { prisma } from "@/utils/prisma";
 import dayjs from "dayjs";
+import { notifyDutyAssigned } from "@/utils/pushNotify";
 
 export default async function handler(req, res) {
   const { method } = req;
@@ -27,6 +28,8 @@ export default async function handler(req, res) {
           })),
         });
         console.log(req.body);
+        // แจ้งเตือนผู้ที่ได้รับมอบหมายเวร (ไม่ให้ล้มงานหลักถ้าส่งพลาด)
+        await notifyDutyAssigned(prisma, req.body);
         res.status(201).json({ success: true });
       } catch (error) {
         console.log(error);
