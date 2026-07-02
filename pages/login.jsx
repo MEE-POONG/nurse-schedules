@@ -96,7 +96,7 @@ function SignIn() {
                 และให้ระบบช่วยจัดตารางอัตโนมัติอย่างสมดุล
               </p>
               <div className="flex gap-2 mt-8">
-                {["ตารางเวร", "จองเวร", "On-Call", "ความเป็นธรรม"].map((t) => (
+                {["ตารางเวร", "จองเวร", "On-Call", "สมดุลภาระงาน"].map((t) => (
                   <span key={t} className="px-3 py-1 text-[11px] font-medium text-teal-100/90 rounded-full bg-white/[0.08] ring-1 ring-white/10">
                     {t}
                   </span>

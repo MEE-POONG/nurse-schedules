@@ -124,7 +124,7 @@ export default function AutoSchedulePage() {
             <div className="space-y-2.5 text-sm text-gray-600">
               {[
                 "เลือกแผนกที่ต้องการจัดตารางเวรอัตโนมัติ",
-                "ระบบจะพิจารณาการจองเวรของพนักงานและจัดตารางให้เป็นธรรม",
+                "ระบบจะพิจารณาการจองเวรของพนักงานและจัดตารางให้สมดุล",
                 "ตรวจสอบตัวอย่างตารางและข้อจำกัดที่อาจละเมิด",
                 "เลือกว่าจะเพิ่มเวรใหม่หรือแทนที่เวรเดิม แล้วบันทึก",
               ].map((step, i) => (
@@ -157,9 +157,9 @@ export default function AutoSchedulePage() {
                 </ul>
               </div>
               <div>
-                <h4 className="mb-2 text-xs font-bold tracking-wide text-gray-500">ความเป็นธรรม</h4>
+                <h4 className="mb-2 text-xs font-bold tracking-wide text-gray-500">ความสมดุลภาระงาน</h4>
                 <ul className="space-y-1.5">
-                  {["กระจายจำนวนเวรให้เท่าเทียมกัน", "หมุนเวียนเวรหนัก (บ่าย/ดึก) อย่างเป็นธรรม", "เคารพการจองเวรของพนักงาน", "จำกัดเวรต่อเดือนไม่เกิน 22 เวร"].map((r) => (
+                  {["กระจายจำนวนเวรให้เท่าเทียมกัน", "หมุนเวียนเวรหนัก (บ่าย/ดึก) อย่างสมดุล", "เคารพการจองเวรของพนักงาน", "จำกัดเวรต่อเดือนไม่เกิน 22 เวร"].map((r) => (
                     <li key={r} className="flex gap-2 items-start">
                       <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" />
                       {r}
