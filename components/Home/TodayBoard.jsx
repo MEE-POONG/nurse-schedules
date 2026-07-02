@@ -74,8 +74,11 @@ const TodayBoard = ({ month, year }) => {
   return (
     <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
       {/* การ์ดเวรของฉัน + เพื่อนร่วมกะ */}
-      <div className="p-4 bg-white rounded-xl border shadow-sm lg:col-span-1">
-        <div className="mb-2 text-sm font-semibold text-gray-700">เวรของฉัน{refDay ? " วันนี้" : ` เดือน${monthLabel}`}</div>
+      <div className="p-5 lg:col-span-1 card">
+        <div className="flex gap-2 items-center mb-3 text-sm font-bold text-gray-800">
+          <span className="w-1 h-4 rounded-full bg-gradient-to-b from-teal-500 to-emerald-500" />
+          เวรของฉัน{refDay ? " วันนี้" : ` เดือน${monthLabel}`}
+        </div>
         {!myData ? (
           <p className="text-sm text-gray-400">ไม่พบข้อมูลเวรของคุณ</p>
         ) : refDay ? (
@@ -108,13 +111,13 @@ const TodayBoard = ({ month, year }) => {
 
         {/* สรุปเดือนของฉัน */}
         {myData && (
-          <div className="grid grid-cols-4 gap-2 pt-3 mt-3 text-center border-t">
+          <div className="grid grid-cols-4 gap-1.5 pt-4 mt-4 text-center border-t border-gray-100">
             {(() => { const s = monthStat(myData); return (
               <>
-                <div><div className="text-base font-bold text-gray-800">{s.work}</div><div className="text-[11px] text-gray-500">เวร</div></div>
-                <div><div className="text-base font-bold text-indigo-700">{s.night}</div><div className="text-[11px] text-gray-500">ดึก</div></div>
-                <div><div className="text-base font-bold text-orange-600">{s.ot}</div><div className="text-[11px] text-gray-500">OT</div></div>
-                <div><div className="text-base font-bold text-gray-500">{s.off}</div><div className="text-[11px] text-gray-500">หยุด</div></div>
+                <div className="py-2 rounded-xl bg-teal-600/[0.07]"><div className="text-lg font-bold text-teal-800">{s.work}</div><div className="text-[11px] font-medium text-teal-700/70">เวร</div></div>
+                <div className="py-2 rounded-xl bg-indigo-500/[0.07]"><div className="text-lg font-bold text-indigo-700">{s.night}</div><div className="text-[11px] font-medium text-indigo-600/70">ดึก</div></div>
+                <div className="py-2 rounded-xl bg-orange-500/[0.07]"><div className="text-lg font-bold text-orange-600">{s.ot}</div><div className="text-[11px] font-medium text-orange-600/70">OT</div></div>
+                <div className="py-2 rounded-xl bg-gray-500/[0.07]"><div className="text-lg font-bold text-gray-600">{s.off}</div><div className="text-[11px] font-medium text-gray-500">หยุด</div></div>
               </>
             ); })()}
           </div>
@@ -122,9 +125,19 @@ const TodayBoard = ({ month, year }) => {
       </div>
 
       {/* การ์ดเข้าเวรวันนี้ */}
-      <div className="p-4 bg-white rounded-xl border shadow-sm lg:col-span-2">
-        <div className="mb-3 text-sm font-semibold text-gray-700">
-          {refDay ? `เข้าเวรวันนี้ (${now.format("D MMM")})` : `เลือกเดือนปัจจุบันเพื่อดูผู้เข้าเวรวันนี้`}
+      <div className="p-5 lg:col-span-2 card">
+        <div className="flex gap-2 items-center mb-4 text-sm font-bold text-gray-800">
+          <span className="w-1 h-4 rounded-full bg-gradient-to-b from-teal-500 to-emerald-500" />
+          {refDay ? (
+            <>
+              เข้าเวรวันนี้
+              <span className="px-2 py-0.5 text-[11px] font-semibold text-teal-800 rounded-full bg-teal-600/10">
+                {now.format("D MMM")}
+              </span>
+            </>
+          ) : (
+            "เลือกเดือนปัจจุบันเพื่อดูผู้เข้าเวรวันนี้"
+          )}
         </div>
         {refDay && todayGroups && (
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
@@ -132,19 +145,22 @@ const TodayBoard = ({ month, year }) => {
               const info = SHIFT_INFO[s];
               const list = todayGroups[s];
               return (
-                <div key={s} className="p-3 rounded-lg border bg-gray-50">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="flex gap-1.5 items-center text-sm font-medium text-gray-700">
-                      <span className={`w-2 h-2 rounded-full ${info.dot}`} />{info.label}
+                <div key={s} className="overflow-hidden rounded-xl border border-gray-100 bg-gradient-to-b from-gray-50/90 to-white">
+                  <div className="flex justify-between items-center px-3.5 py-2.5 border-b border-gray-100/80">
+                    <span className="flex gap-2 items-center text-sm font-semibold text-gray-800">
+                      <span className={`w-2.5 h-2.5 rounded-full ring-[3px] ring-opacity-30 ${info.dot}`} style={{ boxShadow: "0 0 0 3px rgba(0,0,0,0.04)" }} />
+                      {info.label}
                     </span>
-                    <span className="text-xs text-gray-500">{list.length} คน</span>
+                    <span className="px-2 py-0.5 text-[11px] font-semibold text-gray-500 bg-white rounded-full border border-gray-200">
+                      {list.length} คน
+                    </span>
                   </div>
-                  <div className="space-y-0.5">
+                  <div className="px-3.5 py-2.5 space-y-1">
                     {list.length === 0 ? (
                       <div className="text-xs text-gray-400">—</div>
                     ) : (
                       list.map(({ user, ot }, i) => (
-                        <div key={i} className={`text-xs ${user.id === me?.id ? "font-bold text-teal-700" : "text-gray-700"}`}>
+                        <div key={i} className={`text-xs leading-relaxed ${user.id === me?.id ? "font-bold text-teal-700" : "text-gray-700"}`}>
                           {nameOf(user)}{ot ? " (OT)" : ""}
                         </div>
                       ))

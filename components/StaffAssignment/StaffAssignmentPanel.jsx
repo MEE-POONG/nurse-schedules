@@ -105,8 +105,8 @@ const StaffAssignmentPanel = ({ month, year, onAssignmentComplete }) => {
 
   if (!currentUser?.isAdmin) {
     return (
-      <div className="p-4 bg-red-50 border border-red-200 rounded-md">
-        <p className="text-red-600">เฉพาะผู้ดูแลระบบเท่านั้นที่สามารถใช้ฟีเจอร์นี้ได้</p>
+      <div className="p-4 rounded-xl bg-rose-500/[0.07] ring-1 ring-rose-500/20">
+        <p className="text-sm font-medium text-rose-600">เฉพาะผู้ดูแลระบบเท่านั้นที่สามารถใช้ฟีเจอร์นี้ได้</p>
       </div>
     );
   }
@@ -118,41 +118,41 @@ const StaffAssignmentPanel = ({ month, year, onAssignmentComplete }) => {
   ) || [];
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-6">
-      <h2 className="text-xl font-bold mb-4">จัดพนักงานเข้าแผนก</h2>
-      
+    <div className="p-6 card">
+      <h2 className="flex gap-2 items-center mb-5 text-base font-bold tracking-tight text-gray-900">
+        <span className="w-1 h-4 rounded-full bg-gradient-to-b from-teal-500 to-emerald-500" />
+        จัดพนักงานเข้าแผนก
+      </h2>
+
       {/* สถิติปัจจุบัน */}
-      <div className="mb-6 p-4 bg-gray-50 rounded-md">
-        <h3 className="font-medium text-gray-800 mb-2">สถิติปัจจุบัน</h3>
-        {existingLoading ? (
-          <p>กำลังโหลด...</p>
-        ) : (
-          <div className="grid grid-cols-3 gap-4 text-sm">
-            <div>
-              <span className="font-medium">พนักงานที่จัดแล้ว:</span>
-              <span className="ml-2 text-green-600">{existingAssignments?.length || 0} คน</span>
-            </div>
-            <div>
-              <span className="font-medium">พนักงานที่ยังไม่จัด:</span>
-              <span className="ml-2 text-orange-600">{unassignedStaff.length} คน</span>
-            </div>
-            <div>
-              <span className="font-medium">พนักงานทั้งหมด:</span>
-              <span className="ml-2">{allStaff?.filter(s => s.isActive).length || 0} คน</span>
-            </div>
+      {existingLoading ? (
+        <p className="mb-6 text-sm text-gray-500">กำลังโหลด...</p>
+      ) : (
+        <div className="grid grid-cols-3 gap-2 mb-6 text-center">
+          <div className="py-3 rounded-xl bg-emerald-500/[0.07]">
+            <div className="text-xl font-bold text-emerald-600">{existingAssignments?.length || 0}</div>
+            <div className="text-[11px] font-medium text-emerald-600/70">จัดแล้ว</div>
           </div>
-        )}
-      </div>
+          <div className="py-3 rounded-xl bg-orange-500/[0.07]">
+            <div className="text-xl font-bold text-orange-600">{unassignedStaff.length}</div>
+            <div className="text-[11px] font-medium text-orange-600/70">ยังไม่จัด</div>
+          </div>
+          <div className="py-3 rounded-xl bg-gray-500/[0.07]">
+            <div className="text-xl font-bold text-gray-700">{allStaff?.filter(s => s.isActive).length || 0}</div>
+            <div className="text-[11px] font-medium text-gray-500">ทั้งหมด</div>
+          </div>
+        </div>
+      )}
 
       {/* แสดงรายละเอียดการจัดแล้ว */}
       {existingAssignments && existingAssignments.length > 0 && (
-        <div className="mb-6 p-4 bg-blue-50 rounded-md">
-          <h3 className="font-medium text-blue-800 mb-2">พนักงานที่จัดเข้าแผนกแล้ว</h3>
-          <div className="text-sm space-y-1 max-h-40 overflow-y-auto">
+        <div className="p-4 mb-6 rounded-xl bg-sky-500/[0.06] ring-1 ring-sky-500/15">
+          <h3 className="mb-2 text-xs font-bold text-sky-700">พนักงานที่จัดเข้าแผนกแล้ว</h3>
+          <div className="overflow-y-auto space-y-1 max-h-40 text-sm thin-scroll">
             {existingAssignments.map((assignment, index) => (
               <div key={index} className="flex justify-between">
-                <span>{assignment.Title?.name} {assignment.firstname} {assignment.lastname}</span>
-                <span className="text-blue-600">{assignment.UserDuty?.Location?.name}</span>
+                <span className="text-gray-700">{assignment.Title?.name} {assignment.firstname} {assignment.lastname}</span>
+                <span className="font-medium text-sky-700">{assignment.UserDuty?.Location?.name}</span>
               </div>
             ))}
           </div>
@@ -161,48 +161,60 @@ const StaffAssignmentPanel = ({ month, year, onAssignmentComplete }) => {
 
       {/* เลือกโหมดการจัด */}
       <div className="mb-6">
-        <h3 className="font-medium mb-3">เลือกวิธีการจัดพนักงาน</h3>
-        <div className="space-y-2">
-          <label className="flex items-center">
-            <input
-              type="radio"
-              value="auto"
-              checked={assignmentMode === "auto"}
-              onChange={(e) => setAssignmentMode(e.target.value)}
-              className="mr-2"
-            />
-            <span>จัดอัตโนมัติ (ระบบจัดให้ตามตำแหน่งงานและความต้องการของแต่ละแผนก)</span>
-          </label>
-          <label className="flex items-center">
-            <input
-              type="radio"
-              value="manual"
-              checked={assignmentMode === "manual"}
-              onChange={(e) => setAssignmentMode(e.target.value)}
-              className="mr-2"
-            />
-            <span>จัดด้วยตัวเอง</span>
-          </label>
+        <h3 className="mb-3 text-xs font-bold tracking-wide text-gray-500">เลือกวิธีการจัดพนักงาน</h3>
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+          {[
+            { value: "auto", label: "จัดอัตโนมัติ", desc: "ระบบจัดให้ตามตำแหน่งงานและความต้องการของแต่ละแผนก" },
+            { value: "manual", label: "จัดด้วยตัวเอง", desc: "เลือกพนักงานและแผนกเองทีละรายการ" },
+          ].map((m) => (
+            <label
+              key={m.value}
+              className={`flex items-start gap-2.5 px-3.5 py-3 rounded-xl cursor-pointer transition-all ${
+                assignmentMode === m.value
+                  ? "ring-2 ring-teal-500/70 bg-teal-600/[0.07] shadow-sm"
+                  : "ring-1 ring-gray-200 hover:ring-teal-300/70 hover:bg-gray-50"
+              }`}
+            >
+              <input
+                type="radio"
+                value={m.value}
+                checked={assignmentMode === m.value}
+                onChange={(e) => setAssignmentMode(e.target.value)}
+                className="mt-0.5 w-4 h-4 accent-teal-700"
+              />
+              <span>
+                <span className="block text-sm font-semibold text-gray-800">{m.label}</span>
+                <span className="block mt-0.5 text-xs text-gray-500">{m.desc}</span>
+              </span>
+            </label>
+          ))}
         </div>
       </div>
 
       {/* โหมดอัตโนมัติ */}
       {assignmentMode === "auto" && (
         <div className="mb-6">
-          <div className="p-4 bg-green-50 border border-green-200 rounded-md mb-4">
-            <h4 className="font-medium text-green-800 mb-2">กฎการจัดอัตโนมัติ:</h4>
-            <ul className="text-sm text-green-700 space-y-1">
-              <li>• ICU: พยาบาลวิชาชีพ 8-12 คน</li>
-              <li>• พาสุข1, พาสุข2: พยาบาลวิชาชีพ + พนักงานช่วยเหลือ 6-10 คน</li>
-              <li>• ER: พยาบาลวิชาชีพ 4-8 คน</li>
-              <li>• พนักงานที่เคยอยู่แผนกเดิมจะได้ลำดับความสำคัญ</li>
+          <div className="p-4 mb-4 rounded-xl bg-emerald-500/[0.06] ring-1 ring-emerald-500/15">
+            <h4 className="mb-2 text-xs font-bold text-emerald-700">กฎการจัดอัตโนมัติ:</h4>
+            <ul className="space-y-1.5 text-sm text-gray-600">
+              {[
+                "ICU: พยาบาลวิชาชีพ 8-12 คน",
+                "พาสุข1, พาสุข2: พยาบาลวิชาชีพ + พนักงานช่วยเหลือ 6-10 คน",
+                "ER: พยาบาลวิชาชีพ 4-8 คน",
+                "พนักงานที่เคยอยู่แผนกเดิมจะได้ลำดับความสำคัญ",
+              ].map((r) => (
+                <li key={r} className="flex gap-2 items-start">
+                  <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" />
+                  {r}
+                </li>
+              ))}
             </ul>
           </div>
-          
+
           <button
             onClick={handleAutoAssign}
             disabled={assignLoading}
-            className="px-6 py-2 bg-teal-700 text-white rounded-md hover:bg-teal-800 focus:outline-none focus:ring-2 focus:ring-teal-500 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-6 py-2.5 btn-brand disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {assignLoading ? "กำลังจัดพนักงาน..." : "จัดพนักงานอัตโนมัติ"}
           </button>
@@ -213,25 +225,27 @@ const StaffAssignmentPanel = ({ month, year, onAssignmentComplete }) => {
       {assignmentMode === "manual" && (
         <div className="mb-6">
           <div className="flex justify-between items-center mb-4">
-            <h4 className="font-medium">จัดพนักงานด้วยตัวเอง</h4>
+            <h4 className="text-sm font-bold text-gray-800">จัดพนักงานด้วยตัวเอง</h4>
             <button
               onClick={addManualAssignment}
-              className="px-4 py-2 bg-teal-700 text-white rounded-md hover:bg-teal-800 text-sm"
+              className="px-4 py-2 text-sm font-semibold text-teal-700 bg-white rounded-xl border border-teal-200/80 shadow-sm transition-colors hover:bg-teal-50 hover:border-teal-300"
             >
-              เพิ่มรายการ
+              + เพิ่มรายการ
             </button>
           </div>
 
           {manualAssignments.length === 0 ? (
-            <p className="text-gray-500 text-center py-4">ยังไม่มีรายการ กดปุ่ม &quot;เพิ่มรายการ&quot; เพื่อเริ่มต้น</p>
+            <p className="py-6 text-sm text-center text-gray-400 rounded-xl border border-gray-200 border-dashed">
+              ยังไม่มีรายการ กดปุ่ม &quot;เพิ่มรายการ&quot; เพื่อเริ่มต้น
+            </p>
           ) : (
-            <div className="space-y-3 mb-4">
+            <div className="mb-4 space-y-3">
               {manualAssignments.map((assignment, index) => (
-                <div key={index} className="flex gap-3 items-center p-3 border rounded-md">
+                <div key={index} className="flex gap-3 items-center p-3 rounded-xl ring-1 ring-gray-200">
                   <select
                     value={assignment.userId}
                     onChange={(e) => updateManualAssignment(index, "userId", e.target.value)}
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm"
+                    className="flex-1 px-3 py-2 text-sm font-medium text-gray-700 bg-gray-50/80 rounded-xl border border-gray-200 transition-colors cursor-pointer hover:border-teal-400 hover:bg-white focus:outline-none focus:ring-2 focus:ring-teal-500/30 focus:border-teal-500"
                   >
                     <option value="">-- เลือกพนักงาน --</option>
                     {unassignedStaff.map(staff => (
@@ -240,11 +254,11 @@ const StaffAssignmentPanel = ({ month, year, onAssignmentComplete }) => {
                       </option>
                     ))}
                   </select>
-                  
+
                   <select
                     value={assignment.locationId}
                     onChange={(e) => updateManualAssignment(index, "locationId", e.target.value)}
-                    className="flex-1 px-3 py-2 border border-gray-300 rounded-md text-sm"
+                    className="flex-1 px-3 py-2 text-sm font-medium text-gray-700 bg-gray-50/80 rounded-xl border border-gray-200 transition-colors cursor-pointer hover:border-teal-400 hover:bg-white focus:outline-none focus:ring-2 focus:ring-teal-500/30 focus:border-teal-500"
                   >
                     <option value="">-- เลือกแผนก --</option>
                     {locations?.map(location => (
@@ -256,7 +270,7 @@ const StaffAssignmentPanel = ({ month, year, onAssignmentComplete }) => {
 
                   <button
                     onClick={() => removeManualAssignment(index)}
-                    className="px-3 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 text-sm"
+                    className="px-3 py-2 text-sm font-medium text-rose-600 rounded-xl transition-colors bg-rose-500/10 hover:bg-rose-500/20"
                   >
                     ลบ
                   </button>
@@ -269,7 +283,7 @@ const StaffAssignmentPanel = ({ month, year, onAssignmentComplete }) => {
             <button
               onClick={handleManualAssign}
               disabled={assignLoading}
-              className="px-6 py-2 bg-teal-700 text-white rounded-md hover:bg-teal-800 focus:outline-none focus:ring-2 focus:ring-teal-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-2.5 btn-brand disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {assignLoading ? "กำลังบันทึก..." : "บันทึกการจัด"}
             </button>
@@ -279,8 +293,8 @@ const StaffAssignmentPanel = ({ month, year, onAssignmentComplete }) => {
 
       {/* คำเตือนการลบข้อมูลเดิม */}
       {existingAssignments && existingAssignments.length > 0 && (
-        <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-md">
-          <p className="text-yellow-800 text-sm">
+        <div className="p-4 rounded-xl bg-amber-500/[0.08] ring-1 ring-amber-500/20">
+          <p className="text-sm text-amber-800">
             <strong>หมายเหตุ:</strong> การจัดพนักงานใหม่จะลบข้อมูลการจัดแผนกเดิมในเดือนนี้ทั้งหมด
           </p>
         </div>

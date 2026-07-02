@@ -103,7 +103,7 @@ export const TableSelectMonthOnCall = ({
           <span className="mx-2">ออกรายงาน</span>
         </button>
       </div>
-      <div className="overflow-x-auto p-5 my-10 min-h-screen bg-white rounded-md shadow-xl w-100 print:flex print:items-center print:justify-center">
+      <div className="overflow-x-auto p-5 my-6 min-h-screen bg-white rounded-2xl border border-black/[0.06] shadow-sm w-100 thin-scroll print:flex print:items-center print:justify-center">
         {userLoading ||
           shifLoading ||
           dutyLoading ||
@@ -436,7 +436,7 @@ export const TableSelectMonthOnCall = ({
           </table>
         </div>
       </div>
-      <div className="overflow-x-auto p-5 my-10 bg-white rounded-md shadow-xl w-100">
+      <div className="overflow-x-auto p-5 my-6 bg-white rounded-2xl border border-black/[0.06] shadow-sm w-100 thin-scroll">
         <div className="justify-center mt-0 mb-2 text-xl font-normal leading-normal text-center text-black h2">
           จัดคนขึ้นเวร
         </div>

@@ -28,11 +28,15 @@ export default function Home() {
   const yearTH = (selectedYear + 543).toString();
 
   return (
-    <div className="px-4 py-6 mx-auto max-w-6xl sm:px-6">
+    <div className="px-4 py-7 mx-auto max-w-6xl sm:px-6">
       {/* หัวข้อหน้า */}
-      <div className="mb-5">
-        <h1 className="text-xl font-semibold text-gray-800 sm:text-2xl">สรุปยอดตารางเวร</h1>
-        <p className="mt-0.5 text-sm text-gray-500">ประจำเดือน {monthTH} พ.ศ. {yearTH}</p>
+      <div className="flex flex-wrap gap-x-3 gap-y-1 items-baseline mb-6">
+        <h1 className="text-xl font-bold tracking-tight text-gray-900 sm:text-2xl">
+          สรุปยอดตารางเวร
+        </h1>
+        <span className="inline-flex items-center px-3 py-1 text-xs font-semibold text-teal-800 rounded-full bg-teal-600/10 ring-1 ring-teal-600/20">
+          {monthTH} พ.ศ. {yearTH}
+        </span>
       </div>
 
       {/* เลือกเดือน/ปี */}
