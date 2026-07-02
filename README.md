@@ -302,9 +302,8 @@ npm run dev
 | `GET /api/user/select-month-on-call` | ข้อมูลเวร On-Call รายเดือน |
 | `* /api/duty`, `/api/duty/[id]` | CRUD เวรปกติ |
 | `* /api/on-call`, `/api/on-call/[id]` | CRUD เวร On-Call |
-| `POST /api/auto-schedule` | สร้างตารางอัตโนมัติ (พรีวิว) |
-| `POST /api/auto-schedule/apply` | บันทึกตารางที่สร้างลง DB (transaction) |
-| `GET/POST /api/auto-schedule/config` | กฎ/พารามิเตอร์การจัดเวร |
+| `GET/POST /api/auto-schedule` | GET = ค่าตั้งต้น config, POST = สร้างตารางอัตโนมัติ (พรีวิว) — กติกาสกัดจากเวรจริง ดู `AUTO_SCHEDULE.md` |
+| `POST /api/auto-schedule/apply` | บันทึกพรีวิวลง Duty (โหมดเติมช่องว่าง/แทนที่) |
 | `POST /api/staff-assignment`, `/api/auto-assign-staff` | มอบหมายพนักงานเข้าแผนก |
 | `* /api/shift-preference` | จองเวร (ShiftPreference) |
 | `GET /api/fairness` | สรุปคะแนนภาระงาน/ความสมดุลรายเดือน |

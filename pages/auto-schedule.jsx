@@ -127,15 +127,15 @@ export default function AutoSchedulePage() {
             </div>
             <div className="flex items-start">
               <span className="w-6 h-6 bg-blue-200 text-blue-800 rounded-full flex items-center justify-center text-xs font-bold mr-3 mt-0.5">2</span>
-              <p>ระบบจะพิจารณาการจองเวรของพนักงานและจัดตารางให้สมดุล</p>
+              <p>กรอกวันลา/อบรม/เวรที่ตกลงกันไว้ในตารางเวรก่อน — ระบบจะไม่แตะช่องเหล่านั้น และจัดเวรที่เหลือรอบ ๆ ให้เอง</p>
             </div>
             <div className="flex items-start">
               <span className="w-6 h-6 bg-blue-200 text-blue-800 rounded-full flex items-center justify-center text-xs font-bold mr-3 mt-0.5">3</span>
-              <p>ตรวจสอบตัวอย่างตารางและข้อจำกัดที่อาจละเมิด</p>
+              <p>กดสร้างพรีวิว ตรวจตาราง ความสมดุล และคำเตือน (ยังไม่บันทึกจริง)</p>
             </div>
             <div className="flex items-start">
               <span className="w-6 h-6 bg-blue-200 text-blue-800 rounded-full flex items-center justify-center text-xs font-bold mr-3 mt-0.5">4</span>
-              <p>เลือกว่าจะเพิ่มเวรใหม่หรือแทนที่เวรเดิม แล้วบันทึก</p>
+              <p>เลือกเติมเฉพาะช่องว่าง หรือล้างเวรเดิมแล้วแทนที่ แล้วกดบันทึก</p>
             </div>
           </div>
         </div>
@@ -145,20 +145,22 @@ export default function AutoSchedulePage() {
           <h3 className="mb-3 text-lg font-medium text-gray-800">ข้อจำกัดที่ระบบปฏิบัติ</h3>
           <div className="grid gap-4 text-sm text-gray-700 md:grid-cols-2">
             <div>
-              <h4 className="mb-2 font-medium">ความปลอดภัยในการทำงาน:</h4>
+              <h4 className="mb-2 font-medium">กติกาบังคับ (จากแนวปฏิบัติจริงของหอผู้ป่วย):</h4>
               <ul className="space-y-1 list-disc list-inside">
-                <li>ไม่เวรดึกตามด้วยเวรเช้าวันถัดไป</li>
-                <li>ไม่เวรบ่ายตามด้วยเวรเช้าวันถัดไป</li>
-                <li>ไม่ทำงานติดต่อกันเกิน 5 วัน</li>
+                <li>มีเวรบ่ายวันก่อน ห้ามต่อเวรดึกวันถัดไป (ทำงานต่อเนื่อง 16 ชม.)</li>
+                <li>เวรควบได้เฉพาะ เช้า+บ่าย (ชบ) และ ดึก+บ่าย (ดบ)</li>
+                <li>เวรดึกติดกันไม่เกิน 3 คืน</li>
+                <li>ไม่แตะเวร/วันลา/อบรม ที่กรอกไว้แล้ว</li>
+                <li>หัวหน้าหอขึ้นเฉพาะเวรเช้า (เสาร์–อาทิตย์เป็น OT, ควบบ่าย OT ได้)</li>
               </ul>
             </div>
             <div>
-              <h4 className="mb-2 font-medium">ความสมดุลภาระงาน:</h4>
+              <h4 className="mb-2 font-medium">ความสมดุลที่ระบบพยายามทำ:</h4>
               <ul className="space-y-1 list-disc list-inside">
-                <li>กระจายจำนวนเวรให้เท่าเทียมกัน</li>
-                <li>หมุนเวียนเวรหนัก (บ่าย/ดึก) อย่างสมดุล</li>
-                <li>เคารพการจองเวรของพนักงาน</li>
-                <li>จำกัดเวรต่อเดือนไม่เกิน 22 เวร</li>
+                <li>เวรรวม เวรดึก OT และงานเสาร์–อาทิตย์ ใกล้เคียงกันทุกคน</li>
+                <li>หมุนเวรตามลูปที่ใช้จริง: เช้า → ดึก → ดึกควบบ่าย → เช้าควบบ่าย → หยุด</li>
+                <li>เวรควบเป็นรูปแบบที่ใช้จริง: เช้า(OT)+บ่าย และ ดึก+บ่าย(OT)</li>
+                <li>เลี่ยงการทำงานติดกันยาวเกิน 7 วัน และให้มีวันหยุดขั้นต่ำ</li>
               </ul>
             </div>
           </div>
