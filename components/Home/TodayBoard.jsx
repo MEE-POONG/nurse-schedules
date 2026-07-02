@@ -46,8 +46,11 @@ const TodayBoard = ({ month, year }) => {
   };
 
   // ---- เวร/สถิติของฉัน ----
+  const SHIFT_ORDER = { ด: 1, ช: 2, บ: 3 };
   const myData = me?.id ? users.find((u) => u.id === me.id) : null;
-  const myToday = refDay && myData ? dutiesOn(myData, refDay) : [];
+  const myToday = (refDay && myData ? dutiesOn(myData, refDay) : []).sort(
+    (a, b) => (SHIFT_ORDER[a.Shif?.name] ?? 99) - (SHIFT_ORDER[b.Shif?.name] ?? 99)
+  );
 
   const monthStat = (u) => {
     const reg = (name) => (u.Duty || []).filter((d) => d.Shif?.name === name && !(d.isOT || d.Shif?.isOT)).length;
@@ -125,7 +128,7 @@ const TodayBoard = ({ month, year }) => {
         </div>
         {refDay && todayGroups && (
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-            {["ช", "บ", "ด"].map((s) => {
+            {["ด", "ช", "บ"].map((s) => {
               const info = SHIFT_INFO[s];
               const list = todayGroups[s];
               return (
