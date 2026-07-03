@@ -30,14 +30,14 @@ export default function OfficialSchedule() {
   const yearTH = (selectedYear + 543).toString();
 
   return (
-    <div className="px-4 py-6 mx-auto max-w-6xl sm:px-6">
+    <div className="px-4 py-7 mx-auto max-w-6xl sm:px-6">
       {/* หัวข้อหน้า */}
-      <div className="flex flex-wrap gap-3 justify-between items-center mb-5 no-print">
-        <div>
-          <h1 className="text-xl font-semibold text-gray-800 sm:text-2xl">ตารางทางการ (ฟอร์มราชการ)</h1>
-          <p className="mt-0.5 text-sm text-gray-500">
-            ประจำเดือน {monthTH} พ.ศ. {yearTH} · สำหรับพิมพ์ส่งราชการ
-          </p>
+      <div className="flex flex-wrap gap-3 justify-between items-center mb-6 no-print">
+        <div className="flex flex-wrap gap-x-3 gap-y-1 items-baseline">
+          <h1 className="text-xl font-bold tracking-tight text-gray-900 sm:text-2xl">ตารางทางการ (ฟอร์มราชการ)</h1>
+          <span className="inline-flex items-center px-3 py-1 text-xs font-semibold text-teal-800 rounded-full bg-teal-600/10 ring-1 ring-teal-600/20">
+            {monthTH} พ.ศ. {yearTH} · สำหรับพิมพ์ส่งราชการ
+          </span>
         </div>
         <ExportExcelButton month={selectedMonth} year={selectedYear} />
       </div>

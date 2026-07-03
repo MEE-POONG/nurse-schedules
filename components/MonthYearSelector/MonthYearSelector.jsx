@@ -28,12 +28,15 @@ const MonthYearSelector = ({ selectedMonth, selectedYear, onMonthYearChange }) =
   };
 
   const selectClass =
-    "px-3 py-2 text-sm bg-white rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500";
+    "px-3.5 py-2 text-sm font-medium text-gray-700 bg-gray-50/80 rounded-xl border border-gray-200 transition-colors cursor-pointer hover:border-teal-400 hover:bg-white focus:outline-none focus:ring-2 focus:ring-teal-500/30 focus:border-teal-500 focus:bg-white";
 
   return (
-    <div className="flex flex-wrap gap-3 items-center p-3 bg-white rounded-xl border border-gray-200 shadow-sm">
-      <span className="flex gap-1.5 items-center text-sm font-medium text-gray-600">
-        <TbCalendar size={18} className="text-teal-700" /> เลือกเดือน
+    <div className="flex flex-wrap gap-3 items-center p-3.5 card">
+      <span className="flex gap-2 items-center text-sm font-semibold text-gray-700">
+        <span className="flex justify-center items-center w-8 h-8 text-teal-700 rounded-lg bg-teal-600/10">
+          <TbCalendar size={18} />
+        </span>
+        เลือกเดือน
       </span>
       <select value={selectedMonth} onChange={(e) => handleMonthChange(e.target.value)} className={selectClass}>
         {months.map((name, value) => (

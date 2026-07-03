@@ -50,61 +50,58 @@ export default function AutoSchedulePage() {
   }
 
   return (
-    <div className="py-8 min-h-screen bg-gray-50">
-      <div className="px-4 mx-auto max-w-6xl">
-        <div className="mb-6">
-          <h1 className="mb-2 text-3xl font-bold text-gray-900">
+    <div className="py-7 min-h-screen">
+      <div className="px-4 mx-auto max-w-6xl sm:px-6">
+        <div className="flex flex-wrap gap-x-3 gap-y-1 items-baseline mb-6">
+          <h1 className="text-xl font-bold tracking-tight text-gray-900 sm:text-2xl">
             ระบบจัดตารางเวรอัตโนมัติ
           </h1>
-          <p className="text-gray-600">
-            ประจำเดือน {monthTH} พ.ศ. {yearTH}
-          </p>
+          <span className="inline-flex items-center px-3 py-1 text-xs font-semibold text-teal-800 rounded-full bg-teal-600/10 ring-1 ring-teal-600/20">
+            {monthTH} พ.ศ. {yearTH}
+          </span>
         </div>
 
         {/* Tabs */}
-        <div className="mb-6">
-          <div className="border-b border-gray-200">
-            <nav className="flex -mb-px space-x-8">
-              <button
-                onClick={() => setActiveTab("staff-assignment")}
-                className={`py-2 px-1 border-b-2 font-medium text-sm ${
-                  activeTab === "staff-assignment"
-                    ? "border-teal-600 text-teal-700"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                }`}
-              >
-                1. จัดพนักงานเข้าแผนก
-              </button>
-              <button
-                onClick={() => setActiveTab("auto-schedule")}
-                className={`py-2 px-1 border-b-2 font-medium text-sm ${
-                  activeTab === "auto-schedule"
-                    ? "border-teal-600 text-teal-700"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                }`}
-              >
-                2. จัดตารางเวรอัตโนมัติ
-              </button>
-            </nav>
-          </div>
+        <div className="inline-flex p-1 mb-6 bg-white rounded-xl border shadow-sm border-gray-200/80">
+          {[
+            { key: "staff-assignment", label: "1. จัดพนักงานเข้าแผนก" },
+            { key: "auto-schedule", label: "2. จัดตารางเวรอัตโนมัติ" },
+          ].map((t) => (
+            <button
+              key={t.key}
+              onClick={() => setActiveTab(t.key)}
+              className={`px-4 py-2 text-sm rounded-lg transition-all ${
+                activeTab === t.key
+                  ? "text-white font-semibold bg-gradient-to-r from-teal-600 to-teal-500 shadow-md shadow-teal-600/30"
+                  : "text-gray-500 hover:text-gray-800 hover:bg-gray-50"
+              }`}
+            >
+              {t.label}
+            </button>
+          ))}
         </div>
 
         {/* เลือกเดือน/ปี */}
+        <div className="mb-5">
         <MonthYearSelector
           selectedMonth={selectedMonth}
           selectedYear={selectedYear}
           onMonthYearChange={handleMonthYearChange}
         />
+        </div>
 
         {/* เลือกแผนก - แสดงเฉพาะใน tab จัดตารางเวร */}
         {activeTab === "auto-schedule" && (
-          <div className="p-6 mb-6 bg-white rounded-lg shadow-md">
-            <h2 className="mb-4 text-lg font-medium">เลือกแผนกที่ต้องการจัดตาราง</h2>
+          <div className="p-5 mb-5 card">
+            <h2 className="flex gap-2 items-center mb-3 text-sm font-bold text-gray-800">
+              <span className="w-1 h-4 rounded-full bg-gradient-to-b from-teal-500 to-emerald-500" />
+              เลือกแผนกที่ต้องการจัดตาราง
+            </h2>
             <div className="max-w-md">
               <select
                 value={selectedLocation}
                 onChange={(e) => setSelectedLocation(e.target.value)}
-                className="px-3 py-2 w-full rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500"
+                className="px-3.5 py-2.5 w-full text-sm font-medium text-gray-700 bg-gray-50/80 rounded-xl border border-gray-200 transition-colors cursor-pointer hover:border-teal-400 hover:bg-white focus:outline-none focus:ring-2 focus:ring-teal-500/30 focus:border-teal-500 focus:bg-white"
               >
                 <option value="">-- เลือกแผนก --</option>
                 {locations?.map(location => (
@@ -118,48 +115,58 @@ export default function AutoSchedulePage() {
         )}
 
         {/* คำแนะนำการใช้งาน */}
-        <div className="p-6 mb-6 bg-blue-50 rounded-lg border border-blue-200">
-          <h3 className="mb-3 text-lg font-medium text-blue-800">วิธีการใช้งาน</h3>
-          <div className="space-y-2 text-sm text-blue-700">
-            <div className="flex items-start">
-              <span className="w-6 h-6 bg-blue-200 text-blue-800 rounded-full flex items-center justify-center text-xs font-bold mr-3 mt-0.5">1</span>
-              <p>เลือกแผนกที่ต้องการจัดตารางเวรอัตโนมัติ</p>
-            </div>
-            <div className="flex items-start">
-              <span className="w-6 h-6 bg-blue-200 text-blue-800 rounded-full flex items-center justify-center text-xs font-bold mr-3 mt-0.5">2</span>
-              <p>ระบบจะพิจารณาการจองเวรของพนักงานและจัดตารางให้สมดุล</p>
-            </div>
-            <div className="flex items-start">
-              <span className="w-6 h-6 bg-blue-200 text-blue-800 rounded-full flex items-center justify-center text-xs font-bold mr-3 mt-0.5">3</span>
-              <p>ตรวจสอบตัวอย่างตารางและข้อจำกัดที่อาจละเมิด</p>
-            </div>
-            <div className="flex items-start">
-              <span className="w-6 h-6 bg-blue-200 text-blue-800 rounded-full flex items-center justify-center text-xs font-bold mr-3 mt-0.5">4</span>
-              <p>เลือกว่าจะเพิ่มเวรใหม่หรือแทนที่เวรเดิม แล้วบันทึก</p>
+        <div className="grid grid-cols-1 gap-4 mb-5 lg:grid-cols-2">
+          <div className="p-5 card">
+            <h3 className="flex gap-2 items-center mb-3 text-sm font-bold text-gray-800">
+              <span className="w-1 h-4 rounded-full bg-gradient-to-b from-sky-500 to-blue-500" />
+              วิธีการใช้งาน
+            </h3>
+            <div className="space-y-2.5 text-sm text-gray-600">
+              {[
+                "เลือกแผนกที่ต้องการจัดตารางเวรอัตโนมัติ",
+                "ระบบจะพิจารณาการจองเวรของพนักงานและจัดตารางให้สมดุล",
+                "ตรวจสอบตัวอย่างตารางและข้อจำกัดที่อาจละเมิด",
+                "เลือกว่าจะเพิ่มเวรใหม่หรือแทนที่เวรเดิม แล้วบันทึก",
+              ].map((step, i) => (
+                <div key={i} className="flex items-start">
+                  <span className="flex justify-center items-center mr-3 w-6 h-6 text-xs font-bold text-sky-700 rounded-full bg-sky-500/10 ring-1 ring-sky-500/20 shrink-0">
+                    {i + 1}
+                  </span>
+                  <p className="leading-relaxed">{step}</p>
+                </div>
+              ))}
             </div>
           </div>
-        </div>
 
-        {/* ข้อจำกัดที่ระบบปฏิบัติ */}
-        <div className="p-6 mb-6 bg-gray-50 rounded-lg border border-gray-200">
-          <h3 className="mb-3 text-lg font-medium text-gray-800">ข้อจำกัดที่ระบบปฏิบัติ</h3>
-          <div className="grid gap-4 text-sm text-gray-700 md:grid-cols-2">
-            <div>
-              <h4 className="mb-2 font-medium">ความปลอดภัยในการทำงาน:</h4>
-              <ul className="space-y-1 list-disc list-inside">
-                <li>ไม่เวรดึกตามด้วยเวรเช้าวันถัดไป</li>
-                <li>ไม่เวรบ่ายตามด้วยเวรเช้าวันถัดไป</li>
-                <li>ไม่ทำงานติดต่อกันเกิน 5 วัน</li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="mb-2 font-medium">ความสมดุลภาระงาน:</h4>
-              <ul className="space-y-1 list-disc list-inside">
-                <li>กระจายจำนวนเวรให้เท่าเทียมกัน</li>
-                <li>หมุนเวียนเวรหนัก (บ่าย/ดึก) อย่างสมดุล</li>
-                <li>เคารพการจองเวรของพนักงาน</li>
-                <li>จำกัดเวรต่อเดือนไม่เกิน 22 เวร</li>
-              </ul>
+          {/* ข้อจำกัดที่ระบบปฏิบัติ */}
+          <div className="p-5 card">
+            <h3 className="flex gap-2 items-center mb-3 text-sm font-bold text-gray-800">
+              <span className="w-1 h-4 rounded-full bg-gradient-to-b from-teal-500 to-emerald-500" />
+              ข้อจำกัดที่ระบบปฏิบัติ
+            </h3>
+            <div className="grid gap-4 text-sm text-gray-600 sm:grid-cols-2">
+              <div>
+                <h4 className="mb-2 text-xs font-bold tracking-wide text-gray-500">ความปลอดภัยในการทำงาน</h4>
+                <ul className="space-y-1.5">
+                  {["ไม่เวรดึกตามด้วยเวรเช้าวันถัดไป", "ไม่เวรบ่ายตามด้วยเวรเช้าวันถัดไป", "ไม่ทำงานติดต่อกันเกิน 5 วัน"].map((r) => (
+                    <li key={r} className="flex gap-2 items-start">
+                      <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-teal-400 shrink-0" />
+                      {r}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <h4 className="mb-2 text-xs font-bold tracking-wide text-gray-500">ความสมดุลภาระงาน</h4>
+                <ul className="space-y-1.5">
+                  {["กระจายจำนวนเวรให้เท่าเทียมกัน", "หมุนเวียนเวรหนัก (บ่าย/ดึก) อย่างสมดุล", "เคารพการจองเวรของพนักงาน", "จำกัดเวรต่อเดือนไม่เกิน 22 เวร"].map((r) => (
+                    <li key={r} className="flex gap-2 items-start">
+                      <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-emerald-400 shrink-0" />
+                      {r}
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
           </div>
         </div>
@@ -192,7 +199,7 @@ export default function AutoSchedulePage() {
             )}
 
             {!selectedLocation && (
-              <div className="p-12 text-center bg-white rounded-lg shadow-md">
+              <div className="p-14 text-center card">
                 <div className="mb-4 text-gray-400">
                   <svg className="mx-auto w-16 h-16" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />

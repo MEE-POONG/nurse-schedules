@@ -90,91 +90,84 @@ const AutoSchedulePanel = ({ month, year, locationId, onScheduleGenerated }) => 
 
   if (!currentUser?.isAdmin) {
     return (
-      <div className="p-4 bg-red-50 rounded-md border border-red-200">
-        <p className="text-red-600">เฉพาะผู้ดูแลระบบเท่านั้นที่สามารถใช้ฟีเจอร์นี้ได้</p>
+      <div className="p-4 rounded-xl bg-rose-500/[0.07] ring-1 ring-rose-500/20">
+        <p className="text-sm font-medium text-rose-600">เฉพาะผู้ดูแลระบบเท่านั้นที่สามารถใช้ฟีเจอร์นี้ได้</p>
       </div>
     );
   }
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-md">
-      <h2 className="mb-4 text-xl font-bold">จัดตารางเวรอัตโนมัติ</h2>
-      
+    <div className="p-6 card">
+      <h2 className="flex gap-2 items-center mb-5 text-base font-bold tracking-tight text-gray-900">
+        <span className="w-1 h-4 rounded-full bg-gradient-to-b from-teal-500 to-emerald-500" />
+        จัดตารางเวรอัตโนมัติ
+      </h2>
+
       {/* สถิติการจอง */}
-      <div className="p-4 mb-6 bg-blue-50 rounded-md">
-        <h3 className="mb-2 font-medium text-blue-800">สถิติการจองเวรประจำเดือน</h3>
-        {preferencesLoading ? (
-          <p>กำลังโหลด...</p>
-        ) : (
-          <div className="grid grid-cols-3 gap-4 text-sm">
-            <div>
-              <span className="font-medium">การจองทั้งหมด:</span>
-              <span className="ml-2">{preferences?.length || 0} รายการ</span>
-            </div>
-            <div>
-              <span className="font-medium">จองแน่นอน:</span>
-              <span className="ml-2">{preferences?.filter(p => p.isReserved)?.length || 0} รายการ</span>
-            </div>
-            <div>
-              <span className="font-medium">ความชอบ:</span>
-              <span className="ml-2">{preferences?.filter(p => !p.isReserved)?.length || 0} รายการ</span>
-            </div>
+      {preferencesLoading ? (
+        <p className="mb-6 text-sm text-gray-500">กำลังโหลด...</p>
+      ) : (
+        <div className="grid grid-cols-3 gap-2 mb-6 text-center">
+          <div className="py-3 rounded-xl bg-sky-500/[0.07]">
+            <div className="text-xl font-bold text-sky-600">{preferences?.length || 0}</div>
+            <div className="text-[11px] font-medium text-sky-600/70">การจองทั้งหมด</div>
           </div>
-        )}
-      </div>
+          <div className="py-3 rounded-xl bg-emerald-500/[0.07]">
+            <div className="text-xl font-bold text-emerald-600">{preferences?.filter(p => p.isReserved)?.length || 0}</div>
+            <div className="text-[11px] font-medium text-emerald-600/70">จองแน่นอน</div>
+          </div>
+          <div className="py-3 rounded-xl bg-gray-500/[0.07]">
+            <div className="text-xl font-bold text-gray-700">{preferences?.filter(p => !p.isReserved)?.length || 0}</div>
+            <div className="text-[11px] font-medium text-gray-500">ความชอบ</div>
+          </div>
+        </div>
+      )}
 
       {/* ปุ่มสร้างตาราง */}
       <div className="mb-4">
         <button
           onClick={handleGenerateSchedule}
           disabled={generateLoading}
-          className="px-6 py-2 text-white bg-teal-700 rounded-md hover:bg-teal-800 focus:outline-none focus:ring-2 focus:ring-teal-500 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-6 py-2.5 btn-brand disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {generateLoading ? "กำลังสร้างตาราง..." : "สร้างตารางเวรอัตโนมัติ"}
+          {generateLoading ? "กำลังสร้างตาราง..." : "✨ สร้างตารางเวรอัตโนมัติ"}
         </button>
       </div>
 
       {/* แสดงผลการสร้างตาราง */}
       {showPreview && generatedSchedule && (
-        <div className="p-4 rounded-md border border-gray-200">
-          <h3 className="mb-4 text-lg font-medium">ตัวอย่างตารางเวรที่สร้างขึ้น</h3>
-          
-          {/* แสดงข้อมูลดีบัก */}
-          <div className="p-2 mb-4 text-xs bg-gray-100 rounded">
-            <div>Schedule array length: {generatedSchedule.schedule?.length || 0}</div>
-            <div>Violations array length: {generatedSchedule.violations?.length || 0}</div>
-            <div>Staff stats keys: {Object.keys(generatedSchedule.staffStats || {}).length}</div>
-          </div>
+        <div className="p-5 rounded-2xl ring-1 ring-gray-200">
+          <h3 className="mb-4 text-base font-bold tracking-tight text-gray-900">ตัวอย่างตารางเวรที่สร้างขึ้น</h3>
 
           {/* แสดงเมื่อไม่มีข้อมูล */}
           {(!generatedSchedule.schedule || generatedSchedule.schedule.length === 0) && (
-            <div className="p-4 mb-4 text-center bg-yellow-50 rounded border border-yellow-200">
-              <p className="text-yellow-800">ไม่พบข้อมูลตารางเวรที่สร้างขึ้น</p>
-              <p className="text-sm text-yellow-600">กรุณาตรวจสอบการตั้งค่าหรือลองสร้างใหม่</p>
+            <div className="p-4 mb-4 text-center rounded-xl bg-amber-500/[0.08] ring-1 ring-amber-500/20">
+              <p className="font-medium text-amber-800">ไม่พบข้อมูลตารางเวรที่สร้างขึ้น</p>
+              <p className="text-sm text-amber-600">กรุณาตรวจสอบการตั้งค่าหรือลองสร้างใหม่</p>
             </div>
           )}
-          
+
           {/* สถิติผลการสร้าง */}
-          <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
-            <div className="p-3 bg-green-50 rounded">
-              <div className="font-medium text-green-800">จำนวนเวรที่สร้าง</div>
-              <div className="text-2xl font-bold text-green-600">
+          <div className="grid grid-cols-2 gap-2 mb-4 text-center">
+            <div className="py-3 rounded-xl bg-emerald-500/[0.07]">
+              <div className="text-2xl font-bold text-emerald-600">
                 {generatedSchedule.schedule?.length || 0}
               </div>
+              <div className="text-[11px] font-medium text-emerald-600/70">จำนวนเวรที่สร้าง</div>
             </div>
-            <div className="p-3 bg-yellow-50 rounded">
-              <div className="font-medium text-yellow-800">ข้อจำกัดที่ละเมิด</div>
-              <div className="text-2xl font-bold text-yellow-600">
+            <div className="py-3 rounded-xl bg-amber-500/[0.08]">
+              <div className="text-2xl font-bold text-amber-600">
                 {generatedSchedule.violations?.length || 0}
               </div>
+              <div className="text-[11px] font-medium text-amber-600/70">ข้อจำกัดที่ละเมิด</div>
             </div>
           </div>
 
           {/* รายการข้อจำกัดที่ละเมิด */}
           {generatedSchedule.violations?.length > 0 && (
-            <div className="p-3 mb-4 bg-red-50 rounded border border-red-200">
-              <h4 className="mb-2 font-medium text-red-800">ข้อจำกัดที่ไม่สามารถปฏิบัติได้:</h4>
-              <ul className="space-y-1 text-sm text-red-600">
+            <div className="p-3.5 mb-4 rounded-xl bg-rose-500/[0.06] ring-1 ring-rose-500/15">
+              <h4 className="mb-2 text-xs font-bold text-rose-700">ข้อจำกัดที่ไม่สามารถปฏิบัติได้:</h4>
+              <ul className="space-y-1 text-sm text-rose-600">
                 {generatedSchedule.violations.slice(0, 5).map((violation, index) => (
                   <li key={index}>
                     {getViolationMessage(violation)}
@@ -189,12 +182,12 @@ const AutoSchedulePanel = ({ month, year, locationId, onScheduleGenerated }) => 
 
           {/* ตารางเวรที่สร้างขึ้น */}
           {generatedSchedule.schedule?.length > 0 && (
-            <div className="p-3 mb-4 bg-green-50 rounded border border-green-200">
-              <h4 className="mb-2 font-medium text-green-800">ตารางเวรที่สร้างขึ้น ({generatedSchedule.schedule.length} เวร):</h4>
-              <div className="overflow-y-auto max-h-60">
+            <div className="p-3.5 mb-4 rounded-xl bg-emerald-500/[0.05] ring-1 ring-emerald-500/15">
+              <h4 className="mb-2 text-xs font-bold text-emerald-700">ตารางเวรที่สร้างขึ้น ({generatedSchedule.schedule.length} เวร):</h4>
+              <div className="overflow-y-auto max-h-60 thin-scroll">
                 <table className="min-w-full text-sm">
                   <thead>
-                    <tr className="border-b border-green-200">
+                    <tr className="text-xs font-semibold text-gray-500 border-b border-emerald-500/20">
                       <th className="p-2 text-left">วันที่</th>
                       <th className="p-2 text-left">วัน</th>
                       <th className="p-2 text-left">พนักงาน</th>
@@ -204,7 +197,7 @@ const AutoSchedulePanel = ({ month, year, locationId, onScheduleGenerated }) => 
                   </thead>
                   <tbody>
                     {generatedSchedule.schedule.map((shift, index) => (
-                      <tr key={index} className="border-b border-green-100">
+                      <tr key={index} className="border-b border-emerald-500/10">
                         <td className="p-2">
                           {dayjs(shift.datetime).format("DD/MM")}
                         </td>
@@ -240,17 +233,17 @@ const AutoSchedulePanel = ({ month, year, locationId, onScheduleGenerated }) => 
 
           {/* ตารางเวรจัดกลุ่มตามวัน */}
           {generatedSchedule.schedule?.length > 0 && (
-            <div className="p-3 mb-4 bg-indigo-50 rounded border border-indigo-200">
-              <h4 className="mb-2 font-medium text-indigo-800">ตารางเวรจัดกลุ่มตามวัน:</h4>
-              <div className="overflow-y-auto max-h-60">
+            <div className="p-3.5 mb-4 rounded-xl bg-indigo-500/[0.05] ring-1 ring-indigo-500/15">
+              <h4 className="mb-2 text-xs font-bold text-indigo-700">ตารางเวรจัดกลุ่มตามวัน:</h4>
+              <div className="overflow-y-auto max-h-60 thin-scroll">
                 {getScheduleByDate(generatedSchedule.schedule).map((daySchedule, index) => (
-                  <div key={index} className="p-2 mb-3 bg-white rounded border">
-                    <div className="mb-2 font-medium text-gray-800">
+                  <div key={index} className="p-2.5 mb-3 bg-white rounded-xl ring-1 ring-gray-200/70">
+                    <div className="mb-2 text-sm font-semibold text-gray-800">
                       {dayjs(daySchedule.date).format("dddd DD/MM/YYYY")}
                     </div>
                     <div className="grid grid-cols-3 gap-2">
                       {daySchedule.shifts.map((shift, shiftIndex) => (
-                        <div key={shiftIndex} className="p-2 text-center bg-gray-50 rounded">
+                        <div key={shiftIndex} className="p-2 text-center rounded-lg bg-gray-50">
                           <div className="mb-1 text-xs text-gray-600">
                             {getShiftName(shift.shifId)}
                           </div>
@@ -271,11 +264,11 @@ const AutoSchedulePanel = ({ month, year, locationId, onScheduleGenerated }) => 
 
           {/* สถิติพนักงาน */}
           {generatedSchedule.staffStats && (
-            <div className="p-3 mb-4 bg-blue-50 rounded border border-blue-200">
-              <h4 className="mb-2 font-medium text-blue-800">สถิติพนักงาน:</h4>
+            <div className="p-3.5 mb-4 rounded-xl bg-sky-500/[0.05] ring-1 ring-sky-500/15">
+              <h4 className="mb-2 text-xs font-bold text-sky-700">สถิติพนักงาน:</h4>
               <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
                 {Object.entries(generatedSchedule.staffStats).map(([userId, stats]) => (
-                  <div key={userId} className="p-2 bg-white rounded border">
+                  <div key={userId} className="p-2.5 bg-white rounded-xl ring-1 ring-gray-200/70">
                     <div className="mb-1 text-xs text-gray-600">
                       ID: {userId.slice(-6)}
                     </div>
@@ -296,31 +289,33 @@ const AutoSchedulePanel = ({ month, year, locationId, onScheduleGenerated }) => 
 
           {/* ตัวเลือกการบันทึก */}
           <div className="mb-4">
-            <label className="flex items-center">
+            <label className={`flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl cursor-pointer transition-all ${
+              replaceExisting ? "ring-2 ring-teal-500/70 bg-teal-600/[0.07]" : "ring-1 ring-gray-200 hover:ring-teal-300/70"
+            }`}>
               <input
                 type="checkbox"
                 checked={replaceExisting}
                 onChange={(e) => setReplaceExisting(e.target.checked)}
-                className="mr-2 w-4 h-4 text-teal-600"
+                className="w-4 h-4 accent-teal-700"
               />
-              <span className="text-sm">
+              <span className="text-sm font-medium text-gray-700">
                 แทนที่ตารางเวรที่มีอยู่ (จะลบเวรเดิมของแผนกนี้ในเดือนนี้ก่อนบันทึกใหม่)
               </span>
             </label>
           </div>
 
           {/* ปุ่มฟังก์ชันเพิ่มเติม */}
-          <div className="flex gap-3 mb-4">
+          <div className="flex flex-wrap gap-3 mb-4">
             <button
               onClick={() => setShowOfficialTable(!showOfficialTable)}
-              className="px-4 py-2 text-white bg-purple-600 rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="px-4 py-2 text-sm font-semibold text-violet-700 bg-white rounded-xl border shadow-sm transition-colors border-violet-200/80 hover:bg-violet-50 hover:border-violet-300"
             >
               {showOfficialTable ? "ซ่อนตารางทางการ" : "แสดงตารางทางการ"}
             </button>
-            
+
             <button
               onClick={() => window.print()}
-              className="px-4 py-2 text-white bg-teal-700 rounded-md hover:bg-teal-800 focus:outline-none focus:ring-2 focus:ring-teal-500"
+              className="px-4 py-2 text-sm font-semibold text-teal-700 bg-white rounded-xl border shadow-sm transition-colors border-teal-200/80 hover:bg-teal-50 hover:border-teal-300"
             >
               🖨️ พิมพ์ตาราง
             </button>
@@ -330,14 +325,14 @@ const AutoSchedulePanel = ({ month, year, locationId, onScheduleGenerated }) => 
           <div className="flex gap-3">
             <button
               onClick={() => setShowPreview(false)}
-              className="px-4 py-2 text-gray-700 bg-gray-300 rounded-md hover:bg-gray-400"
+              className="px-4 py-2.5 text-sm font-medium text-gray-600 bg-gray-100 rounded-xl transition-colors hover:bg-gray-200"
             >
               ยกเลิก
             </button>
             <button
               onClick={handleApplySchedule}
               disabled={applyLoading}
-              className="px-6 py-2 text-white bg-teal-700 rounded-md hover:bg-teal-800 focus:outline-none focus:ring-2 focus:ring-teal-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-6 py-2.5 btn-brand disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {applyLoading ? "กำลังบันทึก..." : "บันทึกตารางเวร"}
             </button>
@@ -347,11 +342,11 @@ const AutoSchedulePanel = ({ month, year, locationId, onScheduleGenerated }) => 
 
       {/* ตารางทางการ */}
       {showOfficialTable && (
-        <div className="p-4 mt-6 rounded-md border border-gray-200">
-          <h3 className="mb-4 text-lg font-medium">ตารางการปฏิบัติงานแบบทางการ</h3>
-          <div className="p-4 mb-4 bg-blue-50 rounded-lg border border-blue-200">
-            <h4 className="mb-2 font-medium text-blue-800">📋 คำแนะนำ</h4>
-            <ul className="space-y-1 text-sm text-blue-700">
+        <div className="p-5 mt-6 rounded-2xl ring-1 ring-gray-200">
+          <h3 className="mb-4 text-base font-bold tracking-tight text-gray-900">ตารางการปฏิบัติงานแบบทางการ</h3>
+          <div className="p-4 mb-4 rounded-xl bg-sky-500/[0.06] ring-1 ring-sky-500/15">
+            <h4 className="mb-2 text-xs font-bold text-sky-700">📋 คำแนะนำ</h4>
+            <ul className="space-y-1 text-sm text-gray-600">
               <li>• ตารางนี้แสดงการปฏิบัติงานแบบทางการตามรูปแบบของหน่วยงานราชการ</li>
               <li>• ข้อมูลจะอัพเดทหลังจากบันทึกตารางเวรเรียบร้อยแล้ว</li>
               <li>• สามารถพิมพ์ตารางนี้เพื่อนำเสนออย่างเป็นทางการได้</li>
