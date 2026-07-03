@@ -2,15 +2,15 @@ import dayjs from "dayjs";
 
 // ข้อมูล/สีของแต่ละกะ ใช้ร่วมกันทุกมุมมองของตารางเวรใหม่
 export const SHIFT_META = {
-  ด: { label: "ด", full: "ดึก", time: "00:30–08:30", order: 1, chip: "bg-indigo-100 text-indigo-800", accent: "#6366f1" },
-  ช: { label: "ช", full: "เช้า", time: "08:30–16:30", order: 2, chip: "bg-amber-100 text-amber-800", accent: "#f59e0b" },
-  บ: { label: "บ", full: "บ่าย", time: "16:30–00:30", order: 3, chip: "bg-sky-100 text-sky-800", accent: "#0ea5e9" },
-  R: { label: "พัก", full: "พัก", time: "", order: 8, chip: "bg-rose-50 text-rose-600", accent: "#f43f5e" },
-  x: { label: "หยุด", full: "หยุด", time: "", order: 9, chip: "bg-gray-100 text-gray-500", accent: "#9ca3af" },
-  อบรม: { label: "อบรม", full: "อบรม", time: "", order: 7, chip: "bg-violet-100 text-violet-700", accent: "#8b5cf6" },
-  ลาพัก: { label: "ลาพัก", full: "ลาพัก", time: "", order: 8, chip: "bg-gray-100 text-gray-500", accent: "#9ca3af" },
-  ลากิจ: { label: "ลากิจ", full: "ลากิจ", time: "", order: 8, chip: "bg-gray-100 text-gray-500", accent: "#9ca3af" },
-  ลาป่วย: { label: "ลาป่วย", full: "ลาป่วย", time: "", order: 8, chip: "bg-gray-100 text-gray-500", accent: "#9ca3af" },
+  ด: { label: "ด", full: "ดึก", time: "00:30–08:30", order: 1, chip: "bg-indigo-100 text-indigo-800 ring-1 ring-inset ring-indigo-200/70", accent: "#6366f1" },
+  ช: { label: "ช", full: "เช้า", time: "08:30–16:30", order: 2, chip: "bg-amber-100 text-amber-800 ring-1 ring-inset ring-amber-200/70", accent: "#f59e0b" },
+  บ: { label: "บ", full: "บ่าย", time: "16:30–00:30", order: 3, chip: "bg-sky-100 text-sky-800 ring-1 ring-inset ring-sky-200/70", accent: "#0ea5e9" },
+  R: { label: "พัก", full: "พัก", time: "", order: 8, chip: "bg-rose-50 text-rose-600 ring-1 ring-inset ring-rose-200/60", accent: "#f43f5e" },
+  x: { label: "หยุด", full: "หยุด", time: "", order: 9, chip: "bg-gray-100 text-gray-500 ring-1 ring-inset ring-gray-200/70", accent: "#9ca3af" },
+  อบรม: { label: "อบรม", full: "อบรม", time: "", order: 7, chip: "bg-violet-100 text-violet-700 ring-1 ring-inset ring-violet-200/70", accent: "#8b5cf6" },
+  ลาพัก: { label: "ลาพัก", full: "ลาพัก", time: "", order: 8, chip: "bg-gray-100 text-gray-500 ring-1 ring-inset ring-gray-200/70", accent: "#9ca3af" },
+  ลากิจ: { label: "ลากิจ", full: "ลากิจ", time: "", order: 8, chip: "bg-gray-100 text-gray-500 ring-1 ring-inset ring-gray-200/70", accent: "#9ca3af" },
+  ลาป่วย: { label: "ลาป่วย", full: "ลาป่วย", time: "", order: 8, chip: "bg-gray-100 text-gray-500 ring-1 ring-inset ring-gray-200/70", accent: "#9ca3af" },
 };
 
 // กะทำงานหลัก เรียงตามเวลาเริ่มกะ ด(00:30)→ช(08:30)→บ(16:30) — ใช้แยกการ์ดในมุมมองรายวัน + นับสรุป

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import dayjs from "dayjs";
 import "dayjs/locale/th";
+import { TbChevronLeft, TbChevronRight } from "react-icons/tb";
 import ReservationButton from "@/components/ShiftReservation/ReservationButton";
 
 dayjs.locale("th");
@@ -25,71 +26,76 @@ export default function ReservationPage() {
   };
 
   return (
-    <div className="py-8 min-h-screen bg-gray-50">
-      <div className="px-4 mx-auto max-w-3xl">
-        <h1 className="mb-1 text-2xl font-bold text-gray-900">จองเวร</h1>
-        <p className="mb-5 text-sm text-gray-600">
-          เลือกวันแล้วกดสัญลักษณ์ <span className="font-medium">🔖</span> เพื่อจองกะที่ต้องการ —
-          ระบบจัดตารางอัตโนมัติจะพยายามจัดตามที่จองไว้
-        </p>
+    <div className="px-4 py-7 mx-auto max-w-3xl sm:px-6">
+      <h1 className="mb-1 text-xl font-bold tracking-tight text-gray-900 sm:text-2xl">จองเวร</h1>
+      <p className="mb-6 text-sm text-gray-500">
+        เลือกวันแล้วกดสัญลักษณ์ <span className="font-medium">🔖</span> เพื่อจองกะที่ต้องการ —
+        ระบบจัดตารางอัตโนมัติจะพยายามจัดตามที่จองไว้
+      </p>
 
-        {/* นำทางเดือน */}
-        <div className="flex justify-between items-center p-3 mb-3 bg-white rounded-xl border shadow-sm">
-          <button
-            onClick={() => setRefDate(refDate.subtract(1, "month"))}
-            className="px-3 py-1 text-gray-600 rounded-lg hover:bg-gray-100"
-          >
-            ‹ ก่อนหน้า
-          </button>
-          <div className="text-lg font-semibold text-gray-800">
-            {monthTH} {yearTH}
-          </div>
-          <button
-            onClick={() => setRefDate(refDate.add(1, "month"))}
-            className="px-3 py-1 text-gray-600 rounded-lg hover:bg-gray-100"
-          >
-            ถัดไป ›
-          </button>
+      {/* นำทางเดือน */}
+      <div className="flex justify-between items-center p-2.5 mb-4 card">
+        <button
+          onClick={() => setRefDate(refDate.subtract(1, "month"))}
+          className="flex gap-1 items-center px-3 py-2 text-sm font-medium text-gray-600 rounded-xl transition-colors hover:bg-teal-50 hover:text-teal-700"
+        >
+          <TbChevronLeft size={18} /> ก่อนหน้า
+        </button>
+        <div className="text-lg font-bold tracking-tight text-gray-900">
+          {monthTH} {yearTH}
         </div>
+        <button
+          onClick={() => setRefDate(refDate.add(1, "month"))}
+          className="flex gap-1 items-center px-3 py-2 text-sm font-medium text-gray-600 rounded-xl transition-colors hover:bg-teal-50 hover:text-teal-700"
+        >
+          ถัดไป <TbChevronRight size={18} />
+        </button>
+      </div>
 
-        {/* คำอธิบายสัญลักษณ์ */}
-        <div className="flex flex-wrap gap-4 px-1 mb-3 text-xs text-gray-600">
-          <span className="flex gap-1 items-center"><span className="text-gray-400">🔖</span> ยังไม่จอง</span>
-          <span className="flex gap-1 items-center"><span className="text-blue-600">🔖</span> ระบุความต้องการ</span>
-          <span className="flex gap-1 items-center"><span className="text-green-600">🔖</span> จองแน่นอน</span>
+      {/* คำอธิบายสัญลักษณ์ */}
+      <div className="flex flex-wrap gap-x-5 gap-y-2 px-4 py-2.5 mb-4 text-xs text-gray-600 rounded-xl bg-white/70 ring-1 ring-gray-200/60">
+        <span className="flex gap-1.5 items-center"><span className="text-gray-400">🔖</span> ยังไม่จอง</span>
+        <span className="flex gap-1.5 items-center"><span className="text-blue-600">🔖</span> ระบุความต้องการ</span>
+        <span className="flex gap-1.5 items-center"><span className="text-green-600">🔖</span> จองแน่นอน</span>
+      </div>
+
+      {/* ปฏิทิน */}
+      <div className="p-4 card">
+        <div className="grid grid-cols-7 gap-1.5 mb-1.5">
+          {WEEKDAYS.map((d, i) => (
+            <div
+              key={d}
+              className={`text-center text-[11px] font-bold tracking-wide py-1.5 rounded-lg ${
+                i === 0 || i === 6 ? "text-rose-500 bg-rose-50/70" : "text-gray-500 bg-gray-50/80"
+              }`}
+            >
+              {d}
+            </div>
+          ))}
         </div>
-
-        {/* ปฏิทิน */}
-        <div className="p-3 bg-white rounded-xl border shadow-sm">
-          <div className="grid grid-cols-7 gap-1 mb-1">
-            {WEEKDAYS.map((d, i) => (
-              <div key={d} className={`text-center text-xs font-medium py-1 ${i === 0 || i === 6 ? "text-red-500" : "text-gray-500"}`}>
-                {d}
-              </div>
-            ))}
-          </div>
-          <div className="grid grid-cols-7 gap-1">
-            {Array.from({ length: firstDayOfWeek }).map((_, i) => (
-              <div key={`empty-${i}`} />
-            ))}
-            {Array.from({ length: daysInMonth }, (_, i) => i + 1).map((day) => (
-              <div
-                key={day}
-                className={`flex flex-col items-center justify-between rounded-lg border p-1 min-h-[60px] ${
-                  isWeekend(day) ? "bg-red-50 border-red-100" : "bg-gray-50 border-gray-100"
-                }`}
-              >
-                <div className="text-sm font-medium text-gray-700">{day}</div>
-                <ReservationButton
-                  key={`${day}-${refresh}`}
-                  day={day}
-                  month={month}
-                  year={year}
-                  onReservationUpdate={() => setRefresh((r) => r + 1)}
-                />
-              </div>
-            ))}
-          </div>
+        <div className="grid grid-cols-7 gap-1.5">
+          {Array.from({ length: firstDayOfWeek }).map((_, i) => (
+            <div key={`empty-${i}`} className="rounded-xl bg-gray-50/40" />
+          ))}
+          {Array.from({ length: daysInMonth }, (_, i) => i + 1).map((day) => (
+            <div
+              key={day}
+              className={`flex flex-col items-center justify-between rounded-xl p-1.5 min-h-[64px] transition-colors ${
+                isWeekend(day)
+                  ? "bg-rose-50/60 ring-1 ring-rose-100 hover:ring-rose-200"
+                  : "bg-white ring-1 ring-gray-200/70 hover:ring-teal-300/70 hover:shadow-sm"
+              }`}
+            >
+              <div className="text-xs font-semibold text-gray-500">{day}</div>
+              <ReservationButton
+                key={`${day}-${refresh}`}
+                day={day}
+                month={month}
+                year={year}
+                onReservationUpdate={() => setRefresh((r) => r + 1)}
+              />
+            </div>
+          ))}
         </div>
       </div>
     </div>

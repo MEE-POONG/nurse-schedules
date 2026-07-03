@@ -34,7 +34,7 @@ export default function MobileNav() {
   return (
     <>
       {/* แถบบน */}
-      <header className="flex sticky top-0 z-30 justify-between items-center px-4 h-14 bg-white border-b border-gray-200 lg:hidden app-chrome">
+      <header className="flex sticky top-0 z-30 justify-between items-center px-4 h-14 border-b shadow-sm backdrop-blur bg-white/90 border-gray-200/80 lg:hidden app-chrome">
         <button
           onClick={() => setOpen(true)}
           aria-label="เปิดเมนู"
@@ -49,7 +49,7 @@ export default function MobileNav() {
         <Link
           href="/profile"
           aria-label="โปรไฟล์"
-          className="flex justify-center items-center w-8 h-8 text-xs font-semibold text-white bg-teal-700 rounded-full"
+          className="flex justify-center items-center w-8 h-8 text-xs font-bold text-white rounded-full bg-gradient-to-br from-teal-600 to-emerald-600 shadow-md shadow-teal-600/30"
         >
           {(me.firstname || "?").charAt(0)}
         </Link>
@@ -79,10 +79,10 @@ export default function MobileNav() {
             leaveFrom="translate-x-0"
             leaveTo="-translate-x-full"
           >
-            <Dialog.Panel className="flex fixed inset-y-0 left-0 flex-col w-72 max-w-[80%] bg-[var(--brand-dark)] text-white">
+            <Dialog.Panel className="flex fixed inset-y-0 left-0 flex-col w-72 max-w-[80%] text-white bg-gradient-to-b from-[var(--brand-dark)] via-[#0a2b28] to-[var(--brand-darker)]">
               <div className="flex justify-between items-center px-4 py-4">
                 <div className="flex gap-3 items-center">
-                  <div className="flex justify-center items-center w-9 h-9 rounded-lg bg-white/10 text-teal-300">
+                  <div className="flex justify-center items-center w-10 h-10 text-white rounded-xl bg-gradient-to-br from-teal-400 to-emerald-500 shadow-lg shadow-teal-950/60 ring-1 ring-white/20">
                     <TbHeartbeat size={20} />
                   </div>
                   <div className="leading-tight">
@@ -104,10 +104,10 @@ export default function MobileNav() {
                       key={it.href}
                       href={it.href}
                       onClick={() => setOpen(false)}
-                      className={`flex items-center gap-3 px-3 py-3 rounded-lg text-sm ${
+                      className={`flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm transition-colors ${
                         active
-                          ? "bg-teal-300 text-[var(--brand-dark)] font-semibold"
-                          : "text-teal-50/90 hover:bg-white/10"
+                          ? "bg-gradient-to-r from-teal-300 to-emerald-300 text-[var(--brand-darker)] font-semibold shadow-lg shadow-teal-950/50"
+                          : "text-teal-50/75 hover:bg-white/[0.07]"
                       }`}
                     >
                       <Icon size={20} className="shrink-0" />
@@ -147,7 +147,7 @@ export default function MobileNav() {
       </Transition>
 
       {/* แถบเมนูล่าง */}
-      <nav className="flex fixed inset-x-0 bottom-0 z-30 justify-around items-stretch bg-white border-t border-gray-200 lg:hidden app-chrome">
+      <nav className="flex fixed inset-x-0 bottom-0 z-30 justify-around items-stretch border-t backdrop-blur bg-white/95 border-gray-200/80 shadow-[0_-4px_16px_rgba(11,49,46,0.06)] lg:hidden app-chrome">
         {bottomItems.map((it) => {
           const Icon = it.icon;
           const active = isActive(it.href);
@@ -155,10 +155,11 @@ export default function MobileNav() {
             <Link
               key={it.href}
               href={it.href}
-              className={`flex flex-col items-center justify-center gap-0.5 flex-1 py-2 text-[10px] ${
+              className={`relative flex flex-col items-center justify-center gap-0.5 flex-1 py-2 text-[10px] transition-colors ${
                 active ? "text-teal-700 font-semibold" : "text-gray-500"
               }`}
             >
+              {active && <span className="absolute top-0 w-8 h-0.5 rounded-full bg-gradient-to-r from-teal-500 to-emerald-500" />}
               <Icon size={22} />
               {it.label}
             </Link>

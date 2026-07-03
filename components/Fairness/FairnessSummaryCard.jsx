@@ -27,32 +27,45 @@ const FairnessSummaryCard = ({ month, year }) => {
   const nameOf = (s) => `${s?.firstname || ""} ${s?.lastname || ""}`.trim();
 
   return (
-    <div className="p-4 bg-white rounded-xl border shadow-sm">
+    <div className="p-5 card">
       <div className="flex flex-wrap gap-4 justify-between items-center">
-        <div className="flex flex-wrap gap-x-8 gap-y-3 items-center">
+        <div className="flex flex-wrap gap-x-10 gap-y-3 items-center">
+          <div className="flex gap-3 items-center">
+            <span
+              className={`flex justify-center items-center w-10 h-10 text-lg rounded-xl ${
+                balanced ? "bg-green-500/10 text-green-600" : "bg-amber-500/10 text-amber-600"
+              }`}
+            >
+              {balanced ? "✓" : "!"}
+            </span>
+            <div>
+              <div className="text-xs font-medium text-gray-500">ความสมดุลภาระงานการจัดเวร</div>
+              <div className={`text-lg font-bold tracking-tight ${balanced ? "text-green-600" : "text-amber-600"}`}>
+                {balanced ? "สมดุลดี" : "ควรปรับให้สมดุล"}
+              </div>
+            </div>
+          </div>
+          <div className="hidden w-px h-10 sm:block bg-gray-200/80" />
           <div>
-            <div className="text-xs text-gray-500">ความสมดุลภาระงานการจัดเวร</div>
-            <div className={`text-lg font-bold ${balanced ? "text-green-600" : "text-amber-600"}`}>
-              {balanced ? "สมดุลดี" : "ควรปรับให้สมดุล"}
+            <div className="text-xs font-medium text-gray-500">ภาระงานเฉลี่ย/คน</div>
+            <div className="text-lg font-bold tracking-tight text-gray-900">{fmt(avg)}</div>
+          </div>
+          <div>
+            <div className="text-xs font-medium text-gray-500">ภาระมากสุด</div>
+            <div className="text-sm font-semibold text-rose-600">
+              {nameOf(top)}
+              <span className="ml-1.5 px-1.5 py-0.5 text-[11px] font-bold rounded-md bg-rose-500/10">{fmt(maxScore)}</span>
             </div>
           </div>
           <div>
-            <div className="text-xs text-gray-500">ภาระงานเฉลี่ย/คน</div>
-            <div className="text-lg font-semibold text-gray-800">{fmt(avg)}</div>
-          </div>
-          <div>
-            <div className="text-xs text-gray-500">ภาระมากสุด</div>
-            <div className="text-sm font-medium text-red-600">{nameOf(top)} ({fmt(maxScore)})</div>
-          </div>
-          <div>
-            <div className="text-xs text-gray-500">ภาระน้อยสุด</div>
-            <div className="text-sm font-medium text-green-600">{nameOf(bottom)} ({fmt(minScore)})</div>
+            <div className="text-xs font-medium text-gray-500">ภาระน้อยสุด</div>
+            <div className="text-sm font-semibold text-emerald-600">
+              {nameOf(bottom)}
+              <span className="ml-1.5 px-1.5 py-0.5 text-[11px] font-bold rounded-md bg-emerald-500/10">{fmt(minScore)}</span>
+            </div>
           </div>
         </div>
-        <Link
-          href="/fairness"
-          className="px-4 py-2 text-sm font-semibold text-teal-700 whitespace-nowrap rounded-lg border border-teal-700 hover:bg-teal-50"
-        >
+        <Link href="/fairness" className="px-4 py-2.5 whitespace-nowrap btn-brand">
           ดูรายละเอียด →
         </Link>
       </div>

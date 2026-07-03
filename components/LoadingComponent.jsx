@@ -20,11 +20,11 @@ export default function LoadingComponent() {
                     leaveFrom="opacity-100"
                     leaveTo="opacity-0"
                 >
-                    <div className="fixed inset-0 bg-black bg-opacity-25" />
+                    <div className="fixed inset-0 backdrop-blur-sm bg-[#07211f]/30" />
                 </Transition.Child>
 
-                <div className="fixed inset-0 overflow-y-auto">
-                    <div className="flex min-h-full items-center justify-center p-4 text-center">
+                <div className="overflow-y-auto fixed inset-0">
+                    <div className="flex justify-center items-center p-4 min-h-full text-center">
                         <Transition.Child
                             as={Fragment}
                             enter="ease-out duration-300"
@@ -34,8 +34,12 @@ export default function LoadingComponent() {
                             leaveFrom="opacity-100 scale-100"
                             leaveTo="opacity-0 scale-95"
                         >
-                            <Dialog.Panel className="absolute right-1/2 bottom-1/2  transform translate-x-1/2 translate-y-1/2 ">
-                                <div className="border-t-transparent border-solid animate-spin rounded-full border-teal-700 border-8 h-64 w-64"></div>
+                            <Dialog.Panel className="flex flex-col gap-4 items-center px-10 py-8 card" style={{ boxShadow: "var(--card-shadow-lg)" }}>
+                                <div className="relative w-12 h-12">
+                                    <div className="absolute inset-0 rounded-full border-4 border-teal-100" />
+                                    <div className="absolute inset-0 rounded-full border-4 border-teal-600 animate-spin border-t-transparent" />
+                                </div>
+                                <div className="text-sm font-semibold text-gray-600">กำลังโหลด...</div>
                             </Dialog.Panel>
                         </Transition.Child>
                     </div>
