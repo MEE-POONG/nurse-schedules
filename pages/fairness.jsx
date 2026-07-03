@@ -8,13 +8,11 @@ export default function FairnessPage() {
   const year = dateStore.value.year;
 
   return (
-    <div className="py-8 min-h-screen bg-gray-50">
-      <div className="px-4 mx-auto max-w-6xl">
-        <div className="mb-6 text-center">
-          <DropDownDate />
-        </div>
-        <FairnessDashboard month={month} year={year} />
+    <div className="px-4 py-7 mx-auto max-w-6xl sm:px-6">
+      <div className="mb-5">
+        <DropDownDate />
       </div>
+      <FairnessDashboard month={month} year={year} />
     </div>
   );
 }

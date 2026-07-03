@@ -36,7 +36,7 @@ export default function AddStaffModal({ open, onClose, month, year, existingUser
   };
 
   const selectClass =
-    "w-full px-3 py-2 text-sm bg-white rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-teal-500";
+    "w-full px-3.5 py-2.5 text-sm font-medium text-gray-700 bg-gray-50/80 rounded-xl border border-gray-200 transition-colors cursor-pointer hover:border-teal-400 hover:bg-white focus:outline-none focus:ring-2 focus:ring-teal-500/30 focus:border-teal-500 focus:bg-white";
 
   return (
     <Transition appear show={open} as={Fragment}>
@@ -46,7 +46,7 @@ export default function AddStaffModal({ open, onClose, month, year, existingUser
           enter="ease-out duration-200" enterFrom="opacity-0" enterTo="opacity-100"
           leave="ease-in duration-150" leaveFrom="opacity-100" leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-black/40" />
+          <div className="fixed inset-0 backdrop-blur-sm bg-[#07211f]/40" />
         </Transition.Child>
 
         <div className="overflow-y-auto fixed inset-0">
@@ -56,8 +56,11 @@ export default function AddStaffModal({ open, onClose, month, year, existingUser
               enter="ease-out duration-200" enterFrom="opacity-0 scale-95" enterTo="opacity-100 scale-100"
               leave="ease-in duration-150" leaveFrom="opacity-100 scale-100" leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="overflow-hidden p-5 w-full max-w-md text-left align-middle bg-white rounded-2xl shadow-xl">
-                <div className="mb-1 text-base font-semibold text-gray-800">จัดคนขึ้นเวร</div>
+              <Dialog.Panel className="overflow-hidden p-6 w-full max-w-md text-left align-middle bg-white rounded-2xl" style={{ boxShadow: "var(--card-shadow-lg)" }}>
+                <div className="flex gap-2 items-center mb-1 text-base font-bold tracking-tight text-gray-900">
+                  <span className="w-1 h-4 rounded-full bg-gradient-to-b from-teal-500 to-emerald-500" />
+                  จัดคนขึ้นเวร
+                </div>
                 <div className="mb-4 text-sm text-gray-500">เพิ่มพยาบาลเข้าตารางเดือนนี้ แล้วค่อยกรอกกะ</div>
 
                 <div className="space-y-3">
@@ -86,14 +89,14 @@ export default function AddStaffModal({ open, onClose, month, year, existingUser
                   </div>
                 </div>
 
-                <div className="flex gap-2 justify-end mt-5">
-                  <button onClick={onClose} className="px-4 py-2 text-sm font-medium text-gray-600 rounded-lg hover:bg-gray-100">
+                <div className="flex gap-2 justify-end mt-6">
+                  <button onClick={onClose} className="px-4 py-2 text-sm font-medium text-gray-600 rounded-xl transition-colors hover:bg-gray-100">
                     เสร็จสิ้น
                   </button>
                   <button
                     onClick={add}
                     disabled={saving || !userId || !locationId}
-                    className="px-4 py-2 text-sm font-semibold text-white bg-teal-700 rounded-lg hover:bg-teal-800 disabled:opacity-50"
+                    className="px-5 py-2 btn-brand disabled:opacity-50"
                   >
                     {saving ? "กำลังเพิ่ม…" : "เพิ่มเข้าตาราง"}
                   </button>
