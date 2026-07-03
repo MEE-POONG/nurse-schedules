@@ -109,15 +109,16 @@ export default async function handler(req, res) {
       
     case "PUT":
       try {
-        const { id, priority, isReserved } = req.body;
-        
+        const { id, shifId, priority, isReserved } = req.body;
+
         if (!id) {
           return res.status(400).json({ error: "Missing preference ID" });
         }
-        
+
         const preference = await prisma.shiftPreference.update({
           where: { id: id },
           data: {
+            ...(shifId ? { shifId: shifId } : {}),
             priority: priority,
             isReserved: isReserved
           },
@@ -139,6 +140,9 @@ export default async function handler(req, res) {
         res.status(200).json(preference);
       } catch (error) {
         console.error("Error updating shift preference:", error);
+        if (error.code === "P2002") {
+          return res.status(409).json({ error: "Preference already exists for this shift and date" });
+        }
         res.status(500).json({ error: "Failed to update shift preference" });
       }
       break;

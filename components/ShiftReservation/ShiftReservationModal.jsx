@@ -14,6 +14,7 @@ const ShiftReservationModal = ({
   const [selectedShift, setSelectedShift] = useState("");
   const [priority, setPriority] = useState(1);
   const [isReserved, setIsReserved] = useState(false);
+  const [editingId, setEditingId] = useState(null);
 
   const currentUser = authProvider.getIdentity();
 
@@ -35,44 +36,101 @@ const ShiftReservationModal = ({
     { manual: true }
   );
 
+  // แก้ไขการจอง
+  const [{ loading: updateLoading }, executeUpdate] = useAxios(
+    { url: "/api/shift-preference", method: "PUT" },
+    { manual: true }
+  );
+
+  // ลบการจอง
+  const [{ loading: deleteLoading }, executeDelete] = useAxios(
+    { url: "/api/shift-preference", method: "DELETE" },
+    { manual: true }
+  );
+
+  const resetForm = () => {
+    setSelectedShift("");
+    setPriority(1);
+    setIsReserved(false);
+    setEditingId(null);
+  };
+
+  const handleClose = () => {
+    resetForm();
+    onClose();
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!selectedShift || !selectedDate) return;
 
     try {
-      const datetime = dayjs()
-        .year(year)
-        .month(month)
-        .date(selectedDate)
-        .hour(8)
-        .minute(0)
-        .second(0);
+      if (editingId) {
+        await executeUpdate({
+          data: {
+            id: editingId,
+            shifId: selectedShift,
+            priority: priority,
+            isReserved: isReserved
+          }
+        });
+      } else {
+        const datetime = dayjs()
+          .year(year)
+          .month(month)
+          .date(selectedDate)
+          .hour(8)
+          .minute(0)
+          .second(0);
 
-      await executeCreate({
-        data: {
-          userId: currentUser.id,
-          shifId: selectedShift,
-          locationId: currentUser.UserDuty?.[0]?.locationId,
-          datetime: datetime.toISOString(),
-          priority: priority,
-          isReserved: isReserved
-        }
-      });
+        await executeCreate({
+          data: {
+            userId: currentUser.id,
+            shifId: selectedShift,
+            locationId: currentUser.UserDuty?.[0]?.locationId,
+            datetime: datetime.toISOString(),
+            priority: priority,
+            isReserved: isReserved
+          }
+        });
+      }
 
       // รีเฟรชข้อมูล
       await refetchReservations();
       onReservationUpdate && onReservationUpdate();
-      
-      // รีเซ็ตฟอร์ม
-      setSelectedShift("");
-      setPriority(1);
-      setIsReserved(false);
+
+      resetForm();
       onClose();
-      
+
     } catch (error) {
-      console.error("Error creating reservation:", error);
-      alert("เกิดข้อผิดพลาดในการจองเวร");
+      console.error("Error saving reservation:", error);
+      if (error.response?.status === 409) {
+        alert("มีการจองกะนี้ในวันนี้อยู่แล้ว");
+      } else {
+        alert("เกิดข้อผิดพลาดในการบันทึกการจอง");
+      }
+    }
+  };
+
+  const handleEdit = (reservation) => {
+    setEditingId(reservation.id);
+    setSelectedShift(reservation.shifId);
+    setPriority(reservation.priority);
+    setIsReserved(reservation.isReserved);
+  };
+
+  const handleDelete = async (reservation) => {
+    if (!confirm(`ลบการจองกะ "${reservation.Shif?.name}" วันที่ ${selectedDate}?`)) return;
+
+    try {
+      await executeDelete({ data: { id: reservation.id } });
+      if (editingId === reservation.id) resetForm();
+      await refetchReservations();
+      onReservationUpdate && onReservationUpdate();
+    } catch (error) {
+      console.error("Error deleting reservation:", error);
+      alert("เกิดข้อผิดพลาดในการลบการจอง");
     }
   };
 
@@ -93,7 +151,7 @@ const ShiftReservationModal = ({
   return (
     <div className="overflow-y-auto fixed inset-0 z-50">
       <div className="flex justify-center items-center px-4 pt-4 pb-20 min-h-screen text-center sm:block sm:p-0">
-        <div className="fixed inset-0 backdrop-blur-sm transition-opacity bg-[#07211f]/40" onClick={onClose}></div>
+        <div className="fixed inset-0 backdrop-blur-sm transition-opacity bg-[#07211f]/40" onClick={handleClose}></div>
 
         <div className="inline-block overflow-hidden p-6 my-8 w-full max-w-md text-left align-middle bg-white rounded-2xl transition-all transform" style={{ boxShadow: "var(--card-shadow-lg)" }}>
           <div className="mb-4">
@@ -108,13 +166,48 @@ const ShiftReservationModal = ({
             <div className="p-3.5 mb-4 rounded-xl bg-amber-500/[0.08] ring-1 ring-amber-500/20">
               <h4 className="mb-2 text-xs font-bold text-amber-700">การจองที่มีอยู่:</h4>
               {currentDateReservations.map(res => (
-                <div key={res.id} className="flex justify-between items-center text-sm">
-                  <span className="text-gray-700">{res.Shif?.name} - ลำดับ {res.priority}</span>
-                  <span className={`text-xs font-semibold ${res.isReserved ? "text-green-600" : "text-gray-500"}`}>
-                    {res.isReserved ? "จองแน่นอน" : "ต้องการ"}
+                <div
+                  key={res.id}
+                  className={`flex justify-between items-center gap-2 text-sm py-1 ${
+                    editingId === res.id ? "bg-amber-500/15 -mx-1.5 px-1.5 rounded-lg" : ""
+                  }`}
+                >
+                  <span className="text-gray-700">{res.Shif?.name === "x" ? "หยุด" : res.Shif?.name} - ลำดับ {res.priority}</span>
+                  <span className="flex gap-2 items-center">
+                    <span className={`text-xs font-semibold ${res.isReserved ? "text-green-600" : "text-gray-500"}`}>
+                      {res.isReserved ? "จองแน่นอน" : "ต้องการ"}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => handleEdit(res)}
+                      className="px-2 py-0.5 text-xs font-medium text-teal-700 rounded-md transition-colors bg-teal-500/10 hover:bg-teal-500/20"
+                    >
+                      แก้ไข
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleDelete(res)}
+                      disabled={deleteLoading}
+                      className="px-2 py-0.5 text-xs font-medium text-rose-600 rounded-md transition-colors bg-rose-500/10 hover:bg-rose-500/20 disabled:opacity-50"
+                    >
+                      ลบ
+                    </button>
                   </span>
                 </div>
               ))}
+            </div>
+          )}
+
+          {editingId && (
+            <div className="flex justify-between items-center px-3.5 py-2 mb-3 text-xs text-teal-800 rounded-xl bg-teal-600/10 ring-1 ring-teal-500/20">
+              <span>กำลังแก้ไขการจอง — ปรับค่าด้านล่างแล้วกดบันทึก</span>
+              <button
+                type="button"
+                onClick={resetForm}
+                className="font-medium text-teal-700 underline hover:text-teal-900"
+              >
+                ยกเลิกการแก้ไข
+              </button>
             </div>
           )}
 
@@ -179,17 +272,21 @@ const ShiftReservationModal = ({
             <div className="flex gap-3">
               <button
                 type="button"
-                onClick={onClose}
+                onClick={handleClose}
                 className="flex-1 px-4 py-2.5 text-sm font-medium text-gray-600 rounded-xl transition-colors bg-gray-100 hover:bg-gray-200"
               >
                 ยกเลิก
               </button>
               <button
                 type="submit"
-                disabled={createLoading || !selectedShift}
+                disabled={createLoading || updateLoading || !selectedShift}
                 className="flex-1 py-2.5 btn-brand disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {createLoading ? "กำลังบันทึก..." : "บันทึกการจอง"}
+                {createLoading || updateLoading
+                  ? "กำลังบันทึก..."
+                  : editingId
+                  ? "บันทึกการแก้ไข"
+                  : "บันทึกการจอง"}
               </button>
             </div>
           </form>
