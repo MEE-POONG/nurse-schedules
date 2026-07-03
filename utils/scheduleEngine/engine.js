@@ -64,10 +64,13 @@ const variance = (nums) => {
  * @param {Array}  args.staff [{ id, name, isChief, isTrain }]
  * @param {Object} args.fixed  ช่องที่ห้ามแตะ: { "<userId>|<day>": [{ shift: 'ช'|'บ'|'ด'|'OFF'|'LEAVE', isOT }] }
  *                 shift 'OFF'/'LEAVE' = วันนั้นไม่ทำงาน (x/ลา/อบรม), งานจริงใช้ชื่อกะ
+ * @param {Object} args.history เวรท้ายเดือนก่อน (บริบทต่อเนื่องข้ามเดือน): รูปแบบเดียวกับ fixed
+ *                 แต่ day ≤ 0 (0 = วันสุดท้ายของเดือนก่อน, -1 = ก่อนหน้านั้น, …)
+ *                 ใช้กับ: ห้าม บ่ายสิ้นเดือน→ดึกวันที่ 1, ดึกติดกันข้ามเดือน, ลูปหมุนต่อเนื่อง
  * @param {Object} args.configOverrides ปรับค่าจาก DEFAULT_CONFIG
  * @returns {{ assignments, violations, summary, config }}
  */
-function generateSchedule({ year, month, staff, fixed = {}, configOverrides = {} }) {
+function generateSchedule({ year, month, staff, fixed = {}, history = {}, configOverrides = {} }) {
   const config = mergeConfig(configOverrides);
   const N = daysInMonth(year, month);
   // คนที่จัดเวรให้ได้ = ไม่ได้ไปอบรมทั้งเดือน
@@ -76,7 +79,7 @@ function generateSchedule({ year, month, staff, fixed = {}, configOverrides = {}
 
   let best = null;
   for (let seed = 1; seed <= config.restarts; seed++) {
-    const result = solveOnce({ year, month, N, staff: active, chief, fixed, config, seed });
+    const result = solveOnce({ year, month, N, staff: active, chief, fixed, history, config, seed });
     if (!best || result.objective < best.objective) best = result;
   }
 
@@ -96,26 +99,32 @@ function generateSchedule({ year, month, staff, fixed = {}, configOverrides = {}
     }
   }
 
-  const { summary, violations } = evaluate({ year, month, N, staff: active, fixed, assignments, unfilled, config });
+  const { summary, violations } = evaluate({ year, month, N, staff: active, fixed, history, assignments, unfilled, config });
 
   return { assignments, violations, summary, config, daysInMonth: N };
 }
 
+// จำนวนวันย้อนหลังของเดือนก่อนที่ต้องรู้ (ครอบคลุมกฎดึกติดกัน + โทษทำงานติดยาว)
+const lookbackDays = (rules) => Math.max(rules.maxNightStreak, rules.softMaxConsecutiveWork, 3);
+
 // จัดหนึ่งรอบด้วย seed ที่กำหนด
-function solveOnce({ year, month, N, staff, chief, fixed, config, seed }) {
+function solveOnce({ year, month, N, staff, chief, fixed, history, config, seed }) {
   const rnd = mulberry32(seed * 7919 + month * 131 + year);
   const T = TRANSITION_SCORE;
   const W = config.weights;
   const R = config.rules;
+  const LOOKBACK = lookbackDays(R);
+  const MIN_DAY = 1 - LOOKBACK;
 
   // ตารางระหว่างจัด: userId -> day -> [{shift, isOT, fixed}]
+  // รวมวัน ≤ 0 = เวรท้ายเดือนก่อน (บริบทของกฎ ไม่ถูกจัด/ไม่ถูกนับยอดของเดือนนี้)
   const grid = {};
   for (const p of staff) grid[p.id] = {};
 
-  // โหลด fixed เข้า grid (เป็นบริบทของกฎ แต่ห้ามแก้)
+  // โหลด fixed + history เข้า grid (เป็นบริบทของกฎ แต่ห้ามแก้)
   for (const p of staff) {
-    for (let day = 1; day <= N; day++) {
-      const cells = fixed[`${p.id}|${day}`];
+    for (let day = MIN_DAY; day <= N; day++) {
+      const cells = day >= 1 ? fixed[`${p.id}|${day}`] : history[`${p.id}|${day}`];
       if (cells && cells.length) {
         grid[p.id][day] = cells.map((c) => ({ shift: c.shift, isOT: !!c.isOT, fixed: true }));
       }
@@ -145,7 +154,7 @@ function solveOnce({ year, month, N, staff, chief, fixed, config, seed }) {
   // จำนวนดึกติดกันจบที่วัน day
   const nightStreakEndingAt = (uid, day) => {
     let n = 0;
-    for (let d = day; d >= 1; d--) {
+    for (let d = day; d >= MIN_DAY; d--) {
       if (workComps(uid, d).some((c) => c.shift === "ด")) n++;
       else break;
     }
@@ -153,7 +162,7 @@ function solveOnce({ year, month, N, staff, chief, fixed, config, seed }) {
   };
   const consecutiveWorkEndingAt = (uid, day) => {
     let n = 0;
-    for (let d = day; d >= 1; d--) {
+    for (let d = day; d >= MIN_DAY; d--) {
       if (workComps(uid, d).length) n++;
       else break;
     }
@@ -210,7 +219,7 @@ function solveOnce({ year, month, N, staff, chief, fixed, config, seed }) {
       if (counts[uid].doubles >= R.maxDoublesPerMonth) return false;
     }
     // ห้าม: เมื่อวานมีบ่าย → วันนี้ดึก (ทำงานต่อเนื่อง 16 ชม.)
-    if (shift === "ด" && day > 1 && workComps(uid, day - 1).some((c) => c.shift === "บ")) return false;
+    if (shift === "ด" && workComps(uid, day - 1).some((c) => c.shift === "บ")) return false; // รวมกรณีวันที่ 1 เทียบกับสิ้นเดือนก่อน
     // ห้าม: วันนี้ลงบ่าย แต่พรุ่งนี้มีดึก fixed อยู่แล้ว
     if (shift === "บ" && day < N && workComps(uid, day + 1).some((c) => c.shift === "ด")) return false;
     // ดึกติดกันเกินเพดาน
@@ -231,7 +240,7 @@ function solveOnce({ year, month, N, staff, chief, fixed, config, seed }) {
     const before = stateOf(workComps(uid, day));
     const afterSet = workComps(uid, day).map((c) => c.shift).concat([shift]);
     const after = stateOf(afterSet.map((x) => ({ shift: x })));
-    const prev = day > 1 ? stateOf(workComps(uid, day - 1)) : "OFF";
+    const prev = stateOf(workComps(uid, day - 1)); // วันที่ 1 ใช้เวรวันสิ้นเดือนก่อน (history) เป็นเมื่อวาน
     const tAfter = (T[prev] && T[prev][after]) || 0;
     const tBefore = before === "OFF" ? (T[prev] && T[prev].OFF) || 0 : (T[prev] && T[prev][before]) || 0;
     s += (W.transition * (tAfter - tBefore)) / 10;
@@ -354,19 +363,24 @@ function solveOnce({ year, month, N, staff, chief, fixed, config, seed }) {
 }
 
 // ---- ตรวจผล + สรุปสถิติ (ใช้กับผลรวม fixed ด้วย เพื่อโชว์ใน UI) ----
-function evaluate({ year, month, N, staff, fixed, assignments, unfilled, config }) {
+function evaluate({ year, month, N, staff, fixed, history, assignments, unfilled, config }) {
   const R = config.rules;
+  const MIN_DAY = 1 - lookbackDays(R);
   const perUser = {};
   const grid = {};
   for (const p of staff) {
     perUser[p.id] = { name: p.name, isChief: !!p.isChief, ช: 0, บ: 0, ด: 0, ot: 0, doubles: 0, off: 0, weekendWork: 0, total: 0, maxStreak: 0 };
     grid[p.id] = {};
-    for (let day = 1; day <= N; day++) grid[p.id][day] = [];
+    for (let day = MIN_DAY; day <= N; day++) grid[p.id][day] = [];
   }
   const push = (uid, day, shift, isOT) => {
     if (grid[uid] && grid[uid][day]) grid[uid][day].push({ shift, isOT });
   };
   for (const [key, cells] of Object.entries(fixed)) {
+    const [uid, dayStr] = key.split("|");
+    for (const c of cells) push(uid, parseInt(dayStr, 10), c.shift, c.isOT);
+  }
+  for (const [key, cells] of Object.entries(history || {})) {
     const [uid, dayStr] = key.split("|");
     for (const c of cells) push(uid, parseInt(dayStr, 10), c.shift, c.isOT);
   }
@@ -381,11 +395,18 @@ function evaluate({ year, month, N, staff, fixed, assignments, unfilled, config 
     });
   }
 
+  const workOf = (uid, day) => (grid[uid][day] || []).filter((c) => ["ช", "บ", "ด"].includes(c.shift));
+
   for (const p of staff) {
     const st = perUser[p.id];
+    // seed streak จากเวรท้ายเดือนก่อน — ทำงานติดกันนับต่อเนื่องข้ามเดือน
     let streak = 0;
+    for (let d = 0; d >= MIN_DAY && workOf(p.id, d).length; d--) streak++;
+    let nightStreak = 0;
+    for (let d = 0; d >= MIN_DAY && workOf(p.id, d).some((c) => c.shift === "ด"); d--) nightStreak++;
+
     for (let day = 1; day <= N; day++) {
-      const comps = grid[p.id][day].filter((c) => ["ช", "บ", "ด"].includes(c.shift));
+      const comps = workOf(p.id, day);
       for (const c of comps) {
         st.total++;
         st[c.shift]++;
@@ -397,13 +418,18 @@ function evaluate({ year, month, N, staff, fixed, assignments, unfilled, config 
       streak = comps.length ? streak + 1 : 0;
       st.maxStreak = Math.max(st.maxStreak, streak);
 
-      // ตรวจ hard rules ซ้ำ (รวมกรณีชนกับ fixed)
-      if (day > 1) {
-        const yestEvening = grid[p.id][day - 1].some((c) => c.shift === "บ");
-        const todayNight = comps.some((c) => c.shift === "ด");
-        if (yestEvening && todayNight)
-          violations.push({ type: "rest", day, message: `${p.name}: บ่ายวันที่ ${day - 1} ต่อดึกวันที่ ${day} (ทำงานต่อเนื่อง 16 ชม.)` });
-      }
+      // ตรวจ hard rules ซ้ำ (รวมกรณีชนกับ fixed และรอยต่อเดือน: day 1 เทียบ day 0)
+      const yestEvening = (grid[p.id][day - 1] || []).some((c) => c.shift === "บ");
+      const todayNight = comps.some((c) => c.shift === "ด");
+      if (yestEvening && todayNight)
+        violations.push({
+          type: "rest",
+          day,
+          message: `${p.name}: บ่าย${day === 1 ? "วันสิ้นเดือนก่อน" : `วันที่ ${day - 1}`} ต่อดึกวันที่ ${day} (ทำงานต่อเนื่อง 16 ชม.)`,
+        });
+      nightStreak = todayNight ? nightStreak + 1 : 0;
+      if (todayNight && nightStreak > R.maxNightStreak)
+        violations.push({ type: "night-streak", day, message: `${p.name}: เวรดึกติดกัน ${nightStreak} คืน ถึงวันที่ ${day} (เพดาน ${R.maxNightStreak}${nightStreak - (day - 1) > 0 ? " — นับรวมท้ายเดือนก่อน" : ""})` });
     }
     if (st.maxStreak > R.softMaxConsecutiveWork)
       violations.push({ type: "streak", day: null, message: `${p.name}: ทำงานติดกัน ${st.maxStreak} วัน (เป้าไม่เกิน ${R.softMaxConsecutiveWork})`, soft: true });

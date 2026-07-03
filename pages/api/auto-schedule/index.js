@@ -89,7 +89,31 @@ export default async function handler(req, res) {
       }
     }
 
-    const result = generateSchedule({ year: y, month: m, staff, fixed, configOverrides });
+    // เวรท้ายเดือนก่อน (7 วันสุดท้าย) = บริบทต่อเนื่องข้ามเดือน:
+    // ห้าม บ่ายสิ้นเดือน→ดึกวันที่ 1, นับดึกติดกันข้ามเดือน, ลูปหมุนต่อจากของจริง
+    const prevStart = firstDay.subtract(7, "day");
+    const prevMonthLastDate = firstDay.subtract(1, "day").date();
+    const prevDuties = await prisma.duty.findMany({
+      where: {
+        userId: { in: staff.map((s) => s.id) },
+        datetime: { gte: prevStart.format(), lt: firstDay.format() },
+      },
+      include: { Shif: true },
+    });
+    const history = {};
+    for (const d of prevDuties) {
+      const name = d.Shif?.name;
+      if (!name) continue;
+      // day 0 = วันสุดท้ายของเดือนก่อน, -1 = ก่อนหน้านั้น, …
+      const dayOffset = dayjs(d.datetime).date() - prevMonthLastDate;
+      const isWork = WORK_NAMES.includes(name);
+      const key = `${d.userId}|${dayOffset}`;
+      (history[key] = history[key] || []).push(
+        isWork ? { shift: name, isOT: !!(d.isOT || d.Shif?.isOT) } : { shift: "LEAVE", isOT: false }
+      );
+    }
+
+    const result = generateSchedule({ year: y, month: m, staff, fixed, history, configOverrides });
 
     return res.status(200).json({
       success: true,
@@ -99,6 +123,7 @@ export default async function handler(req, res) {
       staff,
       assignments: result.assignments, // เวรที่ระบบเสนอ (ยังไม่บันทึก)
       fixedCells, // เวร/ลา/อบรมที่มีอยู่แล้ว (ห้ามแตะ)
+      historyCount: prevDuties.length, // เวรท้ายเดือนก่อนที่นำมาเป็นบริบทต่อเนื่อง
       summary: result.summary,
       violations: result.violations,
       config: result.config,

@@ -212,6 +212,7 @@ export default function AutoSchedulePanel({ month, year, locationId, onScheduleG
         {preview && (
           <span className="text-sm text-gray-500">
             ระบบเสนอ {preview.assignments.filter((a) => a.shift !== "x").length} เวร · ช่องเดิม {preview.fixedCells.length} ช่องไม่ถูกแตะ
+            {preview.historyCount > 0 && <> · ต่อเนื่องจากเวรท้ายเดือนก่อน {preview.historyCount} รายการ</>}
           </span>
         )}
       </div>
