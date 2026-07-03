@@ -303,7 +303,7 @@ export default function AutoSchedulePanel({ month, year, locationId, onScheduleG
                       const we = dow === 0 || dow === 6;
                       return (
                         <td key={d} className={`px-0.5 py-1 text-center align-top ${we ? "bg-teal-50/40" : ""}`}>
-                          <div className="flex flex-col gap-0.5 items-center">
+                          <div className="flex flex-row gap-0.5 items-center">
                             {cells.map((c, i) => {
                               const meta = metaOf(c.shift);
                               const ring = c.isOT && c.otClass ? OT_CIRCLE[c.otClass]?.ring : null;
