@@ -213,6 +213,9 @@ export default function AutoSchedulePanel({ month, year, locationId, onScheduleG
           <span className="text-sm text-gray-500">
             ระบบเสนอ {preview.assignments.filter((a) => a.shift !== "x").length} เวร · ช่องเดิม {preview.fixedCells.length} ช่องไม่ถูกแตะ
             {preview.historyCount > 0 && <> · ต่อเนื่องจากเวรท้ายเดือนก่อน {preview.historyCount} รายการ</>}
+            {preview.preferenceCells?.length > 0 && (
+              <> · การจองเวร {preview.preferenceCells.length} รายการ (จองแน่นอน {preview.preferenceCells.filter((c) => c.isReserved).length})</>
+            )}
           </span>
         )}
       </div>
@@ -307,10 +310,10 @@ export default function AutoSchedulePanel({ month, year, locationId, onScheduleG
                               return (
                                 <span
                                   key={i}
-                                  title={`${meta.full}${c.isOT ? " OT" : ""}${c.fixed ? " (มีอยู่แล้ว)" : " (ระบบเสนอ)"}`}
+                                  title={`${meta.full}${c.isOT ? " OT" : ""}${c.fixed ? " (มีอยู่แล้ว)" : c.reserved ? " (จองแน่นอน)" : " (ระบบเสนอ)"}`}
                                   className={`inline-flex items-center gap-0.5 px-1 rounded text-[11px] leading-4 ${meta.chip} ${
                                     c.isOT && ring ? `border ${ring}` : ""
-                                  } ${c.fixed ? "opacity-60" : ""}`}
+                                  } ${c.reserved ? "ring-2 ring-green-500/70" : ""} ${c.fixed ? "opacity-60" : ""}`}
                                 >
                                   {c.fixed && <TbLock size={9} />}
                                   {c.shift === "x" ? "x" : c.shift}
@@ -330,6 +333,7 @@ export default function AutoSchedulePanel({ month, year, locationId, onScheduleG
           <div className="flex flex-wrap gap-3 px-1 text-[11px] text-gray-500">
             <span><TbLock size={10} className="inline" /> = เวร/ลาเดิม (ไม่ถูกแตะ)</span>
             <span>• = OT (สีกรอบตามวง: ดำ/แดง/น้ำเงิน)</span>
+            <span><span className="inline-block w-2.5 h-2.5 rounded ring-2 ring-green-500/70 align-middle" /> = จองแน่นอน</span>
             {Object.entries(SHIFT_META)
               .filter(([k]) => ["ด", "ช", "บ", "x"].includes(k))
               .map(([k, m]) => (

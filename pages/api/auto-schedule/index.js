@@ -113,7 +113,26 @@ export default async function handler(req, res) {
       );
     }
 
-    const result = generateSchedule({ year: y, month: m, staff, fixed, history, configOverrides });
+    // การจองเวร (ShiftPreference) ของเดือนนี้ — จองแน่นอนจัดให้ก่อน, ระบุความต้องการเป็นคะแนนโน้มน้าว
+    const prefRows = await prisma.shiftPreference.findMany({
+      where: {
+        userId: { in: staff.map((s) => s.id) },
+        datetime: { gte: firstDay.format(), lte: lastDay.format() },
+      },
+      include: { Shif: true },
+    });
+    const preferences = {};
+    const preferenceCells = []; // ให้ UI แสดงประกอบ
+    for (const r of prefRows) {
+      const name = r.Shif?.name;
+      if (!name || !["ช", "บ", "ด", "x"].includes(name)) continue; // หน้าจองให้จองได้เฉพาะ ช/บ/ด/x
+      const day = dayjs(r.datetime).date();
+      const key = `${r.userId}|${day}`;
+      (preferences[key] = preferences[key] || []).push({ shift: name, priority: r.priority, isReserved: r.isReserved });
+      preferenceCells.push({ userId: r.userId, day, shift: name, priority: r.priority, isReserved: r.isReserved });
+    }
+
+    const result = generateSchedule({ year: y, month: m, staff, fixed, history, preferences, configOverrides });
 
     return res.status(200).json({
       success: true,
@@ -124,6 +143,7 @@ export default async function handler(req, res) {
       assignments: result.assignments, // เวรที่ระบบเสนอ (ยังไม่บันทึก)
       fixedCells, // เวร/ลา/อบรมที่มีอยู่แล้ว (ห้ามแตะ)
       historyCount: prevDuties.length, // เวรท้ายเดือนก่อนที่นำมาเป็นบริบทต่อเนื่อง
+      preferenceCells, // การจองเวรของเดือนนี้ (จองแน่นอน + ระบุความต้องการ)
       summary: result.summary,
       violations: result.violations,
       config: result.config,

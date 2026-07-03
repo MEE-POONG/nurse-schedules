@@ -67,10 +67,13 @@ const variance = (nums) => {
  * @param {Object} args.history เวรท้ายเดือนก่อน (บริบทต่อเนื่องข้ามเดือน): รูปแบบเดียวกับ fixed
  *                 แต่ day ≤ 0 (0 = วันสุดท้ายของเดือนก่อน, -1 = ก่อนหน้านั้น, …)
  *                 ใช้กับ: ห้าม บ่ายสิ้นเดือน→ดึกวันที่ 1, ดึกติดกันข้ามเดือน, ลูปหมุนต่อเนื่อง
+ * @param {Object} args.preferences การจองเวร (ShiftPreference): { "<userId>|<day>": [{ shift: 'ช'|'บ'|'ด'|'x', priority, isReserved }] }
+ *                 isReserved = จองแน่นอน → จัดให้ก่อนเป็นอันดับแรก (ถ้าไม่ขัด hard rules)
+ *                 priority (เมื่อไม่ reserved): 1 ต้องการมาก, 2 ปกติ, 3 ไม่อยากทำ → เป็นคะแนนโน้มน้าว
  * @param {Object} args.configOverrides ปรับค่าจาก DEFAULT_CONFIG
  * @returns {{ assignments, violations, summary, config }}
  */
-function generateSchedule({ year, month, staff, fixed = {}, history = {}, configOverrides = {} }) {
+function generateSchedule({ year, month, staff, fixed = {}, history = {}, preferences = {}, configOverrides = {} }) {
   const config = mergeConfig(configOverrides);
   const N = daysInMonth(year, month);
   // คนที่จัดเวรให้ได้ = ไม่ได้ไปอบรมทั้งเดือน
@@ -79,7 +82,7 @@ function generateSchedule({ year, month, staff, fixed = {}, history = {}, config
 
   let best = null;
   for (let seed = 1; seed <= config.restarts; seed++) {
-    const result = solveOnce({ year, month, N, staff: active, chief, fixed, history, config, seed });
+    const result = solveOnce({ year, month, N, staff: active, chief, fixed, history, preferences, config, seed });
     if (!best || result.objective < best.objective) best = result;
   }
 
@@ -99,7 +102,7 @@ function generateSchedule({ year, month, staff, fixed = {}, history = {}, config
     }
   }
 
-  const { summary, violations } = evaluate({ year, month, N, staff: active, fixed, history, assignments, unfilled, config });
+  const { summary, violations } = evaluate({ year, month, N, staff: active, fixed, history, preferences, assignments, unfilled, config });
 
   return { assignments, violations, summary, config, daysInMonth: N };
 }
@@ -108,7 +111,7 @@ function generateSchedule({ year, month, staff, fixed = {}, history = {}, config
 const lookbackDays = (rules) => Math.max(rules.maxNightStreak, rules.softMaxConsecutiveWork, 3);
 
 // จัดหนึ่งรอบด้วย seed ที่กำหนด
-function solveOnce({ year, month, N, staff, chief, fixed, history, config, seed }) {
+function solveOnce({ year, month, N, staff, chief, fixed, history, preferences, config, seed }) {
   const rnd = mulberry32(seed * 7919 + month * 131 + year);
   const T = TRANSITION_SCORE;
   const W = config.weights;
@@ -208,6 +211,8 @@ function solveOnce({ year, month, N, staff, chief, fixed, history, config, seed 
   function canAssign(p, day, shift, isOT, slotKind) {
     const uid = p.id;
     if (hasFixedCell(uid, day)) return false; // วันมีของเดิม (เวร/ลา/หยุดที่กรอกมือ) ไม่แตะ
+    // วันถูกบล็อกด้วย "จองหยุดแน่นอน" (x จาก pre-pass) แล้ว
+    if ((grid[uid][day] || []).some((c) => !["ช", "บ", "ด"].includes(c.shift))) return false;
     const todays = workComps(uid, day);
     if (todays.length >= 2) return false;
     if (todays.some((c) => c.shift === shift)) return false; // กะซ้ำในวัน
@@ -220,8 +225,11 @@ function solveOnce({ year, month, N, staff, chief, fixed, history, config, seed 
     }
     // ห้าม: เมื่อวานมีบ่าย → วันนี้ดึก (ทำงานต่อเนื่อง 16 ชม.)
     if (shift === "ด" && workComps(uid, day - 1).some((c) => c.shift === "บ")) return false; // รวมกรณีวันที่ 1 เทียบกับสิ้นเดือนก่อน
-    // ห้าม: วันนี้ลงบ่าย แต่พรุ่งนี้มีดึก fixed อยู่แล้ว
-    if (shift === "บ" && day < N && workComps(uid, day + 1).some((c) => c.shift === "ด")) return false;
+    // ห้าม: วันนี้ลงบ่าย แต่พรุ่งนี้มีดึก fixed หรือจองดึกแน่นอนไว้แล้ว
+    if (shift === "บ" && day < N) {
+      if (workComps(uid, day + 1).some((c) => c.shift === "ด")) return false;
+      if ((preferences[`${uid}|${day + 1}`] || []).some((x) => x.isReserved && x.shift === "ด")) return false;
+    }
     // ดึกติดกันเกินเพดาน
     if (shift === "ด" && nightStreakEndingAt(uid, day - 1) >= R.maxNightStreak) return false;
     // ข้อจำกัดหัวหน้า: ขึ้นเฉพาะเช้า + ควบบ่าย OT ได้ถ้าเปิดไว้
@@ -270,6 +278,17 @@ function solveOnce({ year, month, N, staff, chief, fixed, history, config, seed 
     if (shift === "บ" && isOT && todays.some((c) => c.shift === "ด")) s += W.comboBonus; // ด+บ(OT)
     if (shift === "บ" && isOT && todays.some((c) => c.shift === "ช" && !c.isOT)) s += W.comboBonus * 0.6; // ช+บ(OT)
 
+    // การจองแบบ "ระบุความต้องการ" (ไม่ reserved): โน้มน้าวคะแนน
+    for (const pf of preferences[`${uid}|${day}`] || []) {
+      if (pf.isReserved) continue; // จองแน่นอนถูกจัดไปแล้วใน pre-pass
+      if (pf.shift === shift) {
+        s += pf.priority === 1 ? W.preference : pf.priority === 2 ? W.preference * 0.6 : -W.preference; // p3 = ไม่อยากทำกะนี้
+      } else if (pf.shift === "x") {
+        // อยากหยุดวันนี้ → ลงเวรอะไรก็โดนหัก (p3 "ไม่อยากหยุด" = บวกเล็กน้อย)
+        s += pf.priority === 3 ? W.preference * 0.2 : -(pf.priority === 1 ? W.preference : W.preference * 0.6);
+      }
+    }
+
     // หัวหน้าได้ช่องเช้าในเวลาเป็นอันดับแรกเสมอ
     if (slotKind === "morningReg" && p.isChief) s += 1000;
     // เช้า OT วันธรรมดา: กันหัวหน้าไม่ให้กินช่องของคนอื่น (หัวหน้าได้ morningReg แล้ว)
@@ -302,10 +321,29 @@ function solveOnce({ year, month, N, staff, chief, fixed, history, config, seed 
     for (let i = 0; i < cov.eveningOT; i++) slots.push({ kind: "eveningOT", shift: "บ", isOT: true });
     for (let i = 0; i < cov.nightOT; i++) slots.push({ kind: "nightOT", shift: "ด", isOT: true });
 
-    // นับ fixed ของวันนี้เข้า coverage ก่อน (เช่น มีคนกรอกดึกไว้แล้ว 1 คน ก็เติมอีก 1 พอ)
+    // "จองแน่นอน" (isReserved) — จัดให้ก่อนเป็นอันดับแรกของวัน (ถ้าไม่ขัด hard rules)
+    for (const p of staff) {
+      const dayPrefs = (preferences[`${p.id}|${day}`] || []).filter((x) => x.isReserved);
+      if (!dayPrefs.length) continue;
+      // กะทำงานก่อน แล้วค่อยจองหยุด (กันกรณีจองทั้งคู่ในวันเดียว)
+      for (const pf of dayPrefs.filter((x) => ["ช", "บ", "ด"].includes(x.shift))) {
+        if (canAssign(p, day, pf.shift, false, "reserved")) {
+          assign(p, day, pf.shift, false);
+          newAssignments.push({ userId: p.id, day, shift: pf.shift, isOT: false, otClass: null, reserved: true });
+        }
+        // ถ้าขัดกติกา จะไม่จัดให้ — evaluate จะรายงานเป็นคำเตือนให้แอดมินเห็น
+      }
+      const wantsOff = dayPrefs.some((x) => x.shift === "x");
+      if (wantsOff && !(grid[p.id][day] || []).length) {
+        grid[p.id][day] = [{ shift: "x", isOT: false, fixed: false }]; // บล็อกทั้งวัน (canAssign เห็นเป็น non-work)
+        newAssignments.push({ userId: p.id, day, shift: "x", isOT: false, otClass: null, reserved: true });
+      }
+    }
+
+    // นับเวรที่มีแล้วของวันนี้เข้า coverage ก่อน (fixed ที่กรอกมือ + จองแน่นอนที่เพิ่งจัด)
     const fixedCount = { night: 0, evening: 0, morningReg: 0, morningOT: 0, eveningOT: 0, nightOT: 0 };
     for (const p of staff) {
-      for (const c of workComps(p.id, day).filter((x) => x.fixed)) {
+      for (const c of workComps(p.id, day)) {
         if (c.shift === "ด") fixedCount[c.isOT ? "nightOT" : "night"]++;
         else if (c.shift === "บ") fixedCount[c.isOT ? "eveningOT" : "evening"]++;
         else if (c.shift === "ช") fixedCount[c.isOT ? "morningOT" : "morningReg"]++;
@@ -363,7 +401,7 @@ function solveOnce({ year, month, N, staff, chief, fixed, history, config, seed 
 }
 
 // ---- ตรวจผล + สรุปสถิติ (ใช้กับผลรวม fixed ด้วย เพื่อโชว์ใน UI) ----
-function evaluate({ year, month, N, staff, fixed, history, assignments, unfilled, config }) {
+function evaluate({ year, month, N, staff, fixed, history, preferences, assignments, unfilled, config }) {
   const R = config.rules;
   const MIN_DAY = 1 - lookbackDays(R);
   const perUser = {};
@@ -435,6 +473,23 @@ function evaluate({ year, month, N, staff, fixed, history, assignments, unfilled
       violations.push({ type: "streak", day: null, message: `${p.name}: ทำงานติดกัน ${st.maxStreak} วัน (เป้าไม่เกิน ${R.softMaxConsecutiveWork})`, soft: true });
     if (st.off < R.minOffPerMonth)
       violations.push({ type: "off", day: null, message: `${p.name}: มีวันหยุดเพียง ${st.off} วัน (เป้าอย่างน้อย ${R.minOffPerMonth})`, soft: true });
+  }
+
+  // ตรวจการจองเวรเทียบผลจริง: จองแน่นอนที่จัดให้ไม่ได้ / ความต้องการลำดับสูงสุดที่ไม่สมหวัง
+  const shiftTH = (sh) => (sh === "x" ? "หยุด" : sh === "ด" ? "เวรดึก" : sh === "บ" ? "เวรบ่าย" : "เวรเช้า");
+  for (const [key, prefs] of Object.entries(preferences || {})) {
+    const [uid, dayStr] = key.split("|");
+    const day = parseInt(dayStr, 10);
+    const p = staff.find((s) => s.id === uid);
+    if (!p || day < 1 || day > N) continue;
+    const comps = workOf(uid, day);
+    for (const pf of prefs) {
+      const fulfilled = pf.shift === "x" ? comps.length === 0 : comps.some((c) => c.shift === pf.shift);
+      if (pf.isReserved && !fulfilled)
+        violations.push({ type: "reservation", day, soft: true, message: `${p.name}: จองแน่นอน "${shiftTH(pf.shift)}" วันที่ ${day} แต่จัดให้ไม่ได้ (ชนเวรเดิม/ขัดกติกา — ควรคุยกับผู้จอง)` });
+      else if (!pf.isReserved && pf.priority === 1 && !fulfilled)
+        violations.push({ type: "preference", day, soft: true, message: `${p.name}: ต้องการ "${shiftTH(pf.shift)}" วันที่ ${day} (ลำดับสูงสุด) แต่ไม่ได้จัดให้` });
+    }
   }
 
   const rot = staff.filter((p) => !(p.isChief && config.chief.morningOnly));
