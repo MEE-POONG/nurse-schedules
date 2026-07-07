@@ -2,87 +2,58 @@ import { useSelector } from "react-redux";
 import React from "react";
 import { useDispatch } from "react-redux";
 import { setMonth, setYear } from "store/dateSlice";
+import { TbCalendar } from "react-icons/tb";
+
+const MONTHS = [
+  "มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน",
+  "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม",
+];
 
 export default function DropDownDate() {
   const dispatch = useDispatch();
-  const { dateStore } = useSelector((state) => ({ ...state }))
+  const { dateStore } = useSelector((state) => ({ ...state }));
 
-  const monthEN = dateStore.value.month + 1
-  const yearEN = dateStore.value.year
+  const monthEN = dateStore.value.month + 1;
+  const yearEN = dateStore.value.year;
 
   const yearInt = +yearEN;
   const year = 2022;
 
+  const selectCls =
+    "px-3.5 py-2 text-sm font-medium text-gray-700 bg-gray-50/80 rounded-xl border border-gray-200 transition-colors cursor-pointer hover:border-teal-400 hover:bg-white focus:outline-none focus:ring-2 focus:ring-teal-500/30 focus:border-teal-500 focus:bg-white";
+
   return (
-    <>
-      <label htmlFor="">เดือน</label>
-      <div className="relative inline-flex mx-2">
-        <svg
-          className="w-2 h-2 absolute top-0 right-0 m-4 pointer-events-none"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 412 232"
-        >
-          <path
-            d="M206 171.144L42.678 7.822c-9.763-9.763-25.592-9.763-35.355 0-9.763 9.764-9.763 25.592 0 35.355l181 181c4.88 4.882 11.279 7.323 17.677 7.323s12.796-2.441 17.678-7.322l181-181c9.763-9.764 9.763-25.592 0-35.355-9.763-9.763-25.592-9.763-35.355 0L206 171.144z"
-            fill="#648299"
-            fillRule="nonzero"
-          />
-        </svg>
-        <select
-          onChange={(event) => {
-            dispatch(setMonth(event.target.value));
-          }}
-          defaultValue={+monthEN - 1}
-          className="border border-gray-300 shadow-md rounded-full text-gray-600 h-10 pl-5 pr-10 bg-white hover:border-teal-500 focus:border-teal-500 focus:outline-none appearance-none"
-        >
-          <option value={0}>มกราคม</option>
-          <option value={1}>กุมภาพันธ์</option>
-          <option value={2}>มีนาคม</option>
-          <option value={3}>เมษายน</option>
-          <option value={4}>พฤษภาคม</option>
-          <option value={5}>มิถุนายน</option>
-          <option value={6}>กรกฎาคม</option>
-          <option value={7}>สิงหาคม</option>
-          <option value={8}>กันยายน</option>
-          <option value={9}>ตุลาคม</option>
-          <option value={10}>พฤศจิกายน</option>
-          <option value={11}>ธันวาคม</option>
-        </select>
-      </div>
-      <label htmlFor="">ปี</label>
-      <div className="relative inline-flex mx-2">
-        <svg
-          className="w-2 h-2 absolute top-0 right-0 m-4 pointer-events-none"
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 412 232"
-        >
-          <path
-            d="M206 171.144L42.678 7.822c-9.763-9.763-25.592-9.763-35.355 0-9.763 9.764-9.763 25.592 0 35.355l181 181c4.88 4.882 11.279 7.323 17.677 7.323s12.796-2.441 17.678-7.322l181-181c9.763-9.764 9.763-25.592 0-35.355-9.763-9.763-25.592-9.763-35.355 0L206 171.144z"
-            fill="#648299"
-            fillRule="nonzero"
-          />
-        </svg>
-        <select
-          onChange={(event) => {
-            dispatch(setYear(event.target.value));
-          }}
-          defaultValue={yearInt}
-          className="border border-gray-300 shadow-md rounded-full text-gray-600 h-10 pl-5 pr-10 bg-white hover:border-teal-500 focus:border-teal-500 focus:outline-none appearance-none"
-        >
-          {Array.from(new Array(5), (v, i) => (
-            <option
-              key={i}
-              value={year + i}
-              className={`${year + i === new Date().getFullYear()
-                ? "bg-teal-700 text-white"
-                : ""
-                }`}
-            >
-              {year + i + 543}
-            </option>
-          ))}
-        </select>
-      </div>
-    </>
+    <div className="inline-flex flex-wrap gap-3 items-center p-3.5 card">
+      <span className="flex gap-2 items-center text-sm font-semibold text-gray-700">
+        <span className="flex justify-center items-center w-8 h-8 text-teal-700 rounded-lg bg-teal-600/10">
+          <TbCalendar size={18} />
+        </span>
+        เลือกเดือน
+      </span>
+      <select
+        onChange={(event) => {
+          dispatch(setMonth(event.target.value));
+        }}
+        defaultValue={+monthEN - 1}
+        className={selectCls}
+      >
+        {MONTHS.map((name, value) => (
+          <option key={value} value={value}>{name}</option>
+        ))}
+      </select>
+      <select
+        onChange={(event) => {
+          dispatch(setYear(event.target.value));
+        }}
+        defaultValue={yearInt}
+        className={selectCls}
+      >
+        {Array.from(new Array(5), (v, i) => (
+          <option key={i} value={year + i}>
+            {year + i + 543}
+          </option>
+        ))}
+      </select>
+    </div>
   );
 }

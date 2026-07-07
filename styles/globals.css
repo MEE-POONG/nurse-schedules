@@ -5,11 +5,18 @@
 @tailwind utilities;
 
 :root {
-    /* ธีมโรงพยาบาล — Teal */
+    /* ธีมโรงพยาบาล — Teal (โทนพรีเมียม) */
     --brand: #0f766e;
-    --brand-dark: #0f3b38;
+    --brand-2: #14b8a6;
+    --brand-dark: #0b312e;
+    --brand-darker: #07211f;
     --brand-soft: #e3f1ee;
-    --page-bg: #eef2f1;
+    --page-bg: #f1f5f4;
+    /* เงาการ์ดหลายชั้น — นุ่มและลอยกว่า shadow-sm ปกติ */
+    --card-shadow: 0 1px 2px rgba(11, 49, 46, 0.05),
+        0 12px 32px -18px rgba(11, 49, 46, 0.22);
+    --card-shadow-lg: 0 2px 4px rgba(11, 49, 46, 0.06),
+        0 20px 48px -20px rgba(11, 49, 46, 0.28);
 }
 
 * {
@@ -24,8 +31,56 @@
 }
 
 body {
-    background: var(--page-bg);
-    color: #1f2e2b;
+    /* แสงเฉด teal จาง ๆ มุมบน ให้พื้นหลังมีมิติ ไม่แบนเป็นสีเดียว */
+    background:
+        radial-gradient(1100px 420px at 88% -12%, rgba(20, 184, 166, 0.10), transparent 60%),
+        radial-gradient(900px 400px at -8% -4%, rgba(15, 118, 110, 0.08), transparent 55%),
+        var(--page-bg);
+    background-attachment: fixed;
+    color: #182f2b;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+}
+
+@layer components {
+    /* การ์ดมาตรฐานของระบบ — มุมโค้งใหญ่ ขอบบาง เงานุ่ม */
+    .card {
+        @apply bg-white rounded-2xl border border-black/[0.06];
+        box-shadow: var(--card-shadow);
+    }
+
+    /* ปุ่มหลักไล่เฉดแบรนด์ */
+    .btn-brand {
+        @apply inline-flex items-center justify-center gap-1.5 text-sm font-semibold text-white rounded-xl transition-all;
+        background-image: linear-gradient(135deg, #0d9488, #0f766e 55%, #0e6d60);
+        box-shadow: 0 1px 2px rgba(11, 49, 46, 0.2),
+            0 8px 20px -8px rgba(13, 148, 136, 0.55);
+    }
+
+    .btn-brand:hover {
+        filter: brightness(1.06);
+        box-shadow: 0 2px 4px rgba(11, 49, 46, 0.2),
+            0 12px 26px -8px rgba(13, 148, 136, 0.6);
+    }
+}
+
+/* สกรอลบาร์แนวนอนแบบบาง สำหรับตาราง/แถบเลือกวัน */
+.thin-scroll::-webkit-scrollbar {
+    height: 6px;
+    width: 6px;
+}
+
+.thin-scroll::-webkit-scrollbar-thumb {
+    background: rgba(15, 118, 110, 0.25);
+    border-radius: 999px;
+}
+
+.thin-scroll::-webkit-scrollbar-thumb:hover {
+    background: rgba(15, 118, 110, 0.45);
+}
+
+.thin-scroll::-webkit-scrollbar-track {
+    background: transparent;
 }
 
 /* สัญลักษณ์เวร (วงกลม) ในตาราง */
