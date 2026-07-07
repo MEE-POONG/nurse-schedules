@@ -5,6 +5,7 @@ import {
   TbScale,
   TbPrinter,
   TbHeartHandshake,
+  TbUsers,
   TbWand,
 } from "react-icons/tb";
 
@@ -16,6 +17,7 @@ export const NAV_ITEMS = [
   { href: "/on-call", label: "On-Call", icon: TbPhoneCall },
   { href: "/fairness", label: "สมดุลภาระงาน", icon: TbScale },
   { href: "/auto-schedule", label: "จัดเวรอัตโนมัติ", icon: TbWand, adminOnly: true },
+  { href: "/manage-users", label: "จัดการผู้ใช้", icon: TbUsers, adminOnly: true },
   { href: "/official-schedule", label: "ตารางทางการ", icon: TbPrinter },
   { href: "/payment", label: "ช่องทางสนับสนุน", icon: TbHeartHandshake },
 ];

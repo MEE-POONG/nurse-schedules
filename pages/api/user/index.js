@@ -6,11 +6,10 @@ export default async function handler(req, res) {
   switch (method) {
     case "GET":
       try {
-        const { ids } = req.query;
+        const { ids, all } = req.query;
 
-        let whereClause = {
-          isActive :true
-        };
+        // all=1 → รวมผู้ใช้ที่ปิดการใช้งานด้วย (สำหรับหน้าจัดการผู้ใช้ของแอดมิน)
+        let whereClause = all === "1" ? {} : { isActive: true };
 
         // ถ้ามี ids ให้กรองตาม ID ที่ระบุ
         if (ids) {
