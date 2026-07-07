@@ -16,6 +16,13 @@
     font-family: "Bai Jamjuree", sans-serif;
 }
 
+/* ช่องกรอกข้อมูลมาตรฐานในฟอร์ม */
+@layer components {
+    .input-base {
+        @apply block px-3 py-2 w-full text-sm text-gray-800 bg-white rounded-lg border border-gray-300 appearance-none focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500;
+    }
+}
+
 body {
     background: var(--page-bg);
     color: #1f2e2b;

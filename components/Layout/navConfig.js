@@ -6,6 +6,7 @@ import {
   TbScale,
   TbPrinter,
   TbHeartHandshake,
+  TbUsers,
 } from "react-icons/tb";
 
 // เมนูหลักของระบบ ใช้ร่วมกันทั้ง sidebar (จอคอม) และ drawer/bottom nav (มือถือ)
@@ -15,6 +16,7 @@ export const NAV_ITEMS = [
   { href: "/reservation", label: "จองเวร", icon: TbCalendarPlus },
   { href: "/on-call", label: "On-Call", icon: TbPhoneCall },
   { href: "/auto-schedule", label: "จัดตารางอัตโนมัติ", icon: TbWand, adminOnly: true },
+  { href: "/manage-users", label: "จัดการผู้ใช้", icon: TbUsers, adminOnly: true },
   { href: "/fairness", label: "สมดุลภาระงาน", icon: TbScale },
   { href: "/official-schedule", label: "ตารางทางการ", icon: TbPrinter },
   { href: "/payment", label: "ช่องทางสนับสนุน", icon: TbHeartHandshake },
