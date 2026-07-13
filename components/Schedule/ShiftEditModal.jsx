@@ -75,7 +75,7 @@ export default function ShiftEditModal({
           enter="ease-out duration-200" enterFrom="opacity-0" enterTo="opacity-100"
           leave="ease-in duration-150" leaveFrom="opacity-100" leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-black/40" />
+          <div className="fixed inset-0 backdrop-blur-sm bg-[#07211f]/40" />
         </Transition.Child>
 
         <div className="overflow-y-auto fixed inset-0">
@@ -85,11 +85,14 @@ export default function ShiftEditModal({
               enter="ease-out duration-200" enterFrom="opacity-0 scale-95" enterTo="opacity-100 scale-100"
               leave="ease-in duration-150" leaveFrom="opacity-100 scale-100" leaveTo="opacity-0 scale-95"
             >
-              <Dialog.Panel className="overflow-hidden p-5 w-full max-w-md text-left align-middle bg-white rounded-2xl shadow-xl">
-                <div className="mb-1 text-base font-semibold text-gray-800">{userName}</div>
+              <Dialog.Panel className="overflow-hidden p-6 w-full max-w-md text-left align-middle bg-white rounded-2xl" style={{ boxShadow: "var(--card-shadow-lg)" }}>
+                <div className="flex gap-2 items-center mb-1 text-base font-bold tracking-tight text-gray-900">
+                  <span className="w-1 h-4 rounded-full bg-gradient-to-b from-teal-500 to-emerald-500" />
+                  {userName}
+                </div>
                 <div className="mb-4 text-sm text-gray-500">{dateLabel}</div>
 
-                <div className="mb-2 text-sm font-medium text-gray-700">เลือกกะ</div>
+                <div className="mb-2 text-xs font-bold tracking-wide text-gray-500">เลือกกะ</div>
                 <div className="grid grid-cols-2 gap-2">
                   {shifList.map((shif) => {
                     const checked = selected.some((s) => s.shifId === shif.id);
@@ -98,8 +101,10 @@ export default function ShiftEditModal({
                     return (
                       <label
                         key={shif.id}
-                        className={`flex items-center gap-2 px-3 py-2.5 rounded-lg border cursor-pointer transition-colors ${
-                          checked ? "border-teal-600 bg-teal-50" : "border-gray-200 hover:bg-gray-50"
+                        className={`flex items-center gap-2 px-3 py-2.5 rounded-xl cursor-pointer transition-all ${
+                          checked
+                            ? "ring-2 ring-teal-500/70 bg-teal-600/[0.07] shadow-sm"
+                            : "ring-1 ring-gray-200 hover:ring-teal-300/70 hover:bg-gray-50"
                         }`}
                       >
                         <input
@@ -126,17 +131,17 @@ export default function ShiftEditModal({
                   })}
                 </div>
 
-                <div className="flex gap-2 justify-end mt-5">
+                <div className="flex gap-2 justify-end mt-6">
                   <button
                     onClick={onClose}
-                    className="px-4 py-2 text-sm font-medium text-gray-600 rounded-lg hover:bg-gray-100"
+                    className="px-4 py-2 text-sm font-medium text-gray-600 rounded-xl transition-colors hover:bg-gray-100"
                   >
                     ยกเลิก
                   </button>
                   <button
                     onClick={save}
                     disabled={saving}
-                    className="px-4 py-2 text-sm font-semibold text-white bg-teal-700 rounded-lg hover:bg-teal-800 disabled:opacity-60"
+                    className="px-5 py-2 btn-brand disabled:opacity-60"
                   >
                     {saving ? "กำลังบันทึก…" : "บันทึก"}
                   </button>
