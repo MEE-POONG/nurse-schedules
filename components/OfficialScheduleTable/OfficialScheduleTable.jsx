@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import useAxios from "axios-hooks";
+import FitToWidth from "@/components/FitToWidth";
 import dayjs from "dayjs";
 import "dayjs/locale/th";
 
@@ -287,7 +288,8 @@ const OfficialScheduleTable = ({ month, year, locationFilter = null, generatedSc
       )}
 
       {/* ตารางหลัก */}
-      <div className="overflow-x-auto border border-black">
+      <FitToWidth>
+      <div className="border border-black">
         <table className="w-full text-xs border border-black border-collapse">
           {/* หัวตาราง */}
           <thead>
@@ -449,6 +451,7 @@ const OfficialScheduleTable = ({ month, year, locationFilter = null, generatedSc
           </tbody>
         </table>
       </div>
+      </FitToWidth>
 
       {/* คำอธิบายสัญลักษณ์ */}
       <div className="p-4 mt-4 bg-gray-50 rounded">
