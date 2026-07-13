@@ -1,4 +1,5 @@
 import useAxios from "axios-hooks";
+import FitToWidth from "@/components/FitToWidth";
 import React, { useEffect, useRef, useState } from "react";
 import LoadingComponent from "../LoadingComponent";
 import ErrorComponent from "../ErrorComponent";
@@ -123,6 +124,7 @@ export const TableSelectMonthAFC = ({
         ) : (
           <></>
         )} */}
+        <FitToWidth>
         <div ref={componentRef} className="text-lg shift-table">
           <div className="hidden justify-between w-11/12 lg:flex">
           </div>
@@ -367,6 +369,7 @@ export const TableSelectMonthAFC = ({
 
 
         </div>
+        </FitToWidth>
       </div>
       <div className={"w-100 bg-white shadow-xl p-5 my-10 rounded-md overflow-x-auto " + (open >= 5 ? '' : 'hidden')}>
         <div className="justify-center mt-0 mb-2 text-xl font-normal leading-normal text-center text-black h2">
