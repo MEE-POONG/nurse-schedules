@@ -37,7 +37,7 @@ const FairnessDashboard = ({ month, year }) => {
 
   if (staff.length === 0) {
     return (
-      <div className="p-12 text-center bg-white rounded-lg shadow">
+      <div className="p-14 text-center card">
         <p className="text-gray-500">ไม่มีข้อมูลเวรในเดือน {monthTH} {yearTH}</p>
       </div>
     );
@@ -75,18 +75,20 @@ const FairnessDashboard = ({ month, year }) => {
   };
 
   const Card = ({ label, value, sub, accent }) => (
-    <div className="p-4 bg-white rounded-lg border shadow-sm">
-      <div className="text-xs text-gray-500">{label}</div>
-      <div className={`text-2xl font-bold ${accent || "text-gray-800"}`}>{value}</div>
+    <div className="p-5 card">
+      <div className="text-xs font-medium text-gray-500">{label}</div>
+      <div className={`mt-1 text-2xl font-bold tracking-tight ${accent || "text-gray-900"}`}>{value}</div>
       {sub && <div className="mt-0.5 text-xs text-gray-500">{sub}</div>}
     </div>
   );
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">สรุปความสมดุลภาระงานการจัดเวร</h1>
-        <p className="text-gray-600">ประจำเดือน {monthTH} พ.ศ. {yearTH} · {staff.length} คน</p>
+    <div className="space-y-5">
+      <div className="flex flex-wrap gap-x-3 gap-y-1 items-baseline">
+        <h1 className="text-xl font-bold tracking-tight text-gray-900 sm:text-2xl">สรุปความสมดุลภาระงานการจัดเวร</h1>
+        <span className="inline-flex items-center px-3 py-1 text-xs font-semibold text-teal-800 rounded-full bg-teal-600/10 ring-1 ring-teal-600/20">
+          {monthTH} พ.ศ. {yearTH} · {staff.length} คน
+        </span>
       </div>
 
       {/* การ์ดสรุป */}
@@ -103,8 +105,11 @@ const FairnessDashboard = ({ month, year }) => {
       </div>
 
       {/* กราฟแท่งคะแนนภาระงาน */}
-      <div className="p-5 bg-white rounded-lg border shadow-sm">
-        <h2 className="mb-1 text-lg font-medium">คะแนนภาระงานต่อคน</h2>
+      <div className="p-5 card">
+        <h2 className="flex gap-2 items-center mb-1 text-base font-bold tracking-tight text-gray-900">
+          <span className="w-1 h-4 rounded-full bg-gradient-to-b from-teal-500 to-emerald-500" />
+          คะแนนภาระงานต่อคน
+        </h2>
         <p className="mb-4 text-xs text-gray-500">
           ถ่วงน้ำหนัก: เช้า ×1.0, บ่าย ×1.2, ดึก ×1.5, ควบเช้า-บ่าย +0.5 · เส้นประ = ค่าเฉลี่ย ({fmt(avgScore)})
         </p>
@@ -115,11 +120,14 @@ const FairnessDashboard = ({ month, year }) => {
             const barColor = over ? "bg-red-500" : under ? "bg-green-500" : "bg-indigo-500";
             return (
               <div key={s.id} className="flex items-center">
-                <div className="w-36 text-sm text-gray-700 truncate" title={nameOf(s)}>{nameOf(s)}</div>
-                <div className="relative flex-1 h-6 bg-gray-100 rounded">
-                  <div className={`h-6 rounded ${barColor}`} style={{ width: `${(s.workloadScore / maxScore) * 100}%` }} />
-                  <div className="absolute top-0 bottom-0 border-l-2 border-dashed border-gray-500" style={{ left: `${(avgScore / maxScore) * 100}%` }} />
-                  <div className="flex absolute inset-0 items-center pl-2 text-xs font-medium text-gray-800">
+                <div className="w-36 text-sm font-medium text-gray-700 truncate" title={nameOf(s)}>{nameOf(s)}</div>
+                <div className="relative flex-1 h-6 rounded-lg bg-gray-100/80">
+                  <div
+                    className={`h-6 rounded-lg transition-all ${barColor}`}
+                    style={{ width: `${(s.workloadScore / maxScore) * 100}%`, boxShadow: "inset 0 1px 0 rgba(255,255,255,0.25)" }}
+                  />
+                  <div className="absolute top-0 bottom-0 border-l-2 border-dashed border-gray-400" style={{ left: `${(avgScore / maxScore) * 100}%` }} />
+                  <div className="flex absolute inset-0 items-center pl-2.5 text-xs font-semibold text-gray-800">
                     {fmt(s.workloadScore)}
                   </div>
                 </div>
@@ -130,27 +138,28 @@ const FairnessDashboard = ({ month, year }) => {
       </div>
 
       {/* ตารางรายละเอียด */}
-      <div className="overflow-x-auto bg-white rounded-lg border shadow-sm">
+      <div className="overflow-hidden card">
+        <div className="overflow-x-auto thin-scroll">
         <table className="min-w-full text-sm text-center">
-          <thead className="text-gray-600 bg-gray-50">
+          <thead className="text-xs font-semibold text-gray-500 bg-gray-50/80">
             <tr>
-              <th className="px-3 py-2 text-left">ชื่อ - สกุล</th>
-              <th className="px-2 py-2">เช้า</th>
-              <th className="px-2 py-2">บ่าย</th>
-              <th className="px-2 py-2">ดึก</th>
-              <th className="px-2 py-2 text-orange-600">OT</th>
-              <th className="px-2 py-2 text-rose-600">ควบ<br/>ช-บ</th>
-              <th className="px-2 py-2">เวรรวม</th>
-              <th className="px-2 py-2 font-bold text-indigo-700">ภาระงาน</th>
-              <th className="px-2 py-2">On-Call</th>
-              <th className="px-2 py-2">วันหยุด</th>
-              <th className="px-2 py-2">ส-อา</th>
+              <th className="px-3.5 py-2.5 text-left">ชื่อ - สกุล</th>
+              <th className="px-2 py-2.5">เช้า</th>
+              <th className="px-2 py-2.5">บ่าย</th>
+              <th className="px-2 py-2.5">ดึก</th>
+              <th className="px-2 py-2.5 text-orange-600">OT</th>
+              <th className="px-2 py-2.5 text-rose-600">ควบ<br/>ช-บ</th>
+              <th className="px-2 py-2.5">เวรรวม</th>
+              <th className="px-2 py-2.5 font-bold text-indigo-700">ภาระงาน</th>
+              <th className="px-2 py-2.5">On-Call</th>
+              <th className="px-2 py-2.5">วันหยุด</th>
+              <th className="px-2 py-2.5">ส-อา</th>
             </tr>
           </thead>
           <tbody>
             {staff.map((s) => (
-              <tr key={s.id} className={`border-t ${loadClass(s.workloadScore)}`}>
-                <td className="px-3 py-2 text-left whitespace-nowrap">{nameOf(s)}</td>
+              <tr key={s.id} className={`border-t border-gray-100/80 transition-colors hover:bg-teal-50/40 ${loadClass(s.workloadScore)}`}>
+                <td className="px-3.5 py-2 font-medium text-left text-gray-800 whitespace-nowrap">{nameOf(s)}</td>
                 <td className="px-2 py-2">{s.morning}</td>
                 <td className="px-2 py-2">{s.afternoon}</td>
                 <td className="px-2 py-2 font-medium text-indigo-700">{s.night}</td>
@@ -164,7 +173,7 @@ const FairnessDashboard = ({ month, year }) => {
               </tr>
             ))}
           </tbody>
-          <tfoot className="font-medium text-gray-700 bg-gray-50 border-t-2">
+          <tfoot className="font-semibold text-gray-700 border-t-2 border-gray-200 bg-teal-600/[0.05]">
             <tr>
               <td className="px-3 py-2 text-left">เฉลี่ย/คน</td>
               <td className="px-2 py-2">{fmt(avg("morning"))}</td>
@@ -180,6 +189,7 @@ const FairnessDashboard = ({ month, year }) => {
             </tr>
           </tfoot>
         </table>
+        </div>
       </div>
 
       <p className="text-xs text-gray-400">

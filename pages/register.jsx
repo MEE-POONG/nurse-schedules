@@ -1,161 +1,93 @@
 import LoadingComponent from "@/components/LoadingComponent";
 import useAxios from "axios-hooks";
+import { TbUserPlus } from "react-icons/tb";
 
 export default function RegisterPage() {
-
     const [{ data: title }] = useAxios({ url: "/api/title" });
     const [{ data: position }] = useAxios({ url: "/api/position" });
 
     const [{ loading: loading }, executeUser] = useAxios({ url: "/api/user", method: "POST" }, { manual: true });
 
+    const fieldCls =
+        "w-full px-3.5 py-2.5 text-sm font-medium text-gray-800 bg-gray-50/80 rounded-xl border border-gray-200 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500/30 focus:border-teal-500 focus:bg-white";
+    const labelCls = "block mb-1.5 text-xs font-semibold text-gray-600";
+
     return (
         <>
-            {loading ? (
-                <LoadingComponent />
-            ) : (
-                <></>
-            )}
-            <div className="my-5">
-                <div className="text-center mt-10">
-                    <h1>ลงทะเบียน</h1>
+            {loading && <LoadingComponent />}
+            <div className="px-4 py-7 mx-auto max-w-3xl sm:px-6">
+                <div className="flex flex-wrap gap-x-3 gap-y-1 items-baseline mb-6">
+                    <h1 className="text-xl font-bold tracking-tight text-gray-900 sm:text-2xl">ลงทะเบียนขึ้นเวร</h1>
                 </div>
-            </div>
 
-            <div className="w-100 bg-white shadow-xl p-5 m-10 rounded-md overflow-x-auto">
-                <div className="justify-center text-center h2 text-xl font-normal leading-normal mt-0 mb-2 text-black">
-                    ลงทะเบียนขึ้นเวร
-                </div>
-                <form
-                    className="w-full"
-                    onSubmit={async (x) => {
-                        x.preventDefault();
-                        const firstname = x.target.firstname.value;
-                        const lastname = x.target.lastname.value;
-                        const positionId = x.target.positionId.value;
-                        const titleId = x.target.titleId.value;
-                        await executeUser({
-                            data: {
-                                firstname: firstname,
-                                lastname: lastname,
-                                positionId: positionId,
-                                titleId: titleId,
-                            },
-                        });
-                        x.target.firstname.value = "";
-                        x.target.lastname.value = "";
-                    }}
-                >
-                    <div className="flex flex-wrap -mx-3 mb-6">
+                <div className="p-6 card sm:p-8">
+                    <div className="flex gap-3 items-center pb-5 mb-6 border-b border-gray-100">
+                        <span className="flex justify-center items-center w-10 h-10 text-teal-700 rounded-xl bg-teal-600/10">
+                            <TbUserPlus size={20} />
+                        </span>
+                        <div className="leading-tight">
+                            <div className="text-sm font-bold text-gray-900">เพิ่มพยาบาล/เจ้าหน้าที่ใหม่</div>
+                            <div className="text-xs text-gray-500">กรอกข้อมูลให้ครบทุกช่องแล้วกดบันทึก</div>
+                        </div>
+                    </div>
 
-                        <div className="w-full md:w-2/12 px-3 mb-6 md:mb-0">
-                            <label
-                                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                                for="grid-state"
-                            >
-                                คำนำหน้า
-                            </label>
-                            <div className="relative">
-                                <select
-                                    id="titleId"
-                                    name="titleId"
-                                    className="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                >
+                    <form
+                        onSubmit={async (x) => {
+                            x.preventDefault();
+                            const firstname = x.target.firstname.value;
+                            const lastname = x.target.lastname.value;
+                            const positionId = x.target.positionId.value;
+                            const titleId = x.target.titleId.value;
+                            await executeUser({
+                                data: {
+                                    firstname: firstname,
+                                    lastname: lastname,
+                                    positionId: positionId,
+                                    titleId: titleId,
+                                },
+                            });
+                            x.target.firstname.value = "";
+                            x.target.lastname.value = "";
+                        }}
+                    >
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                            <div>
+                                <label className={labelCls} htmlFor="titleId">คำนำหน้า</label>
+                                <select id="titleId" name="titleId" className={`${fieldCls} cursor-pointer`}>
                                     {title?.map(({ id, name }) => (
                                         <option key={id} value={id}>
                                             {name}
                                         </option>
                                     ))}
                                 </select>
-                                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                                    <svg
-                                        className="fill-current h-4 w-4"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 20 20"
-                                    >
-                                        <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                                    </svg>
-                                </div>
                             </div>
-                        </div>
-
-                        <div className="w-full md:w-3/12 px-3 mb-6 md:mb-0">
-                            <label
-                                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                                for="grid-state"
-                            >
-                                ชื่อ
-                            </label>
-                            <div className="relative">
-                                <input
-                                    id="firstname"
-                                    name="firstname"
-                                    className="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                />
-                            </div>
-                        </div>
-
-                        <div className="w-full md:w-3/12 px-3 mb-6 md:mb-0">
-                            <label
-                                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                                for="grid-state"
-                            >
-                                นามสกุล
-                            </label>
-                            <div className="relative">
-                                <input
-                                    id="lastname"
-                                    name="lastname"
-                                    className="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                />
-                            </div>
-                        </div>
-
-                        <div className="w-full md:w-3/12 px-3 mb-6 md:mb-0">
-                            <label
-                                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                                for="grid-state"
-                            >
-                                ตำแหน่ง
-                            </label>
-                            <div className="relative">
-                                <select
-                                    id="positionId"
-                                    name="positionId"
-                                    className="block appearance-none w-full bg-gray-200 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
-                                >
+                            <div>
+                                <label className={labelCls} htmlFor="positionId">ตำแหน่ง</label>
+                                <select id="positionId" name="positionId" className={`${fieldCls} cursor-pointer`}>
                                     {position?.map(({ id, name }) => (
                                         <option key={id} value={id}>
                                             {name}
                                         </option>
                                     ))}
                                 </select>
-                                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                                    <svg
-                                        className="fill-current h-4 w-4"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        viewBox="0 0 20 20"
-                                    >
-                                        <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
-                                    </svg>
-                                </div>
+                            </div>
+                            <div>
+                                <label className={labelCls} htmlFor="firstname">ชื่อ</label>
+                                <input id="firstname" name="firstname" className={fieldCls} />
+                            </div>
+                            <div>
+                                <label className={labelCls} htmlFor="lastname">นามสกุล</label>
+                                <input id="lastname" name="lastname" className={fieldCls} />
                             </div>
                         </div>
 
-                        <div className="w-full md:w-1/12 px-3 mb-6 md:mb-0">
-                            <label
-                                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
-                                for="grid-state"
-                            >
-                                บันทึก
-                            </label>
-                            <div className="relative">
-                                <button className="bg-teal-700 hover:bg-teal-800 text-white font-bold py-2 px-4 rounded">
-                                    บันทึก
-                                </button>
-                            </div>
+                        <div className="pt-6">
+                            <button className="gap-2 px-6 py-2.5 w-full btn-brand sm:w-auto">
+                                <TbUserPlus size={18} /> บันทึกข้อมูล
+                            </button>
                         </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </>
     );

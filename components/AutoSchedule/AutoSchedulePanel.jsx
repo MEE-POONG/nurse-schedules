@@ -1,441 +1,410 @@
-import { useState, useEffect } from "react";
-import useAxios from "axios-hooks";
-import dayjs from "dayjs";
-import "dayjs/locale/th";
-import { authProvider } from "src/authProvider";
-import OfficialScheduleTable from "@/components/OfficialScheduleTable/OfficialScheduleTable";
+// แผงจัดตารางเวรอัตโนมัติ (ระบบใหม่ — กติกาสกัดจากข้อมูลการขึ้นเวรจริง)
+// ขั้นตอน: ตั้งค่าจำนวนคนต่อกะ → สร้างพรีวิว → ตรวจตาราง/ความสมดุล → บันทึก
+import { useEffect, useMemo, useState } from "react";
+import axios from "axios";
+import { SHIFT_META, OT_CIRCLE, metaOf } from "@/components/Schedule/shiftStyle";
+import {
+  TbWand,
+  TbDeviceFloppy,
+  TbAlertTriangle,
+  TbLock,
+  TbRefresh,
+  TbAdjustments,
+  TbChevronDown,
+  TbChevronUp,
+  TbScale,
+} from "react-icons/tb";
 
-dayjs.locale("th");
+const DOW_TH = ["อา", "จ", "อ", "พ", "พฤ", "ศ", "ส"];
 
-const AutoSchedulePanel = ({ month, year, locationId, onScheduleGenerated }) => {
-  const [generatedSchedule, setGeneratedSchedule] = useState(null);
-  const [showPreview, setShowPreview] = useState(false);
-  const [replaceExisting, setReplaceExisting] = useState(false);
-  const [showOfficialTable, setShowOfficialTable] = useState(false);
+// ป้ายชนิดช่องใน config coverage
+const COVERAGE_FIELDS = [
+  { key: "night", label: "ดึก (ในเวลา)" },
+  { key: "evening", label: "บ่าย (ในเวลา)" },
+  { key: "morningReg", label: "เช้า (ในเวลา)" },
+  { key: "morningOT", label: "เช้า OT" },
+  { key: "eveningOT", label: "บ่าย OT" },
+  { key: "nightOT", label: "ดึก OT" },
+];
 
-  const currentUser = authProvider.getIdentity();
+export default function AutoSchedulePanel({ month, year, locationId, onScheduleGenerated }) {
+  // month prop เป็น 0-11 (ตาม dayjs) → API ใช้ 1-12
+  const apiMonth = month + 1;
 
-  // สร้างตารางอัตโนมัติ
-  const [{ loading: generateLoading }, executeGenerate] = useAxios(
-    { url: "/api/auto-schedule", method: "POST" },
-    { manual: true }
-  );
+  const [config, setConfig] = useState(null); // ค่าตั้งต้นจาก GET /api/auto-schedule
+  const [showSettings, setShowSettings] = useState(false);
+  const [preview, setPreview] = useState(null);
+  const [generating, setGenerating] = useState(false);
+  const [applying, setApplying] = useState(false);
+  const [applyMode, setApplyMode] = useState("fill");
+  const [error, setError] = useState("");
+  const [applied, setApplied] = useState(null);
 
-  // บันทึกตารางเวร
-  const [{ loading: applyLoading }, executeApply] = useAxios(
-    { url: "/api/auto-schedule/apply", method: "POST" },
-    { manual: true }
-  );
+  useEffect(() => {
+    axios.get("/api/auto-schedule").then((r) => setConfig(r.data.config)).catch(() => {});
+  }, []);
 
-  // ดึงข้อมูลการจองที่มีอยู่
-  const [{ data: preferences, loading: preferencesLoading }] = useAxios({
-    url: `/api/shift-preference?month=${month}&year=${year}`,
-    method: "GET"
-  });
+  // เปลี่ยนเดือน/แผนก → ล้างพรีวิวเดิม
+  useEffect(() => {
+    setPreview(null);
+    setApplied(null);
+    setError("");
+  }, [month, year, locationId]);
 
-  const handleGenerateSchedule = async () => {
+  const setCoverage = (dayType, key, value) => {
+    setConfig((c) => ({
+      ...c,
+      coverage: { ...c.coverage, [dayType]: { ...c.coverage[dayType], [key]: value } },
+    }));
+  };
+  const setRule = (key, value) => setConfig((c) => ({ ...c, rules: { ...c.rules, [key]: value } }));
+
+  const generate = async () => {
+    setGenerating(true);
+    setError("");
+    setApplied(null);
     try {
-      const result = await executeGenerate({
-        data: {
-          month: month,
-          year: year,
-          locationId: locationId
-        }
-      });
-
-      // ตรวจสอบรูปแบบข้อมูลที่ได้รับ
-      console.log("API Response:", result.data);
-
-      // จัดเก็บเป็น object เดียวให้ตรงกับที่ส่วนแสดงผลใช้งาน
-      const data = result.data || {};
-      setGeneratedSchedule({
-        schedule: data.schedule || [],
-        violations: data.violations || data.summary?.constraintViolations || [],
-        staffStats: data.staffStats || {},
-        summary: data.summary || {},
-      });
-      setShowPreview(true);
-    } catch (error) {
-      console.error("Error generating schedule:", error);
-      alert("เกิดข้อผิดพลาดในการสร้างตารางอัตโนมัติ: " + (error?.response?.data?.details || error.message));
+      const r = await axios.post("/api/auto-schedule", { year, month: apiMonth, locationId, config });
+      setPreview(r.data);
+    } catch (e) {
+      setPreview(null);
+      setError(e?.response?.data?.message || "สร้างตารางเวรไม่สำเร็จ");
+    } finally {
+      setGenerating(false);
     }
   };
 
-  const handleApplySchedule = async () => {
-    if (!generatedSchedule?.schedule?.length) return;
-
+  const apply = async () => {
+    if (!preview) return;
+    const label = applyMode === "replace" ? "ล้างเวรเดิมของเดือนนี้ (ยกเว้นวันลา/อบรม) แล้วบันทึกตารางใหม่?" : "เติมเวรลงช่องที่ยังว่าง?";
+    if (!window.confirm(label)) return;
+    setApplying(true);
+    setError("");
     try {
-      const result = await executeApply({
-        data: {
-          schedule: generatedSchedule.schedule,
-          month: month,
-          year: year,
-          locationId: locationId,
-          replaceExisting: replaceExisting
-        }
+      const r = await axios.post("/api/auto-schedule/apply", {
+        year,
+        month: apiMonth,
+        locationId,
+        mode: applyMode,
+        items: preview.assignments,
       });
-
-      const s = result.data?.summary || {};
-      alert(`บันทึกตารางเวรสำเร็จ!\nสร้าง/อัปเดต: ${s.created ?? 0} เวร\nลบของเดิม: ${s.deleted ?? 0} เวร\nข้อผิดพลาด: ${s.errors ?? 0} รายการ`);
-
-      setGeneratedSchedule(null);
-      setShowPreview(false);
-      onScheduleGenerated && onScheduleGenerated();
-
-    } catch (error) {
-      console.error("Error applying schedule:", error);
-      alert("เกิดข้อผิดพลาดในการบันทึกตารางเวร: " + (error?.response?.data?.details || error.message));
+      setApplied(r.data);
+      onScheduleGenerated?.(r.data);
+    } catch (e) {
+      setError(e?.response?.data?.message || "บันทึกไม่สำเร็จ");
+    } finally {
+      setApplying(false);
     }
   };
 
-  if (!currentUser?.isAdmin) {
-    return (
-      <div className="p-4 bg-red-50 rounded-md border border-red-200">
-        <p className="text-red-600">เฉพาะผู้ดูแลระบบเท่านั้นที่สามารถใช้ฟีเจอร์นี้ได้</p>
-      </div>
-    );
+  // ---- รวม cell สำหรับ matrix: fixed (ล็อก) + ที่ระบบเสนอ ----
+  const cellMap = useMemo(() => {
+    if (!preview) return {};
+    const map = {};
+    const push = (c) => {
+      const k = `${c.userId}|${c.day}`;
+      map[k] = map[k] || [];
+      map[k].push(c);
+    };
+    preview.fixedCells?.forEach(push);
+    preview.assignments?.forEach(push);
+    for (const k of Object.keys(map)) {
+      map[k].sort((a, b) => metaOf(a.shift).order - metaOf(b.shift).order);
+    }
+    return map;
+  }, [preview]);
+
+  const days = preview ? Array.from({ length: preview.daysInMonth }, (_, i) => i + 1) : [];
+  const hardViolations = preview?.violations?.filter((v) => !v.soft) || [];
+  const softWarnings = preview?.violations?.filter((v) => v.soft) || [];
+
+  if (!config) {
+    return <div className="p-8 text-center text-gray-400 bg-white rounded-xl shadow-sm">กำลังโหลดการตั้งค่า…</div>;
   }
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-md">
-      <h2 className="mb-4 text-xl font-bold">จัดตารางเวรอัตโนมัติ</h2>
-      
-      {/* สถิติการจอง */}
-      <div className="p-4 mb-6 bg-blue-50 rounded-md">
-        <h3 className="mb-2 font-medium text-blue-800">สถิติการจองเวรประจำเดือน</h3>
-        {preferencesLoading ? (
-          <p>กำลังโหลด...</p>
-        ) : (
-          <div className="grid grid-cols-3 gap-4 text-sm">
-            <div>
-              <span className="font-medium">การจองทั้งหมด:</span>
-              <span className="ml-2">{preferences?.length || 0} รายการ</span>
+    <div className="space-y-4">
+      {/* ---------- การตั้งค่า ---------- */}
+      <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
+        <button
+          onClick={() => setShowSettings((s) => !s)}
+          className="flex justify-between items-center px-4 py-3 w-full text-left"
+        >
+          <span className="flex gap-2 items-center font-medium text-gray-800">
+            <TbAdjustments className="text-teal-700" size={20} />
+            ตั้งค่ากำลังคนและกติกา
+            <span className="text-xs font-normal text-gray-400">(ค่าตั้งต้นสกัดจากเวรจริง 8 เดือนล่าสุด)</span>
+          </span>
+          {showSettings ? <TbChevronUp className="text-gray-400" /> : <TbChevronDown className="text-gray-400" />}
+        </button>
+
+        {showSettings && (
+          <div className="px-4 pb-4 space-y-4 border-t border-gray-100">
+            <div className="grid gap-4 pt-3 sm:grid-cols-2">
+              {["weekday", "weekend"].map((dayType) => (
+                <div key={dayType} className="p-3 rounded-lg border border-gray-200">
+                  <div className="mb-2 text-sm font-semibold text-gray-700">
+                    {dayType === "weekday" ? "จันทร์–ศุกร์" : "เสาร์–อาทิตย์"}{" "}
+                    <span className="font-normal text-gray-400">จำนวนคนต่อกะต่อวัน</span>
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    {COVERAGE_FIELDS.map((f) => (
+                      <label key={f.key} className="flex justify-between items-center text-sm text-gray-600">
+                        <span>{f.label}</span>
+                        <input
+                          type="number"
+                          min={0}
+                          max={9}
+                          value={config.coverage[dayType][f.key]}
+                          onChange={(e) => setCoverage(dayType, f.key, e.target.value)}
+                          className="px-2 py-1 w-14 text-center rounded border border-gray-300 focus:ring-2 focus:ring-teal-500 focus:outline-none"
+                        />
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              ))}
             </div>
-            <div>
-              <span className="font-medium">จองแน่นอน:</span>
-              <span className="ml-2">{preferences?.filter(p => p.isReserved)?.length || 0} รายการ</span>
+
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+              {[
+                { key: "maxNightStreak", label: "ดึกติดกันสูงสุด (คืน)" },
+                { key: "maxDoublesPerMonth", label: "เวรควบสูงสุด/คน/เดือน" },
+                { key: "softMaxConsecutiveWork", label: "ทำงานติดกันไม่ควรเกิน (วัน)" },
+                { key: "minOffPerMonth", label: "วันหยุดขั้นต่ำ/คน" },
+              ].map((f) => (
+                <label key={f.key} className="text-sm text-gray-600">
+                  <span className="block mb-1">{f.label}</span>
+                  <input
+                    type="number"
+                    min={0}
+                    value={config.rules[f.key]}
+                    onChange={(e) => setRule(f.key, parseInt(e.target.value, 10) || 0)}
+                    className="px-2 py-1 w-full rounded border border-gray-300 focus:ring-2 focus:ring-teal-500 focus:outline-none"
+                  />
+                </label>
+              ))}
             </div>
-            <div>
-              <span className="font-medium">ความชอบ:</span>
-              <span className="ml-2">{preferences?.filter(p => !p.isReserved)?.length || 0} รายการ</span>
-            </div>
+
+            <label className="flex gap-2 items-center text-sm text-gray-600">
+              <input
+                type="checkbox"
+                checked={!!config.writeOffDays}
+                onChange={(e) => setConfig((c) => ({ ...c, writeOffDays: e.target.checked }))}
+                className="rounded accent-teal-600"
+              />
+              เติมกะ &quot;หยุด (x)&quot; ให้วันที่ว่างอัตโนมัติ
+            </label>
           </div>
         )}
       </div>
 
-      {/* ปุ่มสร้างตาราง */}
-      <div className="mb-4">
+      {/* ---------- ปุ่มสร้าง ---------- */}
+      <div className="flex flex-wrap gap-3 items-center">
         <button
-          onClick={handleGenerateSchedule}
-          disabled={generateLoading}
-          className="px-6 py-2 text-white bg-teal-700 rounded-md hover:bg-teal-800 focus:outline-none focus:ring-2 focus:ring-teal-500 disabled:opacity-50 disabled:cursor-not-allowed"
+          onClick={generate}
+          disabled={generating}
+          className="flex gap-2 items-center px-5 py-2.5 font-medium text-white bg-teal-700 rounded-lg shadow-sm hover:bg-teal-800 disabled:opacity-50"
         >
-          {generateLoading ? "กำลังสร้างตาราง..." : "สร้างตารางเวรอัตโนมัติ"}
+          {generating ? <TbRefresh className="animate-spin" size={18} /> : <TbWand size={18} />}
+          {generating ? "กำลังจัดตาราง…" : preview ? "จัดใหม่อีกครั้ง" : "สร้างตารางเวร (พรีวิว)"}
         </button>
+        {preview && (
+          <span className="text-sm text-gray-500">
+            ระบบเสนอ {preview.assignments.filter((a) => a.shift !== "x").length} เวร · ช่องเดิม {preview.fixedCells.length} ช่องไม่ถูกแตะ
+            {preview.historyCount > 0 && <> · ต่อเนื่องจากเวรท้ายเดือนก่อน {preview.historyCount} รายการ</>}
+            {preview.preferenceCells?.length > 0 && (
+              <> · การจองเวร {preview.preferenceCells.length} รายการ (จองแน่นอน {preview.preferenceCells.filter((c) => c.isReserved).length})</>
+            )}
+          </span>
+        )}
       </div>
 
-      {/* แสดงผลการสร้างตาราง */}
-      {showPreview && generatedSchedule && (
-        <div className="p-4 rounded-md border border-gray-200">
-          <h3 className="mb-4 text-lg font-medium">ตัวอย่างตารางเวรที่สร้างขึ้น</h3>
-          
-          {/* แสดงข้อมูลดีบัก */}
-          <div className="p-2 mb-4 text-xs bg-gray-100 rounded">
-            <div>Schedule array length: {generatedSchedule.schedule?.length || 0}</div>
-            <div>Violations array length: {generatedSchedule.violations?.length || 0}</div>
-            <div>Staff stats keys: {Object.keys(generatedSchedule.staffStats || {}).length}</div>
-          </div>
-
-          {/* แสดงเมื่อไม่มีข้อมูล */}
-          {(!generatedSchedule.schedule || generatedSchedule.schedule.length === 0) && (
-            <div className="p-4 mb-4 text-center bg-yellow-50 rounded border border-yellow-200">
-              <p className="text-yellow-800">ไม่พบข้อมูลตารางเวรที่สร้างขึ้น</p>
-              <p className="text-sm text-yellow-600">กรุณาตรวจสอบการตั้งค่าหรือลองสร้างใหม่</p>
-            </div>
-          )}
-          
-          {/* สถิติผลการสร้าง */}
-          <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
-            <div className="p-3 bg-green-50 rounded">
-              <div className="font-medium text-green-800">จำนวนเวรที่สร้าง</div>
-              <div className="text-2xl font-bold text-green-600">
-                {generatedSchedule.schedule?.length || 0}
-              </div>
-            </div>
-            <div className="p-3 bg-yellow-50 rounded">
-              <div className="font-medium text-yellow-800">ข้อจำกัดที่ละเมิด</div>
-              <div className="text-2xl font-bold text-yellow-600">
-                {generatedSchedule.violations?.length || 0}
-              </div>
-            </div>
-          </div>
-
-          {/* รายการข้อจำกัดที่ละเมิด */}
-          {generatedSchedule.violations?.length > 0 && (
-            <div className="p-3 mb-4 bg-red-50 rounded border border-red-200">
-              <h4 className="mb-2 font-medium text-red-800">ข้อจำกัดที่ไม่สามารถปฏิบัติได้:</h4>
-              <ul className="space-y-1 text-sm text-red-600">
-                {generatedSchedule.violations.slice(0, 5).map((violation, index) => (
-                  <li key={index}>
-                    {getViolationMessage(violation)}
-                  </li>
-                ))}
-                {generatedSchedule.violations.length > 5 && (
-                  <li className="text-gray-500">และอีก {generatedSchedule.violations.length - 5} รายการ</li>
-                )}
-              </ul>
-            </div>
-          )}
-
-          {/* ตารางเวรที่สร้างขึ้น */}
-          {generatedSchedule.schedule?.length > 0 && (
-            <div className="p-3 mb-4 bg-green-50 rounded border border-green-200">
-              <h4 className="mb-2 font-medium text-green-800">ตารางเวรที่สร้างขึ้น ({generatedSchedule.schedule.length} เวร):</h4>
-              <div className="overflow-y-auto max-h-60">
-                <table className="min-w-full text-sm">
-                  <thead>
-                    <tr className="border-b border-green-200">
-                      <th className="p-2 text-left">วันที่</th>
-                      <th className="p-2 text-left">วัน</th>
-                      <th className="p-2 text-left">พนักงาน</th>
-                      <th className="p-2 text-left">เวร</th>
-                      <th className="p-2 text-left">OT</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {generatedSchedule.schedule.map((shift, index) => (
-                      <tr key={index} className="border-b border-green-100">
-                        <td className="p-2">
-                          {dayjs(shift.datetime).format("DD/MM")}
-                        </td>
-                        <td className="p-2">
-                          {dayjs(shift.datetime).format("ddd")}
-                        </td>
-                        <td className="p-2">
-                          <span className="text-xs text-gray-600">
-                            {shift.userId.slice(-6)}
-                          </span>
-                        </td>
-                        <td className="p-2">
-                          <span className="px-2 py-1 text-xs text-blue-800 bg-blue-100 rounded-full">
-                            {getShiftName(shift.shifId)}
-                          </span>
-                        </td>
-                        <td className="p-2">
-                          {shift.isOT ? (
-                            <span className="px-2 py-1 text-xs text-orange-800 bg-orange-100 rounded-full">
-                              OT
-                            </span>
-                          ) : (
-                            <span className="text-xs text-gray-400">-</span>
-                          )}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
-
-          {/* ตารางเวรจัดกลุ่มตามวัน */}
-          {generatedSchedule.schedule?.length > 0 && (
-            <div className="p-3 mb-4 bg-indigo-50 rounded border border-indigo-200">
-              <h4 className="mb-2 font-medium text-indigo-800">ตารางเวรจัดกลุ่มตามวัน:</h4>
-              <div className="overflow-y-auto max-h-60">
-                {getScheduleByDate(generatedSchedule.schedule).map((daySchedule, index) => (
-                  <div key={index} className="p-2 mb-3 bg-white rounded border">
-                    <div className="mb-2 font-medium text-gray-800">
-                      {dayjs(daySchedule.date).format("dddd DD/MM/YYYY")}
-                    </div>
-                    <div className="grid grid-cols-3 gap-2">
-                      {daySchedule.shifts.map((shift, shiftIndex) => (
-                        <div key={shiftIndex} className="p-2 text-center bg-gray-50 rounded">
-                          <div className="mb-1 text-xs text-gray-600">
-                            {getShiftName(shift.shifId)}
-                          </div>
-                          <div className="text-xs font-medium">
-                            ID: {shift.userId.slice(-6)}
-                          </div>
-                          {shift.isOT && (
-                            <div className="mt-1 text-xs text-orange-600">OT</div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* สถิติพนักงาน */}
-          {generatedSchedule.staffStats && (
-            <div className="p-3 mb-4 bg-blue-50 rounded border border-blue-200">
-              <h4 className="mb-2 font-medium text-blue-800">สถิติพนักงาน:</h4>
-              <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-                {Object.entries(generatedSchedule.staffStats).map(([userId, stats]) => (
-                  <div key={userId} className="p-2 bg-white rounded border">
-                    <div className="mb-1 text-xs text-gray-600">
-                      ID: {userId.slice(-6)}
-                    </div>
-                    <div className="text-sm">
-                      <span className="font-medium">เวรทั้งหมด:</span> {stats.totalWorkload ?? 0} เวร
-                    </div>
-                    <div className="text-xs text-gray-600">
-                      ช: {stats.shiftCounts.ช || 0} | บ: {stats.shiftCounts.บ || 0} | ด: {stats.shiftCounts.ด || 0}
-                    </div>
-                    <div className="text-xs text-gray-600">
-                      ทำงานติดต่อ: {stats.consecutiveDays} วัน
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* ตัวเลือกการบันทึก */}
-          <div className="mb-4">
-            <label className="flex items-center">
-              <input
-                type="checkbox"
-                checked={replaceExisting}
-                onChange={(e) => setReplaceExisting(e.target.checked)}
-                className="mr-2 w-4 h-4 text-teal-600"
-              />
-              <span className="text-sm">
-                แทนที่ตารางเวรที่มีอยู่ (จะลบเวรเดิมของแผนกนี้ในเดือนนี้ก่อนบันทึกใหม่)
-              </span>
-            </label>
-          </div>
-
-          {/* ปุ่มฟังก์ชันเพิ่มเติม */}
-          <div className="flex gap-3 mb-4">
-            <button
-              onClick={() => setShowOfficialTable(!showOfficialTable)}
-              className="px-4 py-2 text-white bg-purple-600 rounded-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500"
-            >
-              {showOfficialTable ? "ซ่อนตารางทางการ" : "แสดงตารางทางการ"}
-            </button>
-            
-            <button
-              onClick={() => window.print()}
-              className="px-4 py-2 text-white bg-teal-700 rounded-md hover:bg-teal-800 focus:outline-none focus:ring-2 focus:ring-teal-500"
-            >
-              🖨️ พิมพ์ตาราง
-            </button>
-          </div>
-
-          {/* ปุ่มบันทึก */}
-          <div className="flex gap-3">
-            <button
-              onClick={() => setShowPreview(false)}
-              className="px-4 py-2 text-gray-700 bg-gray-300 rounded-md hover:bg-gray-400"
-            >
-              ยกเลิก
-            </button>
-            <button
-              onClick={handleApplySchedule}
-              disabled={applyLoading}
-              className="px-6 py-2 text-white bg-teal-700 rounded-md hover:bg-teal-800 focus:outline-none focus:ring-2 focus:ring-teal-500 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {applyLoading ? "กำลังบันทึก..." : "บันทึกตารางเวร"}
-            </button>
-          </div>
+      {error && (
+        <div className="flex gap-2 items-start p-4 text-sm text-red-700 bg-red-50 rounded-lg border border-red-200">
+          <TbAlertTriangle size={18} className="mt-0.5 shrink-0" /> {error}
         </div>
       )}
 
-      {/* ตารางทางการ */}
-      {showOfficialTable && (
-        <div className="p-4 mt-6 rounded-md border border-gray-200">
-          <h3 className="mb-4 text-lg font-medium">ตารางการปฏิบัติงานแบบทางการ</h3>
-          <div className="p-4 mb-4 bg-blue-50 rounded-lg border border-blue-200">
-            <h4 className="mb-2 font-medium text-blue-800">📋 คำแนะนำ</h4>
-            <ul className="space-y-1 text-sm text-blue-700">
-              <li>• ตารางนี้แสดงการปฏิบัติงานแบบทางการตามรูปแบบของหน่วยงานราชการ</li>
-              <li>• ข้อมูลจะอัพเดทหลังจากบันทึกตารางเวรเรียบร้อยแล้ว</li>
-              <li>• สามารถพิมพ์ตารางนี้เพื่อนำเสนออย่างเป็นทางการได้</li>
-            </ul>
+      {/* ---------- ผลลัพธ์ ---------- */}
+      {preview && (
+        <>
+          {/* ความสมดุล + คำเตือน */}
+          <div className="grid gap-3 sm:grid-cols-2">
+            <div className="p-4 bg-white rounded-xl border border-gray-200 shadow-sm">
+              <div className="flex gap-2 items-center mb-2 text-sm font-semibold text-gray-700">
+                <TbScale className="text-teal-700" size={18} /> ความสมดุล (ต่าง มาก–น้อย ระหว่างคน)
+              </div>
+              <div className="flex flex-wrap gap-2 text-xs">
+                {[
+                  { label: "เวรรวม", v: preview.summary.fairness.totalSpread, ok: 3 },
+                  { label: "เวรดึก", v: preview.summary.fairness.nightSpread, ok: 2 },
+                  { label: "OT", v: preview.summary.fairness.otSpread, ok: 3 },
+                  { label: "งานเสาร์–อาทิตย์", v: preview.summary.fairness.weekendSpread, ok: 2 },
+                ].map((f) => (
+                  <span
+                    key={f.label}
+                    className={`px-2.5 py-1 rounded-full font-medium ${
+                      f.v <= f.ok ? "bg-green-100 text-green-700" : "bg-amber-100 text-amber-700"
+                    }`}
+                  >
+                    {f.label} ±{f.v}
+                  </span>
+                ))}
+              </div>
+            </div>
+            <div className="p-4 bg-white rounded-xl border border-gray-200 shadow-sm">
+              <div className="mb-2 text-sm font-semibold text-gray-700">ข้อควรตรวจ</div>
+              {hardViolations.length === 0 && softWarnings.length === 0 && (
+                <div className="text-sm text-green-700">ไม่พบการละเมิดกติกา</div>
+              )}
+              <ul className="space-y-1 text-xs">
+                {hardViolations.map((v, i) => (
+                  <li key={`h${i}`} className="text-red-600">⛔ {v.message}</li>
+                ))}
+                {softWarnings.map((v, i) => (
+                  <li key={`s${i}`} className="text-amber-600">⚠️ {v.message}</li>
+                ))}
+              </ul>
+            </div>
           </div>
-          
-                    <OfficialScheduleTable 
-            month={month} 
-            year={year} 
-            locationFilter={locationId}
-            generatedSchedule={generatedSchedule}
-          />
-        </div>
+
+          {/* ตารางพรีวิว */}
+          <div className="overflow-x-auto bg-white rounded-xl border border-gray-200 shadow-sm">
+            <table className="text-xs border-collapse min-w-max">
+              <thead>
+                <tr className="bg-gray-50">
+                  <th className="sticky left-0 z-10 px-3 py-2 text-left text-gray-600 bg-gray-50 border-b border-gray-200">
+                    เจ้าหน้าที่
+                  </th>
+                  {days.map((d) => {
+                    const dow = new Date(year, month, d).getDay();
+                    const we = dow === 0 || dow === 6;
+                    return (
+                      <th key={d} className={`px-1 py-2 text-center border-b border-gray-200 min-w-[2.6rem] ${we ? "bg-teal-50 text-teal-800" : "text-gray-600"}`}>
+                        <div>{d}</div>
+                        <div className="font-normal text-[10px]">{DOW_TH[dow]}</div>
+                      </th>
+                    );
+                  })}
+                </tr>
+              </thead>
+              <tbody>
+                {preview.staff.map((p) => (
+                  <tr key={p.id} className="border-b border-gray-100 last:border-0">
+                    <td className="sticky left-0 z-10 px-3 py-1.5 font-medium text-gray-800 whitespace-nowrap bg-white">
+                      {p.name}
+                      {p.isChief && <span className="ml-1 text-[10px] text-teal-700">(หัวหน้า)</span>}
+                      {p.isTrain && <span className="ml-1 text-[10px] text-violet-600">(อบรม)</span>}
+                    </td>
+                    {days.map((d) => {
+                      const cells = cellMap[`${p.id}|${d}`] || [];
+                      const dow = new Date(year, month, d).getDay();
+                      const we = dow === 0 || dow === 6;
+                      return (
+                        <td key={d} className={`px-0.5 py-1 text-center align-top ${we ? "bg-teal-50/40" : ""}`}>
+                          <div className="flex flex-row gap-0.5 items-center">
+                            {cells.map((c, i) => {
+                              const meta = metaOf(c.shift);
+                              const ring = c.isOT && c.otClass ? OT_CIRCLE[c.otClass]?.ring : null;
+                              return (
+                                <span
+                                  key={i}
+                                  title={`${meta.full}${c.isOT ? " OT" : ""}${c.fixed ? " (มีอยู่แล้ว)" : c.reserved ? " (จองแน่นอน)" : " (ระบบเสนอ)"}`}
+                                  className={`inline-flex items-center gap-0.5 px-1 rounded text-[11px] leading-4 ${meta.chip} ${
+                                    c.isOT && ring ? `border ${ring}` : ""
+                                  } ${c.reserved ? "ring-2 ring-green-500/70" : ""} ${c.fixed ? "opacity-60" : ""}`}
+                                >
+                                  {c.fixed && <TbLock size={9} />}
+                                  {c.shift === "x" ? "x" : c.shift}
+                                  {c.isOT ? "•" : ""}
+                                </span>
+                              );
+                            })}
+                          </div>
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <div className="flex flex-wrap gap-3 px-1 text-[11px] text-gray-500">
+            <span><TbLock size={10} className="inline" /> = เวร/ลาเดิม (ไม่ถูกแตะ)</span>
+            <span>• = OT (สีกรอบตามวง: ดำ/แดง/น้ำเงิน)</span>
+            <span><span className="inline-block w-2.5 h-2.5 rounded ring-2 ring-green-500/70 align-middle" /> = จองแน่นอน</span>
+            {Object.entries(SHIFT_META)
+              .filter(([k]) => ["ด", "ช", "บ", "x"].includes(k))
+              .map(([k, m]) => (
+                <span key={k} className={`px-1.5 rounded ${m.chip}`}>{k} {m.time}</span>
+              ))}
+          </div>
+
+          {/* สรุปต่อคน */}
+          <div className="overflow-x-auto bg-white rounded-xl border border-gray-200 shadow-sm">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="text-gray-600 bg-gray-50">
+                  {["เจ้าหน้าที่", "เช้า", "บ่าย", "ดึก", "OT", "ควบ", "หยุด", "ทำงาน ส-อา", "รวมเวร", "ติดกันสูงสุด"].map((h) => (
+                    <th key={h} className="px-3 py-2 font-medium text-left border-b border-gray-200 first:text-left">{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {preview.staff.map((p) => {
+                  const st = preview.summary.perUser[p.id];
+                  if (!st) return null;
+                  return (
+                    <tr key={p.id} className="border-b border-gray-100 last:border-0">
+                      <td className="px-3 py-1.5 font-medium text-gray-800 whitespace-nowrap">{st.name}</td>
+                      <td className="px-3 py-1.5">{st.ช}</td>
+                      <td className="px-3 py-1.5">{st.บ}</td>
+                      <td className="px-3 py-1.5">{st.ด}</td>
+                      <td className="px-3 py-1.5">{st.ot}</td>
+                      <td className="px-3 py-1.5">{st.doubles}</td>
+                      <td className="px-3 py-1.5">{st.off}</td>
+                      <td className="px-3 py-1.5">{st.weekendWork}</td>
+                      <td className="px-3 py-1.5 font-semibold">{st.total}</td>
+                      <td className={`px-3 py-1.5 ${st.maxStreak > (config.rules?.softMaxConsecutiveWork ?? 7) ? "text-amber-600 font-medium" : ""}`}>
+                        {st.maxStreak}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+
+          {/* ---------- บันทึก ---------- */}
+          <div className="p-4 space-y-3 bg-white rounded-xl border border-gray-200 shadow-sm">
+            <div className="text-sm font-semibold text-gray-700">บันทึกลงตารางเวรจริง</div>
+            <div className="flex flex-col gap-2 text-sm text-gray-600">
+              <label className="flex gap-2 items-center">
+                <input type="radio" name="applyMode" checked={applyMode === "fill"} onChange={() => setApplyMode("fill")} className="accent-teal-600" />
+                เติมเฉพาะช่องที่ยังว่าง <span className="text-xs text-gray-400">(ไม่ทับเวรที่กรอกไว้แล้ว — แนะนำ)</span>
+              </label>
+              <label className="flex gap-2 items-center">
+                <input type="radio" name="applyMode" checked={applyMode === "replace"} onChange={() => setApplyMode("replace")} className="accent-teal-600" />
+                ล้างเวรเดิมของเดือนนี้แล้วแทนที่ <span className="text-xs text-gray-400">(คงวันลา/อบรม/R ไว้)</span>
+              </label>
+            </div>
+            <button
+              onClick={apply}
+              disabled={applying}
+              className="flex gap-2 items-center px-5 py-2.5 font-medium text-white bg-teal-700 rounded-lg shadow-sm hover:bg-teal-800 disabled:opacity-50"
+            >
+              {applying ? <TbRefresh className="animate-spin" size={18} /> : <TbDeviceFloppy size={18} />}
+              {applying ? "กำลังบันทึก…" : "บันทึกตารางเวร"}
+            </button>
+            {applied && (
+              <div className="p-3 text-sm text-green-800 bg-green-50 rounded-lg border border-green-200">
+                ✅ {applied.message}
+              </div>
+            )}
+          </div>
+        </>
       )}
     </div>
   );
-};
-
-function getViolationMessage(violation) {
-  const messages = {
-    // ข้อจำกัดเดิม
-    MAX_CONSECUTIVE_DAYS: `พนักงาน ID ${violation.userId} ทำงานติดต่อกันเกิน ${violation.current} วัน ในวันที่ ${violation.day}`,
-    FORBIDDEN_CONSECUTIVE: `พนักงาน ID ${violation.userId} ไม่สามารถเวร ${violation.previous} ตามด้วย ${violation.current} ในวันที่ ${violation.day}`,
-    MAX_SHIFTS_PER_MONTH: `พนักงาน ID ${violation.userId} เวรเกิน ${violation.current} เวรต่อเดือน ในวันที่ ${violation.day}`,
-    
-    // ข้อจำกัดใหม่สำหรับระบบ 2 กะ + On-Call
-    DUPLICATE_SHIFT_REMOVED: `ลบเวรซ้ำของพนักงาน ID ${violation.userId} ในวันที่ ${violation.date} (เวร: ${violation.removedShift})`,
-    INSUFFICIENT_REST: `พนักงาน ID ${violation.userId} พักผ่อนไม่เพียงพอในวันที่ ${violation.date} (ต้องการ: ${violation.requiredRest} ชม., ได้รับ: ${violation.actualRest} ชม.)`,
-    INSUFFICIENT_STAFF: `ไม่พอบุคลากรสำหรับเวร ${violation.shift} ในวันที่ ${violation.date} (ต้องการ: ${violation.required}, ได้รับ: ${violation.assigned})`,
-    
-    // ข้อจำกัดกลุ่มบุคลากรพิเศษ
-    SPECIAL_STAFF_VIOLATION: `กลุ่มบุคลากรพิเศษ ID ${violation.userId} ละเมิดข้อจำกัดในวันที่ ${violation.date}`,
-    SPECIAL_WEEKEND_VIOLATION: `กลุ่มบุคลากรพิเศษ ID ${violation.userId} ทำงานในวันหยุดเสาร์-อาทิตย์ในวันที่ ${violation.date}`,
-    
-    // ข้อจำกัดทั่วไป
-    MAX_NIGHT_SHIFTS: `พนักงาน ID ${violation.userId} เกินจำนวนเวรดึกที่กำหนด (สูงสุด: ${violation.maxNightPer14d} เวร/14 วัน)`,
-    MAX_DOUBLE_SHIFTS: `พนักงาน ID ${violation.userId} เกินจำนวนเวรควบที่กำหนด (สูงสุด: ${violation.maxDoublePerMonth} เวร/เดือน)`,
-    MAX_ONCALL_SHIFTS: `พนักงาน ID ${violation.userId} เกินจำนวน On-Call ที่กำหนด (สูงสุด: ${violation.maxOnCallPerMonth} ครั้ง/เดือน)`,
-    CONSECUTIVE_ONCALL: `พนักงาน ID ${violation.userId} มี On-Call ติดกันในวันที่ ${violation.date}`,
-    MAX_CONSECUTIVE_SAME: `พนักงาน ID ${violation.userId} มีเวร ${violation.shiftType} ติดกันเกิน ${violation.maxConsecutiveSame} ครั้ง`,
-    INSUFFICIENT_DAYOFFS: `พนักงาน ID ${violation.userId} มีวันหยุดไม่เพียงพอ (ขั้นต่ำ: ${violation.minDayOffPer7d} วัน/7 วัน)`,
-  };
-  
-  return messages[violation.type] || `ข้อจำกัด ${violation.type} สำหรับพนักงาน ID ${violation.userId || 'ไม่ระบุ'}`;
 }
-
-function getShiftName(shifId) {
-  // Mapping สำหรับระบบเวร 2 กะ + On-Call
-  const shiftMap = {
-    // เวรหลัก
-    "M": "M", // เช้า (Morning)
-    "A": "A", // บ่าย (Afternoon) 
-    "N": "N", // ดึก (Night)
-    
-    // เวรควบ
-    "MA": "MA", // เช้า+บ่าย
-    "NA": "NA", // ดึก+บ่าย
-    
-    // On-Call และวันหยุด
-    "OC": "OC", // On-Call
-    "OFF": "OFF", // วันหยุด
-    
-    // Legacy mapping (ถ้ายังมี)
-    "66c74ecaaf47d3097ba9acb3": "M", // เช้า
-    "66c74ecaaf47d3097ba9acb4": "A", // บ่าย
-    "66c74ecaaf47d3097ba9acb5": "N", // ดึก
-    "66c74ecaaf47d3097ba9acb6": "OFF", // วันหยุด
-  };
-  
-  return shiftMap[shifId] || `ไม่ทราบ (${shifId?.slice(-6) || 'N/A'})`;
-}
-
-function getScheduleByDate(schedule) {
-  const scheduleByDate = {};
-
-  schedule.forEach((shift) => {
-    const date = dayjs(shift.datetime).format("YYYY-MM-DD");
-    if (!scheduleByDate[date]) {
-      scheduleByDate[date] = { date, shifts: [] };
-    }
-    scheduleByDate[date].shifts.push(shift);
-  });
-
-  return Object.values(scheduleByDate);
-}
-
-export default AutoSchedulePanel;

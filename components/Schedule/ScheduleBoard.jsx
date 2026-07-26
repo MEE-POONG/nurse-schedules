@@ -14,13 +14,25 @@ dayjs.locale("th");
 
 const WEEKDAY_TH = ["อา", "จ", "อ", "พ", "พฤ", "ศ", "ส"];
 
+// สี avatar ตัวอักษรย่อ — เลือกตามชื่อให้คงที่ต่อคน
+const AVATAR_COLORS = [
+  "bg-teal-500/15 text-teal-700",
+  "bg-sky-500/15 text-sky-700",
+  "bg-violet-500/15 text-violet-700",
+  "bg-amber-500/20 text-amber-700",
+  "bg-rose-500/15 text-rose-700",
+  "bg-emerald-500/15 text-emerald-700",
+];
+const avatarClsOf = (u) =>
+  AVATAR_COLORS[((u.firstname || "?").charCodeAt(0) + (u.lastname || "").length) % AVATAR_COLORS.length];
+
 // แสดงสัญลักษณ์กะ 1 ช่อง (ชิปสี / วงกลม OT สี / วงกลมแดงทึบ On-Call)
 function ShiftMark({ d }) {
   const m = metaOf(d.name);
   // On-Call = วงกลมแดงทึบ
   if (d.isOnCall) {
     return (
-      <span className="inline-flex justify-center items-center w-5 h-5 text-[11px] font-semibold text-white bg-red-600 rounded-full">
+      <span className="inline-flex justify-center items-center w-[22px] h-[22px] text-[11px] font-bold text-white rounded-full bg-gradient-to-b from-red-500 to-red-600 shadow-sm shadow-red-500/40">
         {d.name}
       </span>
     );
@@ -29,7 +41,7 @@ function ShiftMark({ d }) {
   const cls = d.Shif?.class;
   if (cls && OT_CIRCLE[cls]) {
     return (
-      <span className={`inline-flex justify-center items-center w-5 h-5 text-[11px] font-semibold bg-white rounded-full border-[1.5px] ${OT_CIRCLE[cls].ring}`}>
+      <span className={`inline-flex justify-center items-center w-[22px] h-[22px] text-[11px] font-bold bg-white rounded-full border-[1.5px] shadow-sm ${OT_CIRCLE[cls].ring}`}>
         {d.name}
       </span>
     );
@@ -37,12 +49,12 @@ function ShiftMark({ d }) {
   // OT อื่น ๆ ที่ไม่มี class = วงแดง (fallback)
   if (d.isOT) {
     return (
-      <span className="inline-flex justify-center items-center w-5 h-5 text-[11px] font-semibold text-red-600 rounded-full border-[1.5px] border-red-600">
+      <span className="inline-flex justify-center items-center w-[22px] h-[22px] text-[11px] font-bold text-red-600 bg-white rounded-full border-[1.5px] border-red-600 shadow-sm">
         {d.name}
       </span>
     );
   }
-  return <span className={`inline-block min-w-[20px] px-1 py-0.5 rounded-md text-[11px] font-medium whitespace-nowrap ${m.chip}`}>{m.label}</span>;
+  return <span className={`inline-block min-w-[22px] px-1.5 py-0.5 rounded-lg text-[11px] font-semibold whitespace-nowrap ${m.chip}`}>{m.label}</span>;
 }
 
 export default function ScheduleBoard({ month, year }) {
@@ -162,27 +174,30 @@ export default function ScheduleBoard({ month, year }) {
     <div>
       {/* แถบหัว + สลับมุมมอง */}
       <div className="flex flex-wrap gap-3 justify-between items-center mb-3">
-        <div className="text-base font-semibold text-gray-800">
+        <div className="flex gap-2 items-center text-base font-bold tracking-tight text-gray-900">
+          <span className="w-1 h-4 rounded-full bg-gradient-to-b from-teal-500 to-emerald-500" />
           ตารางเวร · {monthTH} {yearTH}
         </div>
         <div className="flex flex-wrap gap-2 items-center">
         {isAdmin && (
           <button
             onClick={() => setAddingStaff(true)}
-            className="flex gap-1.5 items-center px-3 py-1.5 text-sm font-medium text-teal-700 rounded-lg border border-teal-200 hover:bg-teal-50"
+            className="flex gap-1.5 items-center px-3.5 py-2 text-sm font-semibold text-teal-700 bg-white rounded-xl border border-teal-200/80 shadow-sm transition-colors hover:bg-teal-50 hover:border-teal-300"
           >
             <TbUserPlus size={16} /> จัดคนขึ้นเวร
           </button>
         )}
-        <div className="flex p-0.5 bg-gray-100 rounded-lg">
+        <div className="flex p-1 bg-white rounded-xl border shadow-sm border-gray-200/80">
           {views.map((v) => {
             const Icon = v.icon;
             return (
               <button
                 key={v.key}
                 onClick={() => setView(v.key)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-md transition-colors ${
-                  view === v.key ? "bg-white shadow text-teal-700 font-medium" : "text-gray-500"
+                className={`flex items-center gap-1.5 px-3 py-1.5 text-sm rounded-lg transition-all ${
+                  view === v.key
+                    ? "text-white font-semibold bg-gradient-to-r from-teal-600 to-teal-500 shadow-md shadow-teal-600/30"
+                    : "text-gray-500 hover:text-gray-800 hover:bg-gray-50"
                 }`}
               >
                 <Icon size={16} /> {v.label}
@@ -202,19 +217,18 @@ export default function ScheduleBoard({ month, year }) {
 
       {/* ── ยังไม่มีคนในตารางเดือนนี้ ── */}
       {users.length === 0 && (
-        <div className="px-6 py-14 text-center bg-white rounded-xl border border-gray-200">
-          <div className="flex justify-center mb-3 text-gray-300">
-            <TbUserPlus size={40} />
+        <div className="px-6 py-16 text-center card">
+          <div className="flex justify-center mb-4">
+            <span className="flex justify-center items-center w-16 h-16 text-teal-600/60 rounded-2xl bg-teal-600/[0.07]">
+              <TbUserPlus size={32} />
+            </span>
           </div>
-          <div className="font-medium text-gray-700">ยังไม่มีพยาบาลในตารางเดือน{monthTH}</div>
+          <div className="font-semibold text-gray-800">ยังไม่มีพยาบาลในตารางเดือน{monthTH}</div>
           <div className="mt-1 text-sm text-gray-500">
             {isAdmin ? "กด “จัดคนขึ้นเวร” เพื่อเพิ่มพยาบาลเข้าตารางก่อน แล้วจึงกรอกกะ" : "ผู้ดูแลยังไม่ได้จัดคนขึ้นเวรของเดือนนี้"}
           </div>
           {isAdmin && (
-            <button
-              onClick={() => setAddingStaff(true)}
-              className="inline-flex gap-1.5 items-center px-4 py-2 mt-4 text-sm font-semibold text-white bg-teal-700 rounded-lg hover:bg-teal-800"
-            >
+            <button onClick={() => setAddingStaff(true)} className="px-5 py-2.5 mt-5 btn-brand">
               <TbUserPlus size={16} /> จัดคนขึ้นเวร
             </button>
           )}
@@ -239,26 +253,26 @@ export default function ScheduleBoard({ month, year }) {
 
       {/* ── มุมมองตาราง matrix ── */}
       {view === "matrix" && users.length > 0 && (
-        <div className="overflow-hidden bg-white rounded-xl border border-gray-200 shadow-sm">
-          <div className="overflow-x-auto">
+        <div className="overflow-hidden card">
+          <div className="overflow-x-auto thin-scroll">
             <table className="text-sm border-separate border-spacing-0">
               <thead>
                 <tr className="text-gray-500">
-                  <th className="sticky left-0 z-10 bg-gray-50 border-b border-gray-100 px-3 py-2 text-left font-medium min-w-[150px]">
+                  <th className="sticky left-0 z-10 bg-[#f6faf9] border-b border-gray-200/70 px-3.5 py-2.5 text-left text-xs font-semibold tracking-wide min-w-[150px] shadow-[inset_-8px_0_8px_-8px_rgba(11,49,46,0.08)]">
                     พยาบาล
                   </th>
                   {days.map((day) => (
                     <th
                       key={day}
-                      className={`px-1.5 py-2 text-center font-medium border-b border-gray-100 min-w-[40px] ${
-                        isToday(day) ? "bg-teal-50 text-teal-700" : isWeekend(day) ? "bg-rose-50 text-rose-600" : ""
+                      className={`px-1.5 py-2 text-center font-medium border-b border-gray-200/70 min-w-[40px] ${
+                        isToday(day) ? "bg-teal-600/10 text-teal-800" : isWeekend(day) ? "bg-rose-50 text-rose-600" : "bg-gray-50/60"
                       }`}
                     >
-                      <div className="text-xs">{day}</div>
-                      <div className="text-[9px] text-gray-400">{WEEKDAY_TH[ref.date(day).day()]}</div>
+                      <div className={`text-xs ${isToday(day) ? "font-bold" : ""}`}>{day}</div>
+                      <div className={`text-[9px] ${isToday(day) ? "text-teal-600" : "text-gray-400"}`}>{WEEKDAY_TH[ref.date(day).day()]}</div>
                     </th>
                   ))}
-                  <th className="px-2 py-2 text-center font-medium text-teal-700 border-b border-l border-gray-100">รวม</th>
+                  <th className="px-2 py-2 text-center text-xs font-semibold text-teal-800 border-b border-l bg-teal-600/[0.06] border-gray-200/70">รวม</th>
                 </tr>
               </thead>
               <tbody>
@@ -266,18 +280,29 @@ export default function ScheduleBoard({ month, year }) {
                   const mine = user.id === me.id;
                   const editable = canEdit(user);
                   return (
-                    <tr key={user.id}>
+                    <tr key={user.id} className="group">
                       <td
-                        className={`sticky left-0 z-10 px-3 py-1.5 text-left border-b border-gray-50 whitespace-nowrap ${
-                          mine ? "bg-teal-50 text-teal-800 font-medium" : "bg-white"
+                        className={`sticky left-0 z-10 px-3.5 py-2 text-left border-b border-gray-100/80 whitespace-nowrap transition-colors ${
+                          mine
+                            ? "bg-[#e7f3f1] text-teal-900 shadow-[inset_3px_0_0_#0d9488,inset_-8px_0_8px_-8px_rgba(11,49,46,0.10)]"
+                            : "bg-white group-hover:bg-teal-50 shadow-[inset_-8px_0_8px_-8px_rgba(11,49,46,0.08)]"
                         }`}
                       >
                         <div className="flex gap-1.5 justify-between items-center">
-                          <div>
-                            <div className="text-[13px] leading-tight">
-                              {user.Title?.name}{user.firstname} {user.lastname}{mine ? " (ฉัน)" : ""}
-                            </div>
-                            <div className="text-[10px] text-gray-400">{user.Position?.name}</div>
+                          <div className="flex gap-2.5 items-center">
+                            <span
+                              className={`flex justify-center items-center w-7 h-7 text-[11px] font-bold rounded-full shrink-0 ${
+                                mine ? "text-white bg-gradient-to-br from-teal-500 to-emerald-600" : avatarClsOf(user)
+                              }`}
+                            >
+                              {(user.firstname || "?").charAt(0)}
+                            </span>
+                            <span>
+                              <span className={`block text-[13px] leading-tight ${mine ? "font-semibold" : "font-medium text-gray-800"}`}>
+                                {user.Title?.name}{user.firstname} {user.lastname}{mine ? " (ฉัน)" : ""}
+                              </span>
+                              <span className="block text-[10px] text-gray-400">{user.Position?.name}</span>
+                            </span>
                           </div>
                           {isAdmin && (
                             <button
@@ -285,7 +310,7 @@ export default function ScheduleBoard({ month, year }) {
                               disabled={removingUserId === user.id}
                               title="ถอดออกจากตารางเดือนนี้"
                               aria-label={`ถอด ${nameOf(user)} ออกจากตารางเดือนนี้`}
-                              className="p-1 text-gray-300 rounded hover:text-red-600 hover:bg-red-50 disabled:opacity-50"
+                              className="p-1 text-gray-300 rounded-lg transition-colors hover:text-red-600 hover:bg-red-50 disabled:opacity-50"
                             >
                               <TbUserMinus size={15} />
                             </button>
@@ -298,9 +323,9 @@ export default function ScheduleBoard({ month, year }) {
                           <td
                             key={day}
                             onClick={() => openEdit(user, day)}
-                            className={`px-1 py-1.5 text-center border-b border-gray-50 ${
-                              isToday(day) ? "bg-teal-50/40" : isWeekend(day) ? "bg-rose-50/40" : ""
-                            } ${editable ? "cursor-pointer hover:bg-teal-100/50" : ""}`}
+                            className={`px-1 py-2 text-center border-b border-gray-100/80 transition-colors group-hover:bg-teal-50/50 ${
+                              isToday(day) ? "bg-teal-600/[0.06]" : isWeekend(day) ? "bg-rose-50/50" : ""
+                            } ${editable ? "cursor-pointer hover:!bg-teal-100/70" : ""}`}
                           >
                             <div className="flex gap-0.5 justify-center items-center whitespace-nowrap">
                               {duties.length === 0 ? (
@@ -312,7 +337,7 @@ export default function ScheduleBoard({ month, year }) {
                           </td>
                         );
                       })}
-                      <td className="px-2 text-center font-semibold text-teal-700 border-b border-l border-gray-50">
+                      <td className="px-2 text-center font-bold text-teal-800 border-b border-l bg-teal-600/[0.04] border-gray-100/80">
                         {workCount(user) || ""}
                       </td>
                     </tr>
@@ -363,7 +388,7 @@ export default function ScheduleBoard({ month, year }) {
 
 function Legend() {
   return (
-    <div className="flex flex-wrap gap-x-4 gap-y-1.5 px-4 py-3 text-xs text-gray-500 border-t border-gray-100">
+    <div className="flex flex-wrap gap-x-5 gap-y-2 px-4 py-3 text-xs text-gray-500 border-t border-gray-100 bg-gray-50/60">
       {["ช", "บ", "ด"].map((s) => (
         <span key={s} className="flex gap-1.5 items-center">
           <span className={`px-1.5 py-0.5 rounded ${SHIFT_META[s].chip}`}>{s}</span>
@@ -404,24 +429,24 @@ function DayView({ users, days, selectedDay, setSelectedDay, ref0, isWeekend, is
   };
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
+    <div className="card">
       {/* แถบเลือกวัน */}
       <div className="flex gap-1 items-center px-3 py-3 border-b border-gray-100">
-        <button onClick={() => go(-1)} className="p-1 text-gray-400 hover:text-teal-700" aria-label="วันก่อนหน้า">
+        <button onClick={() => go(-1)} className="p-1 text-gray-400 transition-colors hover:text-teal-700" aria-label="วันก่อนหน้า">
           <TbChevronLeft size={20} />
         </button>
-        <div className="flex overflow-x-auto flex-1 gap-1.5 px-1">
+        <div className="flex overflow-x-auto flex-1 gap-1.5 px-1 thin-scroll">
           {days.map((day) => {
             const sel = day === selectedDay;
             return (
               <button
                 key={day}
                 onClick={() => setSelectedDay(day)}
-                className={`flex-shrink-0 w-10 py-1.5 rounded-lg text-center transition-colors ${
+                className={`flex-shrink-0 w-10 py-1.5 rounded-xl text-center transition-all ${
                   sel
-                    ? "bg-teal-700 text-white"
+                    ? "text-white bg-gradient-to-b from-teal-600 to-teal-700 shadow-md shadow-teal-700/30"
                     : isToday(day)
-                    ? "bg-teal-50 text-teal-700"
+                    ? "bg-teal-600/10 text-teal-800 font-semibold"
                     : isWeekend(day)
                     ? "text-rose-500 hover:bg-gray-50"
                     : "text-gray-600 hover:bg-gray-50"
@@ -449,14 +474,19 @@ function DayView({ users, days, selectedDay, setSelectedDay, ref0, isWeekend, is
           return (
             <div
               key={s}
-              className="bg-white rounded-lg border border-gray-100"
+              className="overflow-hidden bg-white rounded-xl border border-gray-100 shadow-sm"
               style={{ borderLeft: `3px solid ${m.accent}` }}
             >
-              <div className="flex justify-between items-center px-3.5 py-2 border-b border-gray-50">
-                <span className="text-sm font-medium" style={{ color: m.accent }}>
+              <div
+                className="flex justify-between items-center px-3.5 py-2.5 border-b border-gray-100/80"
+                style={{ background: `linear-gradient(90deg, ${m.accent}0d, transparent 55%)` }}
+              >
+                <span className="text-sm font-semibold" style={{ color: m.accent }}>
                   {m.full} · {m.time}
                 </span>
-                <span className="text-xs text-gray-400">{list.length} คน</span>
+                <span className="px-2 py-0.5 text-[11px] font-semibold text-gray-500 bg-white rounded-full border border-gray-200">
+                  {list.length} คน
+                </span>
               </div>
               <div className="px-3.5 py-2">
                 {list.length === 0 ? (
