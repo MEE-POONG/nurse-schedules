@@ -22,7 +22,7 @@ export default async function handler(req, res) {
               },
               where: {
                 AND: {
-                  datetime: { gte: firstDay.format() },
+                  datetime: { gte: firstDay.format(), lte: lastDay.format() },
                   locationId: {
                     not: null,
                   },
@@ -51,7 +51,7 @@ export default async function handler(req, res) {
             UserDuty: {
               some: {
                 AND: {
-                  datetime: { gte: firstDay.format() },
+                  datetime: { gte: firstDay.format(), lte: lastDay.format() },
                   locationId: {
                     not: null,
                   },
