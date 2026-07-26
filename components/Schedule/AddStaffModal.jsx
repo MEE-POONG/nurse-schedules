@@ -1,12 +1,14 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useMemo, useState } from "react";
 import useAxios from "axios-hooks";
+import { TbUserMinus } from "react-icons/tb";
 import { nameOf } from "./shiftStyle";
 
 // modal "จัดคนขึ้นเวร" — assign พยาบาลเข้าแผนกสำหรับเดือนที่เลือก (POST /api/user-duty)
 // หลังเพิ่ม คนจะโผล่ในตาราง selectMonth แล้วกรอกกะได้
-// props: open, onClose, month (0-index), year, existingUserIds [], onAdded()
-export default function AddStaffModal({ open, onClose, month, year, existingUserIds = [], onAdded }) {
+// props: open, onClose, month (0-index), year, existingUserIds [], onAdded(),
+//        currentUsers [] (คนในตารางเดือนนี้), onRemove(user), removingUserId
+export default function AddStaffModal({ open, onClose, month, year, existingUserIds = [], onAdded, currentUsers = [], onRemove, removingUserId }) {
   const [{ data: allUsers }] = useAxios({ url: "/api/user" }, { autoCancel: false });
   const [{ data: locations }] = useAxios({ url: "/api/location" }, { autoCancel: false });
   const [, assign] = useAxios({ url: "/api/user-duty", method: "POST" }, { manual: true, autoCancel: false });
@@ -85,6 +87,38 @@ export default function AddStaffModal({ open, onClose, month, year, existingUser
                     </select>
                   </div>
                 </div>
+
+                {/* รายชื่อคนในตารางเดือนนี้ พร้อมปุ่มถอดออก */}
+                {onRemove && currentUsers.length > 0 && (
+                  <div className="mt-5">
+                    <div className="mb-2 text-sm font-medium text-gray-700">
+                      อยู่ในตารางแล้ว ({currentUsers.length} คน)
+                    </div>
+                    <div className="overflow-y-auto max-h-48 rounded-lg border border-gray-200 divide-y divide-gray-100">
+                      {currentUsers.map((u) => (
+                        <div key={u.id} className="flex gap-2 justify-between items-center px-3 py-2">
+                          <div className="min-w-0">
+                            <div className="text-sm text-gray-800 truncate">
+                              {u.Title?.name} {nameOf(u)}
+                            </div>
+                            <div className="text-xs text-gray-400 truncate">
+                              {u.UserDuty?.Location?.name}
+                              {(u.Duty || []).length > 0 ? ` · มีเวร ${(u.Duty || []).length} รายการ` : " · ยังไม่มีเวร"}
+                            </div>
+                          </div>
+                          <button
+                            onClick={() => onRemove(u)}
+                            disabled={removingUserId === u.id}
+                            className="flex flex-shrink-0 gap-1 items-center px-2 py-1 text-xs font-medium text-red-600 rounded-md border border-red-200 hover:bg-red-50 disabled:opacity-50"
+                          >
+                            <TbUserMinus size={14} />
+                            {removingUserId === u.id ? "กำลังถอด…" : "ถอดออก"}
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 <div className="flex gap-2 justify-end mt-5">
                   <button onClick={onClose} className="px-4 py-2 text-sm font-medium text-gray-600 rounded-lg hover:bg-gray-100">

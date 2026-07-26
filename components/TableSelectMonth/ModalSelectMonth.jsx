@@ -1,6 +1,7 @@
 import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useEffect, useRef, useState } from "react";
 import dayjs from "dayjs";
+import { authProvider } from "src/authProvider";
 
 export default function ModalSelectMonth({
   userId,
@@ -18,6 +19,8 @@ export default function ModalSelectMonth({
   yearTH,
 }) {
   const [showModal, setShowModal] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+  const isAdmin = authProvider.getIdentity()?.isAdmin;
   const [defaultDutyOfDay, setDefaultDutyOfDay] = useState(
     Duty?.filter(({ datetime }) => dayjs(datetime).format("DD") == day)
   );
@@ -221,7 +224,7 @@ export default function ModalSelectMonth({
                       </div>
                     </div>
                   </form>
-                  <div className="mt-4">
+                  <div className="flex items-center justify-between mt-4">
                     <button
                       type="button"
                       className="inline-flex justify-center px-4 py-2 text-lg font-medium text-teal-800 bg-white border border-transparent rounded-md print:bg-white print:text-black hover:bg-white hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-green focus-visible:ring-offset-2"
@@ -265,6 +268,29 @@ export default function ModalSelectMonth({
                     >
                       บันทึกข้อมูล
                     </button>
+                    {isAdmin && defaultDutyOfDay?.some((duty) => duty.id) && (
+                      <button
+                        type="button"
+                        disabled={deleting}
+                        className="inline-flex justify-center px-4 py-2 text-lg font-medium text-white bg-red-600 border border-transparent rounded-md hover:bg-red-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 disabled:opacity-50"
+                        onClick={async () => {
+                          const confirmed = window.confirm(
+                            `ยืนยันลบเวรทั้งหมดของ ${name}\nวันที่ ${day} ${monthTH} ${yearTH} ?`
+                          );
+                          if (!confirmed) return;
+                          setDeleting(true);
+                          try {
+                            await deleteDutyById(defaultDutyOfDay);
+                            await getUserList();
+                            setShowModal(false);
+                          } finally {
+                            setDeleting(false);
+                          }
+                        }}
+                      >
+                        {deleting ? "กำลังลบ..." : "ลบเวรวันนี้"}
+                      </button>
+                    )}
                   </div>
                 </Dialog.Panel>
               </Transition.Child>
@@ -277,6 +303,7 @@ export default function ModalSelectMonth({
 
   async function deleteDutyById(defaultDutyOfDay) {
     for (const duty of defaultDutyOfDay) {
+      if (!duty.id) continue;
       await deleteDuty({ url: `/api/duty/${duty.id}`, method: "delete" });
     }
   }
