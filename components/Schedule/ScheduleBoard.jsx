@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import useAxios from "axios-hooks";
 import dayjs from "dayjs";
 import "dayjs/locale/th";
-import { TbCalendar, TbTable, TbList, TbChevronLeft, TbChevronRight, TbUserPlus } from "react-icons/tb";
+import { TbCalendar, TbTable, TbList, TbChevronLeft, TbChevronRight, TbUserPlus, TbUserMinus } from "react-icons/tb";
 import { authProvider } from "src/authProvider";
 import LoadingComponent from "../LoadingComponent";
 import ScheduleCalendar from "../ScheduleCalendar";
@@ -86,6 +86,11 @@ export default function ScheduleBoard({ month, year }) {
   const [{ data: shifList }] = useAxios({ url: "/api/shif" }, { autoCancel: false });
   const [, executeDuty] = useAxios({ url: "/api/duty", method: "POST" }, { manual: true, autoCancel: false });
   const [, deleteDuty] = useAxios({ url: "/api/duty", method: "DELETE" }, { manual: true, autoCancel: false });
+  const [, removeUserMonth] = useAxios(
+    { url: "/api/user-duty/remove-month", method: "DELETE" },
+    { manual: true, autoCancel: false }
+  );
+  const [removingUserId, setRemovingUserId] = useState(null);
 
   const users = useMemo(
     () => (Array.isArray(usersRaw) ? usersRaw.filter((u) => u?.firstname) : []),
@@ -136,6 +141,26 @@ export default function ScheduleBoard({ month, year }) {
 
   const workCount = (user) =>
     (user.Duty || []).filter((d) => WORK_SHIFTS.includes(d.Shif?.name) && !(d.isOT || d.Shif?.isOT)).length;
+
+  // ถอดคนออกจากตารางเดือนนี้ (admin เท่านั้น): ลบเวรทั้งเดือน + เอาชื่อออกจากตาราง
+  const removeUserFromMonth = async (user) => {
+    if (!isAdmin || removingUserId) return;
+    const dutyCount = (user.Duty || []).length;
+    const confirmed = window.confirm(
+      `ถอด ${nameOf(user)} ออกจากตารางเวรเดือน${monthTH} ${yearTH} ?\n` +
+        (dutyCount > 0
+          ? `เวรที่บันทึกไว้ ${dutyCount} รายการจะถูกลบทั้งหมด`
+          : "ยังไม่มีเวรที่บันทึกไว้ในเดือนนี้")
+    );
+    if (!confirmed) return;
+    setRemovingUserId(user.id);
+    try {
+      await removeUserMonth({ data: { userId: user.id, month, year } });
+      await refetch();
+    } finally {
+      setRemovingUserId(null);
+    }
+  };
 
   if (loading && !usersRaw) return <LoadingComponent />;
 
@@ -263,20 +288,33 @@ export default function ScheduleBoard({ month, year }) {
                             : "bg-white group-hover:bg-teal-50 shadow-[inset_-8px_0_8px_-8px_rgba(11,49,46,0.08)]"
                         }`}
                       >
-                        <div className="flex gap-2.5 items-center">
-                          <span
-                            className={`flex justify-center items-center w-7 h-7 text-[11px] font-bold rounded-full shrink-0 ${
-                              mine ? "text-white bg-gradient-to-br from-teal-500 to-emerald-600" : avatarClsOf(user)
-                            }`}
-                          >
-                            {(user.firstname || "?").charAt(0)}
-                          </span>
-                          <span>
-                            <span className={`block text-[13px] leading-tight ${mine ? "font-semibold" : "font-medium text-gray-800"}`}>
-                              {user.Title?.name}{user.firstname} {user.lastname}{mine ? " (ฉัน)" : ""}
+                        <div className="flex gap-1.5 justify-between items-center">
+                          <div className="flex gap-2.5 items-center">
+                            <span
+                              className={`flex justify-center items-center w-7 h-7 text-[11px] font-bold rounded-full shrink-0 ${
+                                mine ? "text-white bg-gradient-to-br from-teal-500 to-emerald-600" : avatarClsOf(user)
+                              }`}
+                            >
+                              {(user.firstname || "?").charAt(0)}
                             </span>
-                            <span className="block text-[10px] text-gray-400">{user.Position?.name}</span>
-                          </span>
+                            <span>
+                              <span className={`block text-[13px] leading-tight ${mine ? "font-semibold" : "font-medium text-gray-800"}`}>
+                                {user.Title?.name}{user.firstname} {user.lastname}{mine ? " (ฉัน)" : ""}
+                              </span>
+                              <span className="block text-[10px] text-gray-400">{user.Position?.name}</span>
+                            </span>
+                          </div>
+                          {isAdmin && (
+                            <button
+                              onClick={() => removeUserFromMonth(user)}
+                              disabled={removingUserId === user.id}
+                              title="ถอดออกจากตารางเดือนนี้"
+                              aria-label={`ถอด ${nameOf(user)} ออกจากตารางเดือนนี้`}
+                              className="p-1 text-gray-300 rounded-lg transition-colors hover:text-red-600 hover:bg-red-50 disabled:opacity-50"
+                            >
+                              <TbUserMinus size={15} />
+                            </button>
+                          )}
                         </div>
                       </td>
                       {days.map((day) => {
@@ -340,6 +378,9 @@ export default function ScheduleBoard({ month, year }) {
         year={year}
         existingUserIds={users.map((u) => u.id)}
         onAdded={refetch}
+        currentUsers={users}
+        onRemove={removeUserFromMonth}
+        removingUserId={removingUserId}
       />
     </div>
   );
