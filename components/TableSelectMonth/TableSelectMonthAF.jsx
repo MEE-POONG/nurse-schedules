@@ -11,6 +11,7 @@ import { BsPrinterFill } from "react-icons/bs";
 import { useReactToPrint } from "react-to-print";
 import printStyle from "@/utils/printStyle";
 import THBText from 'thai-baht-text'
+import PaymentSignature from "./PaymentSignature";
 var isoWeek = require("dayjs/plugin/isoWeek");
 dayjs.extend(isoWeek);
 export const TableSelectMonthAF = ({
@@ -403,44 +404,7 @@ export const TableSelectMonthAF = ({
 
 
 
-              <tr className="border" onClick={() => setOpen(e => e += 1)}>
-                <td
-                  className="py-5 border border-white"
-                  colSpan={daysInMonth + 9}
-                >
-
-                  <div className="flex flex-row justify-center">
-                    ขอรับรองว่าผู้ที่รับเงินค่าตอบแทนดังกล่าวได้ปฏิบัติงานนอกเวลาจริง
-                  </div>
-                  <div className="hidden justify-between w-full sm:flex">
-                    <div>
-                      <p className="mt-3 text-center">ลงชื่อ......................................................................(ผู้ควบคุม)</p>
-                      <p className="pl-24 text-left">( นางนงลักษณ์ คนเพียร )</p>
-                      <p className="pl-16 text-left"></p>
-                      <p className="pl-20 text-left">หัวหน้ากลุ่มงานการพยาบาล</p>
-                    </div>
-                    <div className="basis-6/12">
-                      <p className="mt-3 text-center">ลงชื่อ......................................................................(ผู้อนุมัติ)</p>
-                      <p className="pl-96 text-left">
-                        ( นายศราวุธ หงษ์ยิ้ม )
-                        </p>
-                      <p className="pl-80 text-left">
-                        นายแพทย์ชำนาญการ รักษาการในตำแหน่ง
-                        </p>
-                      <p className="text-left pl-[23rem]">
-                        ผู้อำนวยการโรงพยาบาลครบุรี
-                        </p>
-                    </div>
-                    <div>
-                      <p className="mt-3 text-center">ลงชื่อ......................................................................ผู้จ่ายเงิน</p>
-                      <p className="pl-24 text-left">( นางสาวคุณัญญา เอิบพรมราช )</p>
-                      <p className="pl-16 text-left"></p>
-                      <p className="pl-[7.5rem] text-left">นักวิชาการการเงินและบัญชี</p>
-                    </div>
-                  </div>
-
-                </td>
-              </tr>
+              <PaymentSignature colSpan={daysInMonth + 9} />
             </tbody>
           </table>
         </div>

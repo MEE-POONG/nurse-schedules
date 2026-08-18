@@ -11,6 +11,7 @@ import { BsPrinterFill } from "react-icons/bs";
 import { useReactToPrint } from "react-to-print";
 import printStyle from "@/utils/printStyle";
 import ModalSelectMonthRed from "./ModalSelectMonthRed";
+import SIGNATORIES from "@/utils/signatories";
 var isoWeek = require("dayjs/plugin/isoWeek");
 dayjs.extend(isoWeek);
 export const TableSelectMonthRed = ({
@@ -580,13 +581,13 @@ export const TableSelectMonthRed = ({
                         ลงชื่อ......................................................................(ผู้อนุมัติอยู่เวร)
                       </p>
                       <p className="pl-32 text-left">
-                        ( นายศราวุธ หงษ์ยิ้ม  )
+                        ( {SIGNATORIES.director.name} )
                       </p>
                       <p className="pl-14 text-left">
-                        นายแพทย์ชำนาญการ รักษาการในตำแหน่ง
+                        {SIGNATORIES.director.position}
                       </p>
                       <p className="text-leftpl-20">
-                        ผู้อำนวยการโรงพยาบาลครบุรี
+                        {SIGNATORIES.director.role}
                       </p>
                     </div>
                     <div className="basis-6/12">
@@ -594,11 +595,11 @@ export const TableSelectMonthRed = ({
                         ลงชื่อ......................................................................(ผู้ควบคุม)
                       </p>
                       <p className="text-left pl-[17rem]">
-                        ( นางนงลักษณ์ คนเพียร )
+                        ( {SIGNATORIES.nursingHead.name} )
                       </p>
                       <p className="text-left pl-[22rem]"></p>
                       <p className="text-left pl-[16rem]">
-                        หัวหน้ากลุ่มงานการพยาบาล
+                        {SIGNATORIES.nursingHead.role}
                       </p>
                     </div>
                     <div className="text-center">
