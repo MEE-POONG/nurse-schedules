@@ -12,6 +12,7 @@ import { useReactToPrint } from "react-to-print";
 import printStyle from "@/utils/printStyle";
 import { authProvider } from "src/authProvider";
 import { TableSelectMonthOnCall2 } from "../OnCall/TableSelectMonth/TableSelectMonthOnCall2";
+import SIGNATORIES from "@/utils/signatories";
 var isoWeek = require("dayjs/plugin/isoWeek");
 dayjs.extend(isoWeek);
 export const TableSelectMonth = ({
@@ -794,13 +795,13 @@ export const TableSelectMonth = ({
                         ลงชื่อ......................................................................(ผู้อนุมัติอยู่เวร)
                       </p>
                       <p className="pl-32 text-left">
-                        ( นายศราวุธ หงษ์ยิ้ม  )
+                        ( {SIGNATORIES.director.name} )
                       </p>
                       <p className="pl-14 text-left">
-                        นายแพทย์ชำนาญการ รักษาการในตำแหน่ง
+                        {SIGNATORIES.director.position}
                       </p>
                       <p className="text-leftpl-20">
-                        ผู้อำนวยการโรงพยาบาลครบุรี
+                        {SIGNATORIES.director.role}
                       </p>
                     </div>
                     <div className="basis-6/12">
@@ -808,11 +809,11 @@ export const TableSelectMonth = ({
                         ลงชื่อ......................................................................(ผู้ควบคุม)
                       </p>
                       <p className="text-left pl-[20rem]">
-                        ( นางนงลักษณ์ คนเพียร )
+                        ( {SIGNATORIES.nursingHead.name} )
                       </p>
                       <p className="text-left pl-[22rem]"></p>
                       <p className="text-left pl-[19rem]">
-                        หัวหน้ากลุ่มงานการพยาบาล
+                        {SIGNATORIES.nursingHead.role}
                       </p>
                     </div>
                     <div className="text-center">
