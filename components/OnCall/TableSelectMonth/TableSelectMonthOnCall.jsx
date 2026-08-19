@@ -9,7 +9,7 @@ import ModalSelectMonthOnCall from "./ModalSelectMonthOnCall";
 import { useSelector } from "react-redux";
 import LoadingComponent from "@/components/LoadingComponent";
 import ErrorComponent from "@/components/ErrorComponent";
-import SIGNATORIES from "@/utils/signatories";
+import ScheduleSignature from "@/components/TableSelectMonth/ScheduleSignature";
 var isoWeek = require("dayjs/plugin/isoWeek");
 dayjs.extend(isoWeek);
 export const TableSelectMonthOnCall = ({
@@ -399,40 +399,10 @@ export const TableSelectMonthOnCall = ({
                 </td>
               </tr>
 
-              <tr className="border" onClick={() => setOpen(e => e += 1)}>
-                <td
-                  className="py-5 border border-white"
-                  colSpan={daysInMonth + 9}
-                >
-
-                  <div className="hidden justify-between w-full sm:flex">
-                    <div>
-                      <p className="mt-3 text-center">ลงชื่อ......................................................................(ผู้อนุมัติอยู่เวร)</p>
-                      <p className="pl-32 text-left">
-                        ( {SIGNATORIES.director.name} )
-                        </p>
-                      <p className="pl-14 text-left">
-                        {SIGNATORIES.director.position}
-                        </p>
-                      <p className="text-leftpl-20">
-                        {SIGNATORIES.director.role}
-                        </p>
-                    </div>
-                    <div className="basis-6/12">
-                      <p className="mt-3 text-center">ลงชื่อ......................................................................(ผู้ควบคุม)</p>
-                      <p className="text-left pl-[20rem]">( {SIGNATORIES.nursingHead.name} )</p>
-                      <p className="text-left pl-[22rem]"></p>
-                      <p className="text-left pl-[19rem]">{SIGNATORIES.nursingHead.role}</p>
-                    </div>
-                    <div className="text-center">
-                      {/* <p className="mt-3 text-center">ความคิดเห็นผู้อำนวยการ</p> */}
-                      <p className="mt-3 text-center">ลงชื่อ......................................................หัวหน้าหน่วยงาน</p>
-                      <p className="pl-16 text-left">( {configuration?.departmentor} )</p>
-                    </div>
-                  </div>
-
-                </td>
-              </tr>
+              <ScheduleSignature
+                colSpan={daysInMonth + 9}
+                departmentor={configuration?.departmentor}
+              />
             </tbody>
           </table>
         </div>
