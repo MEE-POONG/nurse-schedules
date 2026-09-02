@@ -13,7 +13,7 @@ export const ScheduleSignature = ({ colSpan, departmentor, onClick }) => (
     <SignatureColumn
       label="(ผู้ควบคุม)"
       name={SIGNATORIES.nursingHead.name}
-      lines={[SIGNATORIES.nursingHead.role]}
+      lines={[SIGNATORIES.nursingHead.position, SIGNATORIES.nursingHead.role]}
     />
     <SignatureColumn
       label="หัวหน้าหน่วยงาน"
