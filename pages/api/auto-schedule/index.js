@@ -145,6 +145,7 @@ export default async function handler(req, res) {
       historyCount: prevDuties.length, // เวรท้ายเดือนก่อนที่นำมาเป็นบริบทต่อเนื่อง
       preferenceCells, // การจองเวรของเดือนนี้ (จองแน่นอน + ระบุความต้องการ)
       summary: result.summary,
+      capacity: result.capacity, // ตรวจกำลังคน: ต้องการกี่เวร รับได้กี่เวร ต้องลดช่อง/เพิ่มคนเท่าไร
       violations: result.violations,
       config: result.config,
     });
