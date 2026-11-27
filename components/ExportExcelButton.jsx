@@ -1,6 +1,7 @@
 import useAxios from "axios-hooks";
 import * as XLSX from "xlsx";
 import dayjs from "dayjs";
+import { notifyWarn } from "@/components/ui/notify";
 import "dayjs/locale/th";
 
 dayjs.locale("th");
@@ -18,7 +19,7 @@ const ExportExcelButton = ({ month, year }) => {
   const handleExport = () => {
     const users = (data || []).filter((u) => u?.firstname);
     if (users.length === 0) {
-      alert("ไม่มีข้อมูลเวรในเดือนนี้");
+      notifyWarn("เดือนนี้ยังไม่มีเวรให้ส่งออก — กรอกตารางเวรก่อนแล้วลองใหม่");
       return;
     }
 

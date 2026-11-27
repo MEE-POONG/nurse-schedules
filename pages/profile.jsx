@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { TbDeviceFloppy, TbLock, TbUser, TbUserCircle } from "react-icons/tb";
 import { authProvider } from "src/authProvider";
+import { notifyError, notifyWarn } from "@/components/ui/notify";
 
 function Profile() {
   const router = useRouter();
@@ -40,7 +41,7 @@ function Profile() {
               const username = x.target.username.value;
               const password = x.target.password.value;
               if (!username || !password) {
-                alert("กรุณากรอกข้อมูลให้ครบ");
+                notifyWarn("กรอกชื่อผู้ใช้และรหัสผ่านใหม่ให้ครบ");
                 return;
               }
               setLoading(true);
@@ -54,7 +55,7 @@ function Profile() {
                 },
               });
               if (auth.success === false) {
-                alert(auth.message);
+                notifyError("เปลี่ยนชื่อผู้ใช้หรือรหัสผ่านไม่สำเร็จ ลองใหม่อีกครั้ง");
                 return;
               }
               x.target.username.value = "";

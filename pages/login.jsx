@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { TbHeartbeat, TbLogin, TbLock, TbUser } from "react-icons/tb";
 import { authProvider } from "src/authProvider";
+import { notifyError, notifyWarn } from "@/components/ui/notify";
 
 function SignIn() {
   const router = useRouter();
@@ -13,13 +14,14 @@ function SignIn() {
     const username = x.target.username.value;
     const password = x.target.password.value;
     if (!username || !password) {
-      alert("กรุณากรอกข้อมูลให้ครบ");
+      notifyWarn("กรอกชื่อผู้ใช้และรหัสผ่านให้ครบก่อนเข้าสู่ระบบ");
       return;
     }
     setLoading(true);
     const auth = await authProvider.login({ username, password });
     if (auth.success === false) {
-      alert(auth.message);
+      // authProvider ส่งข้อความอังกฤษ ("Invalid username or password") จึงไม่ส่งต่อให้ผู้ใช้ตรงๆ
+      notifyError("ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง ลองใหม่อีกครั้ง");
       setLoading(false);
       return;
     }

@@ -9,6 +9,8 @@ import ScheduleCalendar from "../ScheduleCalendar";
 import ShiftEditModal from "./ShiftEditModal";
 import AddStaffModal from "./AddStaffModal";
 import { SHIFT_META, WORK_SHIFTS, OT_CIRCLE, metaOf, nameOf, dutiesOfDay } from "./shiftStyle";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
+import { notifySuccess, notifyApiError } from "@/components/ui/notify";
 
 dayjs.locale("th");
 
@@ -91,6 +93,7 @@ export default function ScheduleBoard({ month, year }) {
     { manual: true, autoCancel: false }
   );
   const [removingUserId, setRemovingUserId] = useState(null);
+  const [pendingRemove, setPendingRemove] = useState(null); // คนที่รอยืนยันถอดออกจากเดือนนี้
 
   const users = useMemo(
     () => (Array.isArray(usersRaw) ? usersRaw.filter((u) => u?.firstname) : []),
@@ -143,20 +146,22 @@ export default function ScheduleBoard({ month, year }) {
     (user.Duty || []).filter((d) => WORK_SHIFTS.includes(d.Shif?.name) && !(d.isOT || d.Shif?.isOT)).length;
 
   // ถอดคนออกจากตารางเดือนนี้ (admin เท่านั้น): ลบเวรทั้งเดือน + เอาชื่อออกจากตาราง
-  const removeUserFromMonth = async (user) => {
+  const removeUserFromMonth = (user) => {
     if (!isAdmin || removingUserId) return;
-    const dutyCount = (user.Duty || []).length;
-    const confirmed = window.confirm(
-      `ถอด ${nameOf(user)} ออกจากตารางเวรเดือน${monthTH} ${yearTH} ?\n` +
-        (dutyCount > 0
-          ? `เวรที่บันทึกไว้ ${dutyCount} รายการจะถูกลบทั้งหมด`
-          : "ยังไม่มีเวรที่บันทึกไว้ในเดือนนี้")
-    );
-    if (!confirmed) return;
+    setPendingRemove(user); // เปิดกล่องยืนยันในแอป
+  };
+
+  const confirmRemoveUser = async () => {
+    const user = pendingRemove;
+    if (!user) return;
     setRemovingUserId(user.id);
     try {
       await removeUserMonth({ data: { userId: user.id, month, year } });
       await refetch();
+      setPendingRemove(null);
+      notifySuccess(`ถอด ${nameOf(user)} ออกจากตารางเดือนนี้แล้ว`);
+    } catch (e) {
+      notifyApiError(e, "ถอดชื่อออกจากตารางไม่สำเร็จ");
     } finally {
       setRemovingUserId(null);
     }
@@ -535,6 +540,28 @@ function DayView({ users, days, selectedDay, setSelectedDay, ref0, isWeekend, is
           );
         })()}
       </div>
+
+      <ConfirmDialog
+        open={!!pendingRemove}
+        busy={!!removingUserId}
+        danger
+        title="ถอดชื่อออกจากตารางเดือนนี้?"
+        message={pendingRemove ? `${nameOf(pendingRemove)} · เดือน${monthTH} ${yearTH}` : ""}
+        details={
+          pendingRemove
+            ? [
+                (pendingRemove.Duty || []).length > 0
+                  ? `เวรที่บันทึกไว้ ${(pendingRemove.Duty || []).length} รายการของเดือนนี้จะถูกลบทั้งหมด`
+                  : "เดือนนี้ยังไม่มีเวรที่บันทึกไว้",
+                "บัญชีผู้ใช้และเวรของเดือนอื่นไม่ได้รับผลกระทบ",
+                "เพิ่มกลับเข้าตารางได้ด้วยปุ่ม จัดคนขึ้นเวร",
+              ]
+            : []
+        }
+        confirmLabel="ถอดออกจากตาราง"
+        onConfirm={confirmRemoveUser}
+        onClose={() => setPendingRemove(null)}
+      />
     </div>
   );
 }

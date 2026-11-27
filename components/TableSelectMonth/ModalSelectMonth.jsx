@@ -2,6 +2,8 @@ import { Dialog, Transition } from "@headlessui/react";
 import { Fragment, useEffect, useRef, useState } from "react";
 import dayjs from "dayjs";
 import { authProvider } from "src/authProvider";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
+import { notifySuccess, notifyApiError } from "@/components/ui/notify";
 
 export default function ModalSelectMonth({
   userId,
@@ -20,6 +22,7 @@ export default function ModalSelectMonth({
 }) {
   const [showModal, setShowModal] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState(false); // กล่องยืนยันลบเวรของวันนี้
   const isAdmin = authProvider.getIdentity()?.isAdmin;
   const [defaultDutyOfDay, setDefaultDutyOfDay] = useState(
     Duty?.filter(({ datetime }) => dayjs(datetime).format("DD") == day)
@@ -273,20 +276,7 @@ export default function ModalSelectMonth({
                         type="button"
                         disabled={deleting}
                         className="inline-flex justify-center px-4 py-2 text-lg font-medium text-white bg-red-600 border border-transparent rounded-md hover:bg-red-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 disabled:opacity-50"
-                        onClick={async () => {
-                          const confirmed = window.confirm(
-                            `ยืนยันลบเวรทั้งหมดของ ${name}\nวันที่ ${day} ${monthTH} ${yearTH} ?`
-                          );
-                          if (!confirmed) return;
-                          setDeleting(true);
-                          try {
-                            await deleteDutyById(defaultDutyOfDay);
-                            await getUserList();
-                            setShowModal(false);
-                          } finally {
-                            setDeleting(false);
-                          }
-                        }}
+                        onClick={() => setConfirmDelete(true)}
                       >
                         {deleting ? "กำลังลบ..." : "ลบเวรวันนี้"}
                       </button>
@@ -298,6 +288,33 @@ export default function ModalSelectMonth({
           </div>
         </Dialog>
       </Transition>
+      <ConfirmDialog
+        open={confirmDelete}
+        busy={deleting}
+        danger
+        title="ลบเวรของวันนี้ทั้งหมด?"
+        message={`${name} · วันที่ ${day} ${monthTH} ${yearTH}`}
+        details={[
+          `เวรที่บันทึกไว้ ${defaultDutyOfDay?.length || 0} รายการของวันนี้จะถูกลบ`,
+          "ลบแล้วย้อนกลับไม่ได้ ต้องกรอกใหม่เอง",
+        ]}
+        confirmLabel="ลบเวรวันนี้"
+        onConfirm={async () => {
+          setDeleting(true);
+          try {
+            await deleteDutyById(defaultDutyOfDay);
+            await getUserList();
+            setConfirmDelete(false);
+            setShowModal(false);
+            notifySuccess("ลบเวรของวันนี้แล้ว");
+          } catch (e) {
+            notifyApiError(e, "ลบเวรไม่สำเร็จ");
+          } finally {
+            setDeleting(false);
+          }
+        }}
+        onClose={() => setConfirmDelete(false)}
+      />
     </>
   );
 

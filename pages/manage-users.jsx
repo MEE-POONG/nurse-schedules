@@ -13,6 +13,8 @@ import {
 } from "react-icons/tb";
 import LoadingComponent from "@/components/LoadingComponent";
 import { authProvider } from "src/authProvider";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
+import { notifySuccess, notifyWarn, notifyApiError } from "@/components/ui/notify";
 
 export default function ManageUsersPage() {
   const currentUser = authProvider.getIdentity();
@@ -34,6 +36,8 @@ export default function ManageUsersPage() {
   const [keyword, setKeyword] = useState("");
   const [editing, setEditing] = useState(null); // user object กำลังแก้ไข
   const [saving, setSaving] = useState(false);
+  const [pendingToggle, setPendingToggle] = useState(null); // ผู้ใช้ที่รอยืนยันเปิด/ปิดบัญชี
+  const [toggling, setToggling] = useState(false);
 
   const filtered = useMemo(() => {
     if (!Array.isArray(users)) return [];
@@ -72,28 +76,29 @@ export default function ManageUsersPage() {
       setEditing(null);
       await refetch();
     } catch (e) {
-      alert("บันทึกไม่สำเร็จ: " + (e.response?.data?.error || e.message));
+      notifyApiError(e, "บันทึกข้อมูลผู้ใช้ไม่สำเร็จ");
     } finally {
       setSaving(false);
     }
   };
 
-  // เปิด/ปิดการใช้งานผู้ใช้
-  const toggleActive = async (u) => {
+  // เปิด/ปิดการใช้งานผู้ใช้ — ยืนยันในแอปก่อน เพราะกระทบการเข้าใช้งานของคนนั้นทันที
+  const toggleActive = (u) => setPendingToggle(u);
+
+  const confirmToggleActive = async () => {
+    const u = pendingToggle;
+    if (!u) return;
     const next = !u.isActive;
-    if (
-      !confirm(
-        next
-          ? `เปิดการใช้งานบัญชีของ ${u.firstname} ${u.lastname || ""}?`
-          : `ปิดการใช้งานบัญชีของ ${u.firstname} ${u.lastname || ""}? (ประวัติเวรจะยังอยู่)`
-      )
-    )
-      return;
+    setToggling(true);
     try {
       await axios.put(`/api/user/${u.id}`, { isActive: next });
       await refetch();
+      setPendingToggle(null);
+      notifySuccess(next ? `เปิดการใช้งานบัญชีของ ${u.firstname} แล้ว` : `ปิดการใช้งานบัญชีของ ${u.firstname} แล้ว`);
     } catch (e) {
-      alert("ทำรายการไม่สำเร็จ: " + (e.response?.data?.error || e.message));
+      notifyApiError(e, "เปลี่ยนสถานะบัญชีไม่สำเร็จ");
+    } finally {
+      setToggling(false);
     }
   };
 
@@ -287,6 +292,22 @@ export default function ManageUsersPage() {
         onClose={() => setEditing(null)}
         onSave={handleSave}
       />
+
+      <ConfirmDialog
+        open={!!pendingToggle}
+        busy={toggling}
+        danger={!!pendingToggle?.isActive}
+        title={pendingToggle?.isActive ? "ปิดการใช้งานบัญชีนี้?" : "เปิดการใช้งานบัญชีนี้?"}
+        message={pendingToggle ? `${pendingToggle.firstname} ${pendingToggle.lastname || ""}`.trim() : ""}
+        details={
+          pendingToggle?.isActive
+            ? ["เจ้าตัวจะเข้าสู่ระบบไม่ได้ทันที", "ประวัติเวรและตารางเดิมยังอยู่ครบ", "เปิดกลับคืนได้ทุกเมื่อ"]
+            : ["เจ้าตัวจะกลับมาเข้าสู่ระบบได้ทันที"]
+        }
+        confirmLabel={pendingToggle?.isActive ? "ปิดการใช้งาน" : "เปิดการใช้งาน"}
+        onConfirm={confirmToggleActive}
+        onClose={() => setPendingToggle(null)}
+      />
     </div>
   );
 }
@@ -315,7 +336,7 @@ function EditUserModal({ user, titles, positions, saving, onClose, onSave }) {
   const submit = (e) => {
     e.preventDefault();
     if (!form.firstname?.trim()) {
-      alert("กรุณากรอกชื่อ");
+      notifyWarn("กรอกชื่อก่อนบันทึก");
       return;
     }
     onSave(form);

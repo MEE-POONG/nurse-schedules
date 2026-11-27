@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { metaOf } from "@/components/Schedule/shiftStyle";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
+import { notifySuccess, notifyApiError, describeError } from "@/components/ui/notify";
 import {
   TbWand,
   TbDeviceFloppy,
@@ -79,6 +81,7 @@ export default function AutoSchedulePanel({ month, year, locationId, onScheduleG
   const [applyMode, setApplyMode] = useState("fill");
   const [error, setError] = useState("");
   const [applied, setApplied] = useState(null);
+  const [confirmOpen, setConfirmOpen] = useState(false);
 
   useEffect(() => {
     axios.get("/api/auto-schedule").then((r) => setConfig(r.data.config)).catch(() => {});
@@ -108,16 +111,18 @@ export default function AutoSchedulePanel({ month, year, locationId, onScheduleG
       setPreview(r.data);
     } catch (e) {
       setPreview(null);
-      setError(e?.response?.data?.message || "สร้างตารางเวรไม่สำเร็จ");
+      setError(describeError(e, "สร้างตารางเวรไม่สำเร็จ"));
     } finally {
       setGenerating(false);
     }
   };
 
-  const apply = async () => {
+  const apply = () => {
     if (!preview) return;
-    const label = applyMode === "replace" ? "ล้างเวรเดิมของเดือนนี้ (ยกเว้นวันลา/อบรม) แล้วบันทึกตารางใหม่?" : "เติมเวรลงช่องที่ยังว่าง?";
-    if (!window.confirm(label)) return;
+    setConfirmOpen(true);
+  };
+
+  const doApply = async () => {
     setApplying(true);
     setError("");
     try {
@@ -129,9 +134,12 @@ export default function AutoSchedulePanel({ month, year, locationId, onScheduleG
         items: preview.assignments,
       });
       setApplied(r.data);
+      setConfirmOpen(false);
+      notifySuccess(r.data?.message || "บันทึกตารางเวรแล้ว");
       onScheduleGenerated?.(r.data);
     } catch (e) {
-      setError(e?.response?.data?.message || "บันทึกไม่สำเร็จ");
+      setError(describeError(e, "บันทึกตารางเวรไม่สำเร็จ"));
+      notifyApiError(e, "บันทึกตารางเวรไม่สำเร็จ");
     } finally {
       setApplying(false);
     }
@@ -515,6 +523,31 @@ export default function AutoSchedulePanel({ month, year, locationId, onScheduleG
           </div>
         </>
       )}
+
+      <ConfirmDialog
+        open={confirmOpen}
+        busy={applying}
+        danger={applyMode === "replace"}
+        title={applyMode === "replace" ? "ล้างเวรเดิมแล้วบันทึกตารางใหม่?" : "เติมเวรลงช่องที่ยังว่าง?"}
+        message={`ประจำเดือนที่เลือก · ระบบจะบันทึก ${
+          preview?.assignments?.filter((a) => a.shift !== "x").length || 0
+        } เวร`}
+        details={
+          applyMode === "replace"
+            ? [
+                "ลบเวรทำงานและวันหยุดของเดือนนี้ทั้งหมดก่อน แล้วบันทึกตารางใหม่ทับ",
+                "วันลา / ลากิจ / ลาป่วย / อบรม / R ที่กรอกไว้จะไม่ถูกแตะ",
+                "การลบย้อนกลับไม่ได้ — ถ้าไม่แน่ใจ ให้เลือกโหมดเติมเฉพาะช่องว่างแทน",
+              ]
+            : [
+                "เติมเฉพาะช่องที่ยังว่าง ไม่ทับเวรที่กรอกไว้แล้ว",
+                "ถ้าต้องการแทนที่ของเดิม ให้เลือกโหมดล้างเวรเดิม",
+              ]
+        }
+        confirmLabel={applyMode === "replace" ? "ล้างแล้วบันทึก" : "บันทึก"}
+        onConfirm={doApply}
+        onClose={() => setConfirmOpen(false)}
+      />
     </div>
   );
 }
