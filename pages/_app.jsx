@@ -1,4 +1,6 @@
 import "../styles/globals.css";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
 import Layout from "@/components/Layout/Layout";
 import { Provider } from "react-redux";
 import { store } from "store/store";
@@ -15,6 +17,8 @@ function MyApp({ Component, pageProps }) {
         </Layout>
       </Auth>
       <PwaController />
+      {/* แจ้งผลการทำงานทุกหน้าในที่เดียว — แทน alert() ของเบราว์เซอร์ */}
+      <ToastContainer newestOnTop limit={3} />
     </Provider>
   );
 }

@@ -1,7 +1,6 @@
 import Image from "next/image";
-import { ToastContainer, toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import { TbCopy, TbHeartHandshake } from "react-icons/tb";
-import 'react-toastify/dist/ReactToastify.css';
 
 export default function Home() {
     const notify = () => {
@@ -43,7 +42,6 @@ export default function Home() {
                     </div>
                 </div>
             </div>
-            <ToastContainer />
         </>
     );
 }

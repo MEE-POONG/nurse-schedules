@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import useAxios from "axios-hooks";
 import dayjs from "dayjs";
 import { authProvider } from "src/authProvider";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
+import { notifySuccess, notifyWarn, notifyApiError } from "@/components/ui/notify";
 
 const ShiftReservationModal = ({ 
   isOpen, 
@@ -15,6 +17,8 @@ const ShiftReservationModal = ({
   const [priority, setPriority] = useState(1);
   const [isReserved, setIsReserved] = useState(false);
   const [editingId, setEditingId] = useState(null);
+  const [pendingDelete, setPendingDelete] = useState(null); // การจองที่รอการยืนยันลบ
+  const [deleting, setDeleting] = useState(false);
 
   const currentUser = authProvider.getIdentity();
 
@@ -106,9 +110,9 @@ const ShiftReservationModal = ({
     } catch (error) {
       console.error("Error saving reservation:", error);
       if (error.response?.status === 409) {
-        alert("มีการจองกะนี้ในวันนี้อยู่แล้ว");
+        notifyWarn("วันนี้คุณจองกะนี้ไว้แล้ว — แก้ไขรายการเดิมแทนได้");
       } else {
-        alert("เกิดข้อผิดพลาดในการบันทึกการจอง");
+        notifyApiError(error, "บันทึกการจองไม่สำเร็จ");
       }
     }
   };
@@ -120,17 +124,24 @@ const ShiftReservationModal = ({
     setIsReserved(reservation.isReserved);
   };
 
-  const handleDelete = async (reservation) => {
-    if (!confirm(`ลบการจองกะ "${reservation.Shif?.name}" วันที่ ${selectedDate}?`)) return;
+  // กดลบ = เปิดกล่องยืนยันในแอป (ไม่ใช่กล่องของเบราว์เซอร์)
+  const handleDelete = (reservation) => setPendingDelete(reservation);
 
+  const confirmDelete = async () => {
+    if (!pendingDelete) return;
+    setDeleting(true);
     try {
-      await executeDelete({ data: { id: reservation.id } });
-      if (editingId === reservation.id) resetForm();
+      await executeDelete({ data: { id: pendingDelete.id } });
+      if (editingId === pendingDelete.id) resetForm();
       await refetchReservations();
       onReservationUpdate && onReservationUpdate();
+      setPendingDelete(null);
+      notifySuccess("ลบการจองแล้ว");
     } catch (error) {
       console.error("Error deleting reservation:", error);
-      alert("เกิดข้อผิดพลาดในการลบการจอง");
+      notifyApiError(error, "ลบการจองไม่สำเร็จ");
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -292,6 +303,22 @@ const ShiftReservationModal = ({
           </form>
         </div>
       </div>
+
+      <ConfirmDialog
+        open={!!pendingDelete}
+        danger
+        busy={deleting}
+        title="ลบการจองเวรนี้?"
+        message={
+          pendingDelete
+            ? `กะ "${pendingDelete.Shif?.name}" วันที่ ${selectedDate}`
+            : ""
+        }
+        details={["การจองจะหายไปจากตาราง และหัวหน้าจะไม่เห็นคำขอนี้อีก"]}
+        confirmLabel="ลบการจอง"
+        onConfirm={confirmDelete}
+        onClose={() => setPendingDelete(null)}
+      />
     </div>
   );
 };

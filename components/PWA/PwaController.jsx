@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { authProvider } from "src/authProvider";
+import { notifyError, describeError } from "@/components/ui/notify";
 import {
   registerServiceWorker,
   subscribeToPush,
@@ -115,7 +116,7 @@ export default function PwaController() {
       setPushState("granted");
     } catch (err) {
       setPushState(Notification?.permission || "denied");
-      alert(err.message || "เปิดการแจ้งเตือนไม่สำเร็จ");
+      notifyError(describeError(err, "เปิดการแจ้งเตือนไม่สำเร็จ — ตรวจสอบว่าเบราว์เซอร์อนุญาตการแจ้งเตือนแล้ว"));
     } finally {
       setBusy(false);
     }
