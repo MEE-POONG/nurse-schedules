@@ -13,6 +13,7 @@ import {
   TbChevronDown,
   TbChevronUp,
   TbScale,
+  TbUsers,
 } from "react-icons/tb";
 
 const DOW_TH = ["อา", "จ", "อ", "พ", "พฤ", "ศ", "ส"];
@@ -170,7 +171,7 @@ export default function AutoSchedulePanel({ month, year, locationId, onScheduleG
               {[
                 { key: "maxNightStreak", label: "ดึกติดกันสูงสุด (คืน)" },
                 { key: "maxDoublesPerMonth", label: "เวรควบสูงสุด/คน/เดือน" },
-                { key: "softMaxConsecutiveWork", label: "ทำงานติดกันไม่ควรเกิน (วัน)" },
+                { key: "maxConsecutiveWork", label: "ทำงานติดกันสูงสุด (วัน)" },
                 { key: "minOffPerMonth", label: "วันหยุดขั้นต่ำ/คน" },
               ].map((f) => (
                 <label key={f.key} className="text-sm text-gray-600">
@@ -194,6 +195,35 @@ export default function AutoSchedulePanel({ month, year, locationId, onScheduleG
                 className="rounded accent-teal-600"
               />
               เติมกะ &quot;หยุด (x)&quot; ให้วันที่ว่างอัตโนมัติ
+            </label>
+
+            <label className="flex gap-2 items-start text-sm text-gray-600">
+              <input
+                type="checkbox"
+                checked={config.rules?.guaranteeOffDays !== false}
+                onChange={(e) => setRule("guaranteeOffDays", e.target.checked)}
+                className="mt-1 rounded accent-teal-600"
+              />
+              <span>
+                รับประกันวันหยุดขั้นต่ำ
+                <span className="block text-xs text-gray-400">
+                  เปิด = กันวันหยุดไว้ก่อนเสมอ ถ้ากำลังคนไม่พอจะเหลือช่องขาดคนให้เห็น (แนะนำ) ·
+                  ปิด = เติมช่องให้ครบก่อน ยอมให้บางคนหยุดน้อยกว่าเป้า
+                </span>
+              </span>
+            </label>
+
+            <label className="flex gap-2 items-start text-sm text-gray-600">
+              <input
+                type="checkbox"
+                checked={config.chief?.weekendOff !== false}
+                onChange={(e) => setConfig((c) => ({ ...c, chief: { ...c.chief, weekendOff: e.target.checked } }))}
+                className="mt-1 rounded accent-teal-600"
+              />
+              <span>
+                หัวหน้าหอหยุดเสาร์–อาทิตย์
+                <span className="block text-xs text-gray-400">เปิด = ขึ้นเฉพาะเวรเช้าในเวลา จันทร์–ศุกร์</span>
+              </span>
             </label>
           </div>
         )}
@@ -229,6 +259,50 @@ export default function AutoSchedulePanel({ month, year, locationId, onScheduleG
       {/* ---------- ผลลัพธ์ ---------- */}
       {preview && (
         <>
+          {/* ตรวจกำลังคน: ตัวเลขที่ตั้งไว้ จัดเป็นตารางที่คนทำได้จริงไหม */}
+          {preview.capacity && (
+            <div
+              className={`p-4 rounded-xl border shadow-sm ${
+                preview.capacity.feasible ? "bg-white border-gray-200" : "bg-red-50 border-red-300"
+              }`}
+            >
+              <div className="flex gap-2 items-center mb-2 text-sm font-semibold text-gray-800">
+                <TbUsers className={preview.capacity.feasible ? "text-teal-700" : "text-red-600"} size={18} />
+                ตรวจกำลังคน
+                <span
+                  className={`px-2 py-0.5 rounded-full text-[11px] font-medium ${
+                    preview.capacity.feasible ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+                  }`}
+                >
+                  {preview.capacity.feasible ? "กำลังคนพอ" : "กำลังคนไม่พอ"}
+                </span>
+              </div>
+              <div className="grid grid-cols-2 gap-x-4 gap-y-1 text-xs text-gray-600 sm:grid-cols-4">
+                <div>
+                  ช่องที่ต้องมีคน <span className="font-semibold text-gray-900">{preview.capacity.demand.total}</span> เวร/เดือน
+                </div>
+                <div>
+                  วงหมุนเวร {preview.capacity.rotCount} คน รับได้{" "}
+                  <span className="font-semibold text-gray-900">{preview.capacity.supply.rotation}</span> เวร
+                </div>
+                <div>
+                  ต่อคน ~<span className="font-semibold text-gray-900">{preview.capacity.perPerson.shifts}</span> เวร (ควบ ~
+                  {preview.capacity.perPerson.doubles} ครั้ง)
+                </div>
+                <div>
+                  วันหยุดขั้นต่ำ <span className="font-semibold text-gray-900">{preview.capacity.perPerson.offDays}</span> วัน/คน
+                </div>
+              </div>
+              {preview.capacity.recommendations?.length > 0 && (
+                <ul className="mt-2 space-y-1 text-xs text-amber-700">
+                  {preview.capacity.recommendations.map((r, i) => (
+                    <li key={i}>→ {r}</li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          )}
+
           {/* ความสมดุล + คำเตือน */}
           <div className="grid gap-3 sm:grid-cols-2">
             <div className="p-4 bg-white rounded-xl border border-gray-200 shadow-sm">
