@@ -1,11 +1,14 @@
-FROM node:lts AS dependencies
+FROM node:22 AS dependencies
 
 
 WORKDIR /app
 COPY package.json ./
+# node:lts เลื่อนไปเวอร์ชันที่ไม่แถม yarn มาด้วยแล้ว (build ล้มที่ "yarn: not found" ตั้งแต่ ก.ย. 2569)
+# จึงตรึงเป็น node:22 และเปิด corepack ไว้ ถ้าอิมเมจไหนไม่มี corepack ให้ลง yarn 1 แทน
+RUN corepack enable || npm install -g yarn@1
 RUN yarn
 
-FROM node:lts AS build
+FROM node:22 AS build
 
 WORKDIR /app
 COPY --from=dependencies /app/node_modules ./node_modules
@@ -31,7 +34,7 @@ RUN echo "NEXT_PUBLIC_VAPID_PUBLIC_KEY=$NEXT_PUBLIC_VAPID_PUBLIC_KEY" >> .env
 RUN npx prisma generate
 RUN yarn build
 
-FROM node:lts AS deploy
+FROM node:22 AS deploy
 
 WORKDIR /app
 
