@@ -3,7 +3,7 @@
 // POST → สร้างตารางเวร (พรีวิว ไม่บันทึก) { year, month(1-12), locationId, config? }
 import { prisma } from "@/utils/prisma";
 import dayjs from "dayjs";
-import { generateSchedule } from "@/utils/scheduleEngine/engine";
+import { generateSchedule, historyDaysNeeded } from "@/utils/scheduleEngine/engine";
 import { DEFAULT_CONFIG } from "@/utils/scheduleEngine/config";
 
 const WORK_NAMES = ["ช", "บ", "ด"];
@@ -89,9 +89,11 @@ export default async function handler(req, res) {
       }
     }
 
-    // เวรท้ายเดือนก่อน (7 วันสุดท้าย) = บริบทต่อเนื่องข้ามเดือน:
+    // เวรท้ายเดือนก่อน = บริบทต่อเนื่องข้ามเดือน (จำนวนวันตามที่กติกาต้องใช้):
     // ห้าม บ่ายสิ้นเดือน→ดึกวันที่ 1, นับดึกติดกันข้ามเดือน, ลูปหมุนต่อจากของจริง
-    const prevStart = firstDay.subtract(7, "day");
+    // โหลดย้อนหลังเท่าที่กติกาต้องใช้จริง (เพดานดึกติดกัน/ทำงานติดกัน ปรับได้จาก UI)
+    const lookback = historyDaysNeeded(configOverrides);
+    const prevStart = firstDay.subtract(lookback, "day");
     const prevMonthLastDate = firstDay.subtract(1, "day").date();
     const prevDuties = await prisma.duty.findMany({
       where: {

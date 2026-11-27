@@ -4,7 +4,7 @@
 // ตรวจทั้งกติกาบังคับ (hard rules) และคุณภาพตาราง (วันหยุด/เวรควบ/ความสมดุล)
 // ที่มาของตัวเลขเป้าหมาย: AUTO_SCHEDULE.md
 
-const { generateSchedule, analyzeCapacity } = require("../utils/scheduleEngine/engine");
+const { generateSchedule, analyzeCapacity, historyDaysNeeded } = require("../utils/scheduleEngine/engine");
 const { DEFAULT_CONFIG } = require("../utils/scheduleEngine/config");
 
 let failed = 0;
@@ -221,6 +221,33 @@ for (const c of cases) {
 const a = generateSchedule({ year: 2026, month: 5, staff: mkStaff(8), fixed: {}, history: {}, preferences: {} });
 const b = generateSchedule({ year: 2026, month: 5, staff: mkStaff(8), fixed: {}, history: {}, preferences: {} });
 check("ผลลัพธ์ซ้ำได้ (deterministic)", JSON.stringify(a.assignments) === JSON.stringify(b.assignments));
+
+// รอยต่อเดือน: หน้าต่างที่โหลดท้ายเดือนก่อนต้องครอบคลุมทุกกฎที่นับย้อนหลัง
+// ไม่งั้นจะเกิด "แหกกติกาแบบเงียบ" — ลงเวรทับเพดานโดยไม่มีคำเตือนให้แอดมินเห็น
+check("หน้าต่างย้อนหลังครอบคลุมเพดานทำงานติดกัน", historyDaysNeeded({ rules: { maxConsecutiveWork: 10 } }) >= 10);
+check("หน้าต่างย้อนหลังครอบคลุมเพดานดึกติดกัน", historyDaysNeeded({ rules: { maxNightStreak: 9 } }) >= 9);
+check("หน้าต่างย้อนหลังไม่บานเกินหนึ่งเดือน", historyDaysNeeded({ rules: { maxConsecutiveWork: 99 } }) <= 31);
+{
+  // N1 ทำงานติดกัน 10 วันจบวันสิ้นเดือนก่อน · วันที่ 1 คนอื่นลาหมด → เหลือ N1 คนเดียวที่ลงได้
+  // เพดาน 10 วันจึงต้องถูกผ่อน "พร้อมรายงาน" ไม่ใช่ปล่อยผ่านเงียบ ๆ
+  const staff = mkStaff(8);
+  const history = {};
+  for (let d = 0; d >= -9; d--) history[`u1|${d}`] = [{ shift: "ช", isOT: false }];
+  const fixed = {};
+  for (const p of staff) if (p.id !== "u1") fixed[`${p.id}|1`] = [{ shift: "LEAVE", isOT: false }];
+  const r = generateSchedule({
+    year: 2026,
+    month: 12,
+    staff,
+    fixed,
+    history,
+    preferences: {},
+    configOverrides: { rules: { maxConsecutiveWork: 10 } }, // soft ยังเป็น 7 ตามค่าตั้งต้น
+  });
+  const worked = r.assignments.some((a) => a.userId === "u1" && a.day === 1 && a.shift !== "x");
+  const reported = r.violations.some((v) => v.type === "relaxed");
+  check("รอยต่อเดือน: ถ้าลงเวรเกินเพดานต้องมีรายงานการผ่อนกติกา", !worked || reported);
+}
 
 // ตรวจกำลังคนล่วงหน้าต้องตอบได้โดยไม่ต้องจัดตาราง
 const cap = analyzeCapacity({ year: 2026, month: 1, staff: mkStaff(8), fixed: {}, config: DEFAULT_CONFIG });

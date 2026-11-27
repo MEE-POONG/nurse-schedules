@@ -131,7 +131,10 @@ function generateSchedule({ year, month, staff, fixed = {}, history = {}, prefer
 }
 
 // จำนวนวันย้อนหลังของเดือนก่อนที่ต้องรู้ (ครอบคลุมกฎดึกติดกัน + โทษทำงานติดยาว)
-const lookbackDays = (rules) => Math.max(rules.maxNightStreak, rules.softMaxConsecutiveWork, 3);
+// ต้องครอบคลุมทุกกฎที่นับย้อนหลังข้ามเดือน ไม่งั้นจะ "แหกกติกาแบบเงียบ"
+// (เช่น ตั้งทำงานติดกันสูงสุด 10 แต่โหลดท้ายเดือนก่อนมาแค่ 7 วัน → นับได้ 8 แล้วปล่อยผ่าน)
+const lookbackDays = (rules) =>
+  Math.min(31, Math.max(rules.maxNightStreak, rules.maxConsecutiveWork, rules.softMaxConsecutiveWork, 3));
 
 // จัดหนึ่งรอบด้วย seed ที่กำหนด
 function solveOnce({ year, month, N, staff, chief, fixed, history, preferences, config, seed }) {
@@ -905,4 +908,7 @@ function analyzeCapacity({ year, month, staff, fixed = {}, config: configIn, con
   };
 }
 
-module.exports = { generateSchedule, analyzeCapacity };
+// จำนวนวันท้ายเดือนก่อนที่ต้องโหลดมาเป็น history ให้กฎข้ามเดือนทำงานครบ
+const historyDaysNeeded = (configOverrides = {}) => lookbackDays(mergeConfig(configOverrides).rules);
+
+module.exports = { generateSchedule, analyzeCapacity, historyDaysNeeded };
