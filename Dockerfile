@@ -43,6 +43,9 @@ COPY --from=build /app/.next/standalone ./
 COPY --from=build /app/.next/static ./.next/static
 COPY --from=build /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=build /app/node_modules/@prisma ./node_modules/@prisma
+# เครื่องมือวิเคราะห์เวรจริง (อ่านอย่างเดียว) ให้รันในคอนเทนเนอร์ได้ โดยใช้ DATABASE_URL ของ service นั้น:
+#   docker exec <container> node scripts/analyze-real-duty.js --months=8 --location=ICU
+COPY --from=build /app/scripts ./scripts
 
 EXPOSE 3000
 
