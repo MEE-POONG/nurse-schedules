@@ -36,6 +36,9 @@ jobs:
   deploy:
     needs: build
     runs-on: ubuntu-latest
+    # deploy เฉพาะตอน push เข้า main เท่านั้น — ก่อนหน้านี้ job นี้รันตอนเปิด pull_request ด้วย
+    # ทำให้แค่เปิด PR ก็ไป stop/rm/run คอนเทนเนอร์ของใช้งานจริงทั้ง 4 ตัว
+    if: github.event_name == 'push'
 
     steps:
       - id: string
