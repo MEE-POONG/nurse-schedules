@@ -2,7 +2,7 @@
 // ขั้นตอน: ตั้งค่าจำนวนคนต่อกะ → สร้างพรีวิว → ตรวจตาราง/ความสมดุล → บันทึก
 import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
-import { SHIFT_META, OT_CIRCLE, metaOf } from "@/components/Schedule/shiftStyle";
+import { metaOf } from "@/components/Schedule/shiftStyle";
 import {
   TbWand,
   TbDeviceFloppy,
@@ -27,6 +27,45 @@ const COVERAGE_FIELDS = [
   { key: "eveningOT", label: "บ่าย OT" },
   { key: "nightOT", label: "ดึก OT" },
 ];
+
+// สีพื้นทั้งช่องตามสถานะเวรของวันนั้น (ระบายเต็มช่องเพื่อให้กวาดสายตาทั้งเดือนได้)
+// เฉดยึดตาม shiftStyle.js ที่ใช้ทั้งระบบ: ดึก=คราม เช้า=เหลือง บ่าย=ฟ้า · เวรควบใช้เฉดเข้มขึ้น
+const CELL_STYLE = {
+  ด: "bg-indigo-100 text-indigo-900",
+  ช: "bg-amber-100 text-amber-900",
+  บ: "bg-sky-100 text-sky-900",
+  ชบ: "bg-orange-200 text-orange-900",
+  ดบ: "bg-teal-200 text-teal-900",
+  OFF: "bg-gray-100 text-gray-400",
+};
+const CELL_LABEL = { ด: "ดึก", ช: "เช้า", บ: "บ่าย", ชบ: "ควบเช้า-บ่าย", ดบ: "ควบดึก-บ่าย" };
+const WORK = ["ด", "ช", "บ"];
+
+// รวมทุก cell ของวันเดียวเป็นช่องเดียว: ป้าย สี และข้อมูลประกอบ
+function dayCell(cells) {
+  const work = cells.filter((c) => WORK.includes(c.shift));
+  const fixed = cells.some((c) => c.fixed);
+  const reserved = cells.some((c) => c.reserved);
+  if (work.length) {
+    const key = WORK.filter((n) => work.some((c) => c.shift === n)).join("");
+    const names = work.map((c) => `${metaOf(c.shift).full}${c.isOT ? " OT" : ""}`).join(" + ");
+    return {
+      label: key,
+      cls: CELL_STYLE[key] || "bg-fuchsia-100 text-fuchsia-900",
+      ot: work.some((c) => c.isOT),
+      fixed,
+      reserved,
+      title: `${names}${fixed ? " (มีอยู่แล้ว)" : reserved ? " (จองแน่นอน)" : " (ระบบเสนอ)"}`,
+    };
+  }
+  // ไม่ใช่เวรทำงาน: วันหยุด (x) หรือ ลา/อบรม/R ที่กรอกไว้
+  const other = cells.find((c) => c.shift !== "x") || cells[0];
+  if (!other) return { label: "", cls: "", ot: false, fixed: false, reserved: false, title: "" };
+  if (other.shift === "x")
+    return { label: "O", cls: CELL_STYLE.OFF, ot: false, fixed, reserved, title: `หยุด${fixed ? " (มีอยู่แล้ว)" : ""}` };
+  const meta = metaOf(other.shift);
+  return { label: meta.label, cls: meta.chip, ot: false, fixed, reserved, title: `${meta.full}${fixed ? " (มีอยู่แล้ว)" : ""}` };
+}
 
 export default function AutoSchedulePanel({ month, year, locationId, onScheduleGenerated }) {
   // month prop เป็น 0-11 (ตาม dayjs) → API ใช้ 1-12
@@ -343,59 +382,56 @@ export default function AutoSchedulePanel({ month, year, locationId, onScheduleG
             </div>
           </div>
 
-          {/* ตารางพรีวิว */}
+          {/* ตารางพรีวิว — ระบายสีทั้งช่องตามกะของวันนั้น อ่านทั้งเดือนรวดเดียวได้ */}
           <div className="overflow-x-auto bg-white rounded-xl border border-gray-200 shadow-sm">
             <table className="text-xs border-collapse min-w-max">
               <thead>
-                <tr className="bg-gray-50">
-                  <th className="sticky left-0 z-10 px-3 py-2 text-left text-gray-600 bg-gray-50 border-b border-gray-200">
-                    เจ้าหน้าที่
-                  </th>
+                <tr>
+                  <th className="sticky left-0 z-10 px-2 py-2 w-8 text-center text-white bg-teal-700">ที่</th>
+                  <th className="sticky left-8 z-10 px-3 py-2 text-left text-white bg-teal-700">เจ้าหน้าที่</th>
                   {days.map((d) => {
                     const dow = new Date(year, month, d).getDay();
                     const we = dow === 0 || dow === 6;
                     return (
-                      <th key={d} className={`px-1 py-2 text-center border-b border-gray-200 min-w-[2.6rem] ${we ? "bg-teal-50 text-teal-800" : "text-gray-600"}`}>
-                        <div>{d}</div>
-                        <div className="font-normal text-[10px]">{DOW_TH[dow]}</div>
+                      <th
+                        key={d}
+                        className={`px-1 py-1.5 text-center text-white min-w-[2.4rem] ${we ? "bg-rose-500" : "bg-teal-600"}`}
+                      >
+                        <div className="text-[12px] font-medium leading-4">{d}</div>
+                        <div className="font-normal leading-3 text-[10px] opacity-90">{DOW_TH[dow]}</div>
                       </th>
                     );
                   })}
                 </tr>
               </thead>
               <tbody>
-                {preview.staff.map((p) => (
-                  <tr key={p.id} className="border-b border-gray-100 last:border-0">
-                    <td className="sticky left-0 z-10 px-3 py-1.5 font-medium text-gray-800 whitespace-nowrap bg-white">
+                {preview.staff.map((p, idx) => (
+                  <tr key={p.id}>
+                    <td className="sticky left-0 z-10 px-2 py-1 w-8 text-center text-gray-500 bg-white border-b border-gray-100">
+                      {idx + 1}
+                    </td>
+                    <td className="sticky left-8 z-10 px-3 py-1 font-medium text-gray-800 whitespace-nowrap bg-white border-b border-r border-gray-100">
                       {p.name}
-                      {p.isChief && <span className="ml-1 text-[10px] text-teal-700">(หัวหน้า)</span>}
-                      {p.isTrain && <span className="ml-1 text-[10px] text-violet-600">(อบรม)</span>}
+                      {p.isChief && (
+                        <span className="px-1.5 py-0.5 ml-1.5 text-[10px] font-medium text-teal-800 bg-teal-100 rounded">หัวหน้าหอ</span>
+                      )}
+                      {p.isTrain && (
+                        <span className="px-1.5 py-0.5 ml-1.5 text-[10px] font-medium text-violet-800 bg-violet-100 rounded">อบรม</span>
+                      )}
                     </td>
                     {days.map((d) => {
-                      const cells = cellMap[`${p.id}|${d}`] || [];
-                      const dow = new Date(year, month, d).getDay();
-                      const we = dow === 0 || dow === 6;
+                      const cell = dayCell(cellMap[`${p.id}|${d}`] || []);
                       return (
-                        <td key={d} className={`px-0.5 py-1 text-center align-top ${we ? "bg-teal-50/40" : ""}`}>
-                          <div className="flex flex-row gap-0.5 items-center">
-                            {cells.map((c, i) => {
-                              const meta = metaOf(c.shift);
-                              const ring = c.isOT && c.otClass ? OT_CIRCLE[c.otClass]?.ring : null;
-                              return (
-                                <span
-                                  key={i}
-                                  title={`${meta.full}${c.isOT ? " OT" : ""}${c.fixed ? " (มีอยู่แล้ว)" : c.reserved ? " (จองแน่นอน)" : " (ระบบเสนอ)"}`}
-                                  className={`inline-flex items-center gap-0.5 px-1 rounded text-[11px] leading-4 ${meta.chip} ${
-                                    c.isOT && ring ? `border ${ring}` : ""
-                                  } ${c.reserved ? "ring-2 ring-green-500/70" : ""} ${c.fixed ? "opacity-60" : ""}`}
-                                >
-                                  {c.fixed && <TbLock size={9} />}
-                                  {c.shift === "x" ? "x" : c.shift}
-                                  {c.isOT ? "•" : ""}
-                                </span>
-                              );
-                            })}
-                          </div>
+                        <td
+                          key={d}
+                          title={cell.title}
+                          className={`relative px-1 py-1.5 text-center align-middle border-b border-white text-[11px] font-medium leading-4 ${cell.cls} ${
+                            cell.reserved ? "ring-2 ring-inset ring-green-500/80" : ""
+                          }`}
+                        >
+                          {cell.fixed && <TbLock size={8} className="absolute top-0.5 left-0.5 opacity-50" />}
+                          {cell.label}
+                          {cell.ot && <span className="ml-0.5 align-super text-[9px]">•</span>}
                         </td>
                       );
                     })}
@@ -404,15 +440,15 @@ export default function AutoSchedulePanel({ month, year, locationId, onScheduleG
               </tbody>
             </table>
           </div>
-          <div className="flex flex-wrap gap-3 px-1 text-[11px] text-gray-500">
-            <span><TbLock size={10} className="inline" /> = เวร/ลาเดิม (ไม่ถูกแตะ)</span>
-            <span>• = OT (สีกรอบตามวง: ดำ/แดง/น้ำเงิน)</span>
-            <span><span className="inline-block w-2.5 h-2.5 rounded ring-2 ring-green-500/70 align-middle" /> = จองแน่นอน</span>
-            {Object.entries(SHIFT_META)
-              .filter(([k]) => ["ด", "ช", "บ", "x"].includes(k))
-              .map(([k, m]) => (
-                <span key={k} className={`px-1.5 rounded ${m.chip}`}>{k} {m.time}</span>
-              ))}
+          <div className="flex flex-wrap gap-2 items-center px-1 text-[11px] text-gray-500">
+            {Object.entries(CELL_STYLE).map(([k, cls]) => (
+              <span key={k} className={`px-2 py-0.5 rounded font-medium ${cls}`}>
+                {k === "OFF" ? "O หยุด" : `${k} ${CELL_LABEL[k] || ""}`}
+              </span>
+            ))}
+            <span className="ml-1"><TbLock size={10} className="inline" /> = เวร/ลาเดิม (ไม่ถูกแตะ)</span>
+            <span>• = OT</span>
+            <span><span className="inline-block w-2.5 h-2.5 rounded ring-2 ring-green-500/80 align-middle" /> = จองแน่นอน</span>
           </div>
 
           {/* สรุปต่อคน */}
